@@ -1,105 +1,136 @@
-import React from 'react'
-import data from './data'
-import jsPlumbReady from './jsplumb'
+import React from 'react';
+import data from './data';
+import jsPlumbReady from './jsplumb';
+import Layer from './layer';
 
-var instance,_addLayerEndpoints;
+class Canvas extends React.Component {
+  constructor(props) {
+    super(props);
+    this.allowDrop = this.allowDrop.bind(this);
+    this.drop = this.drop.bind(this);
+    this.clickCanvas = this.clickCanvas.bind(this);
+    this.clickLayerEvent = this.clickLayerEvent.bind(this);
+    this.clickOrDragged = 0;// whether a layer was clicked or dragged
+  }
+  componentDidMount() {
+    const temp = jsPlumbReady();
+    instance = temp.instance;
+    addLayerEndpoints = temp.addLayerEndpoints;
 
-var Layer = React.createClass({
-    componentDidMount:function(){
-        _addLayerEndpoints(this.props.id,data[this.props.type].endpoint.src,data[this.props.type].endpoint.trg);
-    },
-    componentWillUnmount:function(){
-        console.log(this.props.id+" will get unmounted")
-        instance.deleteEndpoint(this.props.id+"-s0");
-        instance.deleteEndpoint(this.props.id+"-t0");
-    },
-    render: function() {
-    	return <div className={"layer "+this.props.class} id={this.props.id} style={{top:this.props.top,left:this.props.left,background:data[this.props.type].color}} onClick={() => this.props.click(this.props.id)}>
-        {data[this.props.type].name}
-        </div>
-  	}
-})
+    instance.bind('connection', this.connectionEvent.bind(this));
 
+    /* instance.bind('connectionDetached', function (connInfo, originalEvent) {
 
-var Canvas=React.createClass({
-  	allowDrop: function(e) {
-	    e.preventDefault();    
-	},
-    clickOrDragged:0,// whether a layer was clicked or dragged
-	clickLayerEvent:function(id){// happens when layer is clicked and also dragged
-		if(this.clickOrDragged==0){
-			this.props.changeSelectedLayer(id) //clicked
-		}
-		else if(this.clickOrDragged==1){
-			this.clickOrDragged=0 //dragged
-		}
-	},
-    clickCanvas:function(e){
-        if(e.target.id=='canvas'){
-            this.props.changeSelectedLayer(null)
-        }
-    },
-    updateLayerPosition:function(e){
-        if(!this.clickOrDragged){
-            this.clickOrDragged=1
-        }
-        var id=e.el.id
-        var layer=this.props.net[id]
-        layer.state.left=e.pos["0"]+'px'
-        layer.state.top=e.pos["1"]+'px'
-        this.props.modifyLayer(layer,id)
-    },
-  	componentDidUpdate:function(){
-		instance.draggable(jsPlumb.getSelector(".layer"), {drag: this.updateLayerPosition});
-	},
-	componentDidMount:function(){
-        var temp=jsPlumbReady()
-        instance=temp.instance
-        _addLayerEndpoints=temp._addLayerEndpoints
-
-        instance.bind("connection",this.connectionEvent);
-        
-        instance.bind("connectionDetached", function (connInfo, originalEvent) {
-                
-        });
-	},
-    connectionEvent:function(connInfo, originalEvent){
-        if(originalEvent!=null){//user manually makes a connection
-            var src_id=connInfo.connection.sourceId
-            var trg_id=connInfo.connection.targetId
-
-            var layer_src=this.props.net[src_id]
-            layer_src.connection.output=trg_id
-            this.props.modifyLayer(layer_src,src_id)
-
-            var layer_trg=this.props.net[trg_id]
-            layer_trg.connection.input=src_id
-            this.props.modifyLayer(layer_trg,trg_id)
-        }
-    },
-	drop: function(e){
-		e.preventDefault();
-	 	var type = e.dataTransfer.getData("element_type");
-	    var l={};
-	    l['info']={type:type,color:data[type].color}
-        l['state']={top:(e.clientY-e.target.offsetTop-100)+'px',left:(e.clientX-e.target.offsetLeft-30)+'px',class:''}
-        //100px difference between layerTop and dropping point
-        //30px difference between layerLeft and dropping point
-        l['connection']={input:null,output:null}
-        l['params']=JSON.parse(JSON.stringify(data[type].params))
-        l['props']={name:{name:'Name',value:data[type].name+this.props.nextLayerId}}
-        this.props.addNewLayer(l)    
-	},
-    render: function() {
-  		var layers=[],net=this.props.net
-  		for(var i in net){
-            var layer=net[i]
-  			layers.push(<Layer id={i} key={i} type={layer.info.type} class={layer.info.class} top={layer.state.top} left={layer.state.left} click={this.clickLayerEvent}></Layer>)
-  		}
-    	return <div className="col-md-7 canvas" id="canvas" onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.clickCanvas}>
-    		{layers}
-   			</div>
+    });*/
+  }
+  componentDidUpdate() {
+    instance.draggable(jsPlumb.getSelector('.layer'),
+      {
+        drag: this.updateLayerPosition.bind(this),
+        grid: [8, 8],
+      }
+    );
+  }
+  allowDrop(e) {
+    e.preventDefault();
+  }
+  clickLayerEvent(id) { // happens when layer is clicked and also dragged
+    if (this.clickOrDragged === 0) {
+      this.props.changeSelectedLayer(id); // clicked
+    } else if (this.clickOrDragged === 1) {
+      this.clickOrDragged = 0; // dragged
     }
-})
+  }
+  clickCanvas(e) {
+    if (e.target.id === 'canvas') {
+      this.props.changeSelectedLayer(null);
+    }
+  }
+  updateLayerPosition(e) {
+    if (!this.clickOrDragged) {
+      this.clickOrDragged = 1;
+    }
+    const id = e.el.id;
+    const layer = this.props.net[id];
+    layer.state.left = `${e.pos['0']}px`;
+    layer.state.top = `${e.pos['1']}px`;
+    this.props.modifyLayer(layer, id);
+  }
+  connectionEvent(connInfo, originalEvent) {
+    if (originalEvent != null) { // user manually makes a connection
+      const srcId = connInfo.connection.sourceId;
+      const trgId = connInfo.connection.targetId;
+      const layerSrc = this.props.net[srcId];
+      const layerTrg = this.props.net[trgId];
 
-export default Canvas
+      layerSrc.connection.output = trgId;
+      this.props.modifyLayer(layerSrc, srcId);
+
+      layerTrg.connection.input = srcId;
+      this.props.modifyLayer(layerTrg, trgId);
+    }
+  }
+  drop(e) {
+    e.preventDefault();
+    const type = e.dataTransfer.getData('element_type');
+    const l = {};
+    l.info = { type, color: data[type].color };
+    l.state = {
+      top: `${e.clientY - e.target.offsetTop - 30}px`,
+      left: `${e.clientX - e.target.offsetLeft - 65}px`,
+      class: '',
+    };
+    // 30px difference between layerTop and dropping point
+    // 65px difference between layerLeft and dropping point
+    l.connection = { input: null, output: null };
+    l.params = JSON.parse(JSON.stringify(data[type].params));
+    l.props = {
+      name: {
+        name: 'Name',
+        value: `${data[type].name}${this.props.nextLayerId}`,
+        type: 'text',
+      },
+    };
+    this.props.addNewLayer(l);
+  }
+  render() {
+    const layers = [];
+    const net = this.props.net;
+
+    Object.keys(net).forEach(i => {
+      const layer = net[i];
+      layers.push(
+        <Layer
+          id={i} key={i}
+          type={layer.info.type}
+          class={layer.info.class}
+          top={layer.state.top}
+          left={layer.state.left}
+          click={this.clickLayerEvent}
+        />
+      );
+    });
+
+    return (
+      <div
+        className="col-md-7 canvas"
+        id="canvas"
+        onDragOver={this.allowDrop}
+        onDrop={this.drop}
+        onClick={this.clickCanvas}
+      >
+        {layers}
+      </div>
+    );
+  }
+}
+
+Canvas.propTypes = {
+  nextLayerId: React.PropTypes.number,
+  net: React.PropTypes.object,
+  modifyLayer: React.PropTypes.func,
+  addNewLayer: React.PropTypes.func,
+  changeSelectedLayer: React.PropTypes.func,
+};
+
+export default Canvas;

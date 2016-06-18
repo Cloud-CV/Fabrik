@@ -10,11 +10,11 @@
 .topBar .btn{
   float: right;
   margin: 5px;
-  overflow:auto;
+  overflow: auto;
 }
 
 .content{
-	height:600px;
+	height: 600px;
   border: 1px solid black;
 }
 
@@ -24,24 +24,21 @@
   overflow: hidden;
 }
 
-
-
 .setHead{
   font-size: 25px;
-  color:green;
+  color: green;
   text-align: center;
   padding-bottom: 20px;
   padding-top: 20px;
 }
-
 
 .setContain{
   padding-right: 40px;
 }
 
 .pane{
-  background-color:rgba(0,0,0,0.75);
-  height:100%;
+  background-color: rgba(0,0,0,0.75);
+  height: 100%;
   padding: 20px;
   padding-top: 20px;
 }
@@ -51,26 +48,25 @@
 }
 
 .setparams{
-  background-color:rgba(0,0,0,0.75);
-  height:100%;
-  color:white;
+  background-color: rgba(0,0,0,0.75);
+  height: 100%;
+  color: white;
+  overflow-y: auto;
 }
-
 
 .layer{
   font-size: 22px;
   border: 1px solid black;
   -moz-border-radius: 1em;
   border-radius: 1em;
-  padding:140px 2px 140px 2px;
-  min-width: 60px;
-  max-width: 70px;
+  padding: 20px 40px 20px 40px;
   max-height: 320px;
+  width: 130px;
   text-align: center;
   position: absolute;
   z-index: 20;
   background: #e15e4f;
-  color:white;
+  color: white;
   cursor: pointer;
 }
 
@@ -79,10 +75,8 @@
   -o-box-shadow: 0px 0px 30px #aaa;
   -webkit-box-shadow: 0px 0px 30px #aaa;
   -moz-box-shadow: 0px 0px 30px #aaa;
-  -moz-border-radius:1em;
+  -moz-border-radius: 1em;
 }
-
-
 
 .jsplumb-connector {
   z-index: 20;
@@ -106,14 +100,13 @@
   -webkit-user-drag: element;
 }
 
-
 .jsplumb-connected {
   border: 1px solid black;
   box-shadow: 0px 0px 5px #aaa;
   -o-box-shadow: 0px 0px 5px #aaa;
   -webkit-box-shadow: 0px 0px 5px #aaa;
   -moz-box-shadow: 0px 0px 5px #aaa;
-  -moz-border-radius:1em;
+  -moz-border-radius: 1em;
 }
 
 .layer.jsplumb-drag {
@@ -121,15 +114,11 @@
   -o-box-shadow: 0px 0px 30px #aaa;
   -webkit-box-shadow: 0px 0px 30px #aaa;
   -moz-box-shadow: 0px 0px 30px #aaa;
-  -moz-border-radius:1em;
+  -moz-border-radius: 1em;
 }
 
-path, .jsplumb-endpoint {
+.jsplumb-endpoint {
   cursor: pointer;
-}
-
-.jsplumb-overlay {
-  background-color:transparent;
 }
 
 
