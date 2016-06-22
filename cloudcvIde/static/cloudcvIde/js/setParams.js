@@ -1,6 +1,6 @@
-/* eslint max-len: ["warn", 80]*/
 import React from 'react';
 import Field from './field';
+import data from './data';
 
 class SetParams extends React.Component {
   constructor(props) {
@@ -50,7 +50,7 @@ class SetParams extends React.Component {
 
       return (
         <div className="col-md-3 setparams" >
-          <div className="setHead" style={{ color: layer.info.color }}>
+          <div className="setHead" style={{ color: data[layer.info.type].color }}>
             {layer.props.name.value} layer selected
           </div>
           <div className="setContain">

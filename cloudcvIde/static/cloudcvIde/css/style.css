@@ -3,19 +3,20 @@
 }
 
 .topBar{
-  font-size: 30px;
   padding-bottom: 10px;
 }
 
+.topBarHead{
+  font-size: 30px;
+}
+
 .topBar .btn{
-  float: right;
   margin: 5px;
   overflow: auto;
 }
 
 .content{
-	height: 600px;
-  border: 1px solid black;
+  height: 565px;
 }
 
 .canvas{
@@ -52,6 +53,7 @@
   height: 100%;
   color: white;
   overflow-y: auto;
+  padding-bottom: 50px;
 }
 
 .layer{

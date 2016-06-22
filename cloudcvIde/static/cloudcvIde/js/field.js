@@ -1,4 +1,3 @@
-/* eslint max-len: ["warn", 80]*/
 import React from 'react';
 
 class Field extends React.Component {
@@ -7,7 +6,11 @@ class Field extends React.Component {
     this.change = this.change.bind(this);
   }
   change(e) {
-    this.props.changeField(this.props.id, e.target.value);
+    if (this.props.data.type === 'checkbox') {
+      this.props.changeField(this.props.id, e.target.checked);
+    } else {
+      this.props.changeField(this.props.id, e.target.value);
+    }
   }
   render() {
     const type = this.props.data.type;
@@ -58,6 +61,15 @@ class Field extends React.Component {
         >
           {options}
         </select>
+      );
+    } else if (type === 'checkbox') {
+      inputElement = (
+        <input
+          type="checkbox"
+          checked={this.props.data.value}
+          id={this.props.id}
+          onChange={this.change}
+        />
       );
     }
 

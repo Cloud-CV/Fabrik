@@ -30,6 +30,22 @@ class Canvas extends React.Component {
         grid: [8, 8],
       }
     );
+    if (this.props.rebuildNet) {
+      const net = this.props.net;
+      Object.keys(net).forEach(i => {
+        const layer = net[i];
+        if ((layer.info.phase === this.props.selectedPhase) || (layer.info.phase === null)) {
+          const outputs = layer.connection.output;
+          outputs.forEach(j => {
+            if ((net[j].info.phase === this.props.selectedPhase) || (net[j].info.phase === null)) {
+              instance.connect({ uuids: [`${i}-s0`, `${j}-t0`], editable: true });
+            }
+          });
+        }
+      });
+      this.props.changeNetStatus(false);
+      // instance.repaintEverything();
+    }
   }
   allowDrop(e) {
     e.preventDefault();
@@ -63,10 +79,10 @@ class Canvas extends React.Component {
       const layerSrc = this.props.net[srcId];
       const layerTrg = this.props.net[trgId];
 
-      layerSrc.connection.output = trgId;
+      layerSrc.connection.output.push(trgId);
       this.props.modifyLayer(layerSrc, srcId);
 
-      layerTrg.connection.input = srcId;
+      layerTrg.connection.input.push(srcId);
       this.props.modifyLayer(layerTrg, trgId);
     }
   }
@@ -74,7 +90,7 @@ class Canvas extends React.Component {
     e.preventDefault();
     const type = e.dataTransfer.getData('element_type');
     const l = {};
-    l.info = { type, color: data[type].color };
+    l.info = { type, phase: this.props.selectedPhase };
     l.state = {
       top: `${e.clientY - e.target.offsetTop - 30}px`,
       left: `${e.clientX - e.target.offsetLeft - 65}px`,
@@ -82,15 +98,11 @@ class Canvas extends React.Component {
     };
     // 30px difference between layerTop and dropping point
     // 65px difference between layerLeft and dropping point
-    l.connection = { input: null, output: null };
+    l.connection = { input: [], output: [] };
     l.params = JSON.parse(JSON.stringify(data[type].params));
-    l.props = {
-      name: {
-        name: 'Name',
-        value: `${data[type].name}${this.props.nextLayerId}`,
-        type: 'text',
-      },
-    };
+    l.props = JSON.parse(JSON.stringify(data[type].props));
+    // default name
+    l.props.name.value = `${data[type].name}${this.props.nextLayerId}`;
     this.props.addNewLayer(l);
   }
   render() {
@@ -99,16 +111,19 @@ class Canvas extends React.Component {
 
     Object.keys(net).forEach(i => {
       const layer = net[i];
-      layers.push(
-        <Layer
-          id={i} key={i}
-          type={layer.info.type}
-          class={layer.info.class}
-          top={layer.state.top}
-          left={layer.state.left}
-          click={this.clickLayerEvent}
-        />
-      );
+      if ((layer.info.phase === this.props.selectedPhase) || (layer.info.phase === null)) {
+        layers.push(
+          <Layer
+            id={i}
+            key={i}
+            type={layer.info.type}
+            class={layer.info.class}
+            top={layer.state.top}
+            left={layer.state.left}
+            click={this.clickLayerEvent}
+          />
+        );
+      }
     });
 
     return (
@@ -127,10 +142,13 @@ class Canvas extends React.Component {
 
 Canvas.propTypes = {
   nextLayerId: React.PropTypes.number,
+  selectedPhase: React.PropTypes.number,
   net: React.PropTypes.object,
   modifyLayer: React.PropTypes.func,
   addNewLayer: React.PropTypes.func,
   changeSelectedLayer: React.PropTypes.func,
+  rebuildNet: React.PropTypes.bool,
+  changeNetStatus: React.PropTypes.func,
 };
 
 export default Canvas;

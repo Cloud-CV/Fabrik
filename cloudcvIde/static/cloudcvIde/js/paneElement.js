@@ -1,4 +1,3 @@
-/* eslint max-len: ["warn", 80]*/
 import React from 'react';
 
 class PaneElement extends React.Component {

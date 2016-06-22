@@ -47,7 +47,7 @@ export default function () {
       fillStyle: '#c5c5bf',
       radius: 5,
     },
-    maxConnections: 1,
+    maxConnections: -1,
     isTarget: true,
   };
 

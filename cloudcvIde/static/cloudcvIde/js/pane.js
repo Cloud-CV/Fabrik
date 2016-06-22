@@ -4,12 +4,12 @@ import PaneElement from './paneElement';
 function Pane() {
   return (
     <div className="col-md-2 pane">
-      <PaneElement id="input">Input</PaneElement>
-      <PaneElement id="conv">Convolution</PaneElement>
-      <PaneElement id="pool">Pool</PaneElement>
-      <PaneElement id="relu">ReLU</PaneElement>
-      <PaneElement id="fc">FC</PaneElement>
-      <PaneElement id="loss">Loss</PaneElement>
+      <PaneElement id="Data">Input</PaneElement>
+      <PaneElement id="Convolution">Convolution</PaneElement>
+      <PaneElement id="Pooling">Pool</PaneElement>
+      <PaneElement id="ReLU">ReLU</PaneElement>
+      <PaneElement id="InnerProduct">FC</PaneElement>
+      <PaneElement id="SoftmaxWithLoss">Loss</PaneElement>
     </div>
   );
 }

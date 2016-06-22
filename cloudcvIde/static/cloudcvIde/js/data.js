@@ -1,5 +1,5 @@
 export default {
-  input: {
+  Data: {
     name: 'input',
     color: '#5b80bf',
     endpoint: {
@@ -7,13 +7,13 @@ export default {
       trg: [],
     },
     params: {
-      train_source: {
-        name: 'Train data source',
+      source: {
+        name: 'Data source',
         value: '',
         type: 'text',
       },
-      train_batch_size: {
-        name: 'Train batch size',
+      batch_size: {
+        name: 'Batch size',
         value: '',
         type: 'number',
       },
@@ -28,19 +28,16 @@ export default {
         value: '',
         type: 'float',
       },
-      test_source: {
-        name: 'Test data source',
+    },
+    props: {
+      name: {
+        name: 'Name',
         value: '',
         type: 'text',
       },
-      test_batch_size: {
-        name: 'Test batch size',
-        value: '',
-        type: 'number',
-      },
     },
   },
-  loss: {
+  SoftmaxWithLoss: {
     name: 'loss',
     color: '#459046',
     endpoint: {
@@ -49,8 +46,15 @@ export default {
     },
     params: {
     },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
   },
-  conv: {
+  Convolution: {
     name: 'conv',
     color: '#8cc556',
     endpoint: {
@@ -91,8 +95,15 @@ export default {
         options: ['xavier', 'constant'],
       },
     },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
   },
-  relu: {
+  ReLU: {
     name: 'relu',
     color: '#eadd66',
     endpoint: {
@@ -100,9 +111,38 @@ export default {
       trg: ['LeftMiddle'],
     },
     params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+      },
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
     },
   },
-  fc: {
+  Accuracy: {
+    name: 'acc',
+    color: '#d28240',
+    endpoint: {
+      src: [],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+  },
+  InnerProduct: {
     name: 'fc',
     color: '#ac4cc5',
     endpoint: {
@@ -128,8 +168,15 @@ export default {
         options: ['xavier', 'constant'],
       },
     },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
   },
-  pool: {
+  Pooling: {
     name: 'pool',
     color: '#e15e4f',
     endpoint: {
@@ -157,6 +204,13 @@ export default {
         value: 'MAX',
         type: 'select',
         options: ['MAX', 'AVE', 'STOCHASTIC'],
+      },
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
       },
     },
   },
