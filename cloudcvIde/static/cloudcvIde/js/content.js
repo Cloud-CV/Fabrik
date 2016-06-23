@@ -72,6 +72,7 @@ class Content extends React.Component {
       success(response) {
         // only for demo purpose - will be removed later
         document.getElementById('prototxt').innerHTML = response.result;
+        prototxtId = response.id;
         $('html, body').animate(
           { scrollTop: $('#prototxt').offset().top },
           'slow'

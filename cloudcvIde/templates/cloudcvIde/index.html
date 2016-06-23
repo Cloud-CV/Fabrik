@@ -6,9 +6,20 @@
 </head>
 <body>
 <div id="app"></div>
+<div id="demo">
 <div id="prototxt" style="white-space:pre-wrap;padding-left:50px"></div><!-- just to show prototxt in demo... to be deleted -->
+<br/>
+<button id="train" class="btn btn-primary">Train</button>
+<h3>Terminal</h3>
+<div id= "terminal"></div>
+</div>
+
 </body>
-<script>var instance,addLayerEndpoints;</script>
+
+<script>var instance,addLayerEndpoints,prototxtId;</script>
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
 <script src="/static/cloudcvIde/lib/jsPlumb-2.1.2-min.js"></script>
 <script src="/static/cloudcvIde/bundle/bundle.js"></script>
+
+
 </html>

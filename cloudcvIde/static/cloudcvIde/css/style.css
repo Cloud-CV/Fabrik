@@ -1,3 +1,19 @@
+#demo{
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+#terminal{
+    white-space:pre-wrap;
+    padding-left:50px;
+    height: 300px;
+    width: 100%;
+    padding: 20px;
+    color: #FFFFFF;
+    background-color: #2B2A2B;
+    overflow:scroll;
+}
+
 .app{
   padding: 10px;
 }

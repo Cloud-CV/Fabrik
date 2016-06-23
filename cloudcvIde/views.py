@@ -8,6 +8,14 @@ from caffe import layers as L
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
 import re
+from datetime import datetime
+import random, string
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def randomword(length):
+   return ''.join(random.choice(string.lowercase) for i in range(length))
 
 
 def index(request):
@@ -144,6 +152,10 @@ def export(request):
 
             if (layerType == 'Data'):
                 source = layerParams['source']['value']
+                if int(layerPhase) == 0:
+                    source = BASE_DIR+'/cloudcvIde/media/dataset/mnsit/mnist_train_lmdb'
+                elif int(layerPhase) == 1:
+                    source = BASE_DIR+'/cloudcvIde/media/dataset/mnsit/mnist_test_lmdb'
                 batch_size = int(
                     float(layerParams['batch_size']['value']))
                 scale = float(layerParams['scale']['value'])
@@ -555,8 +567,13 @@ def export(request):
 
         prototxt = train
 
+        randomId=datetime.now().strftime('%Y%m%d%H%M%S')+randomword(5)
+
+        with open(BASE_DIR+'/cloudcvIde/media/prototxt/'+randomId+'.prototxt', 'w') as f:
+            f.write(prototxt)
+
         return HttpResponse(
-            json.dumps({'result': prototxt}),
+            json.dumps({'result': prototxt, 'id': randomId}),
             content_type="application/json")
 
 
@@ -586,7 +603,7 @@ def importModel(request):
                 params['source'] = layer.data_param.source
                 params['batch_size'] = layer.data_param.batch_size
                 params['backend'] = layer.data_param.backend
-                params['scale'] = layer.data_param.scale
+                params['scale'] = layer.transform_param.scale
 
             elif(layer.type == 'Convolution'):
                 if len(layer.convolution_param.kernel_size):
