@@ -9,7 +9,7 @@ class TopBar extends React.Component {
             CloudCV IDE
           </div>
           <div className="col-md-5" >
-            <form className="form-inline" id="topForm">
+            <div className="form-inline">
               <div className="form-group">
                 <input id="inputFile" type="file" />
               </div>
@@ -29,7 +29,7 @@ class TopBar extends React.Component {
                   value="Export"
                 />
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
