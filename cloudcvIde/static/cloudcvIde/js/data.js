@@ -40,6 +40,7 @@ export default {
         type: 'text',
       },
     },
+    learn:false,
   },
   SoftmaxWithLoss: {
     name: 'loss',
@@ -57,6 +58,7 @@ export default {
         type: 'text',
       },
     },
+    learn:false,
   },
   Convolution: {
     name: 'conv',
@@ -112,6 +114,7 @@ export default {
         type: 'text',
       },
     },
+    learn:true,
   },
   ReLU: {
     name: 'relu',
@@ -135,6 +138,7 @@ export default {
         type: 'text',
       },
     },
+    learn:false,
   },
   Accuracy: {
     name: 'acc',
@@ -152,6 +156,7 @@ export default {
         type: 'text',
       },
     },
+    learn:false,
   },
   InnerProduct: {
     name: 'fc',
@@ -189,6 +194,7 @@ export default {
         type: 'text',
       },
     },
+    learn:true,
   },
   Pooling: {
     name: 'pool',
@@ -231,5 +237,6 @@ export default {
         type: 'text',
       },
     },
+    learn:false,
   },
 };

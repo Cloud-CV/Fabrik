@@ -9,7 +9,13 @@
 <div id="demo">
 <div id="prototxt" style="white-space:pre-wrap;padding-left:50px"></div><!-- just to show prototxt in demo... to be deleted -->
 <br/>
-<button id="train" class="btn btn-primary">Train</button>
+<div class="exportResult bg-success" id="exportResult">
+  <div id="exportResultContent">
+  <h3>Successfully generated prototxt</h3>
+  <a href="#" class="btn btn-success" id="download" style="margin-bottom:10px;" download="sample.prototxt">Download prototxt</a><br>
+  <button id="train" class="btn btn-primary">Start training</button>
+  </div>
+</div>
 <h3>Terminal</h3>
 <div id= "terminal"></div>
 </div>

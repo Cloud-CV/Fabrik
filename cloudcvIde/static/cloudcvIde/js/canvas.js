@@ -20,9 +20,7 @@ class Canvas extends React.Component {
 
     instance.bind('connection', this.connectionEvent.bind(this));
 
-    /* instance.bind('connectionDetached', function (connInfo, originalEvent) {
-
-    });*/
+    instance.bind('connectionDetached', this.detachConnectionEvent.bind(this));
   }
   componentDidUpdate() {
     instance.draggable(jsPlumb.getSelector('.layer'),
@@ -87,9 +85,30 @@ class Canvas extends React.Component {
       this.props.modifyLayer(layerTrg, trgId);
     }
   }
+  detachConnectionEvent(connInfo, originalEvent) {
+    if (originalEvent != null) { // user manually makes a connection
+      const srcId = connInfo.connection.sourceId;
+      const trgId = connInfo.connection.targetId;
+      const layerSrc = this.props.net[srcId];
+      const layerTrg = this.props.net[trgId];
+      let index;
+
+      index = layerSrc.connection.output.indexOf(trgId);
+      layerSrc.connection.output.splice(index,1);
+      this.props.modifyLayer(layerSrc, srcId);
+
+      index = layerTrg.connection.input.indexOf(srcId);
+      layerTrg.connection.input.splice(index,1);
+      this.props.modifyLayer(layerTrg, trgId);
+
+    }
+  }
   drop(e) {
     e.preventDefault();
     const type = e.dataTransfer.getData('element_type');
+    if(data[type].learn && (this.props.selectedPhase == 1)){
+      this.props.addError('Error: you can not add a "'+type+'" layer in test phase')
+    } else{
     const l = {};
     l.info = { type, phase: this.props.selectedPhase };
     l.state = {
@@ -105,6 +124,7 @@ class Canvas extends React.Component {
     // default name
     l.props.name.value = `${data[type].name}${this.props.nextLayerId}`;
     this.props.addNewLayer(l);
+    }
   }
   render() {
     const layers = [];
@@ -131,7 +151,7 @@ class Canvas extends React.Component {
     });
 
     for(i=0;i<error.length;i++){
-      errors.push(<Error text={error[i]} top={(i*35+5)} ></Error>);
+      errors.push(<Error text={error[i]} key={i} index={i} top={(i*35+5)} dismissError={this.props.dismissError}></Error>);
     }
 
 

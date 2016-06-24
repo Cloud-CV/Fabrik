@@ -1,4 +1,5 @@
 import React from 'react';
+import data from './data'
 
 class Field extends React.Component {
   constructor(props) {
@@ -20,6 +21,7 @@ class Field extends React.Component {
       inputElement = (
         <input
           type="text"
+          disabled={(this.props.layer.info.phase==null)&&(this.props.selectedPhase==1)&&(data[this.props.layer.info.type].learn)}
           value={this.props.data.value}
           className="form-control"
           id={this.props.id}
@@ -31,6 +33,7 @@ class Field extends React.Component {
         <input
           type="number"
           value={this.props.data.value}
+          disabled={(this.props.layer.info.phase==null)&&(this.props.selectedPhase==1)&&(data[this.props.layer.info.type].learn)}
           className="form-control"
           id={this.props.id}
           onChange={this.change}
@@ -41,6 +44,7 @@ class Field extends React.Component {
         <input
           type="number"
           step="0.01"
+          disabled={(this.props.layer.info.phase==null)&&(this.props.selectedPhase==1)&&(data[this.props.layer.info.type].learn)}
           value={this.props.data.value}
           className="form-control"
           id={this.props.id}
@@ -56,6 +60,7 @@ class Field extends React.Component {
         <select
           value={this.props.data.value}
           id={this.props.id}
+          disabled={(this.props.layer.info.phase==null)&&(this.props.selectedPhase==1)&&(data[this.props.layer.info.type].learn)}
           className="form-control"
           onChange={this.change}
         >
@@ -66,6 +71,7 @@ class Field extends React.Component {
       inputElement = (
         <input
           type="checkbox"
+          disabled={(this.props.layer.info.phase==null)&&(this.props.selectedPhase==1)&&(data[this.props.layer.info.type].learn)}
           checked={this.props.data.value}
           id={this.props.id}
           onChange={this.change}
@@ -92,7 +98,7 @@ class Field extends React.Component {
 
 Field.propTypes = {
   id: React.PropTypes.string.isRequired,
-  data: React.PropTypes.object,
+  layer: React.PropTypes.object,
   changeField: React.PropTypes.func,
 };
 

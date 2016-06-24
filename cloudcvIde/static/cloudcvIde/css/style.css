@@ -3,6 +3,16 @@
     padding-right: 100px;
 }
 
+#exportResult{
+    padding: 20px;
+    display: none;
+}
+
+#exportResultContent{
+    width:400px;
+    margin: auto;
+}
+
 #terminal{
     white-space:pre-wrap;
     padding-left:50px;

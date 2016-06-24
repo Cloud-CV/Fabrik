@@ -25953,12 +25953,16 @@
 	    _this.addNewLayer = _this.addNewLayer.bind(_this);
 	    _this.changeSelectedLayer = _this.changeSelectedLayer.bind(_this);
 	    _this.modifyLayer = _this.modifyLayer.bind(_this);
+	    _this.modifyLayerParams = _this.modifyLayerParams.bind(_this);
 	    _this.deleteLayer = _this.deleteLayer.bind(_this);
 	    _this.exportNet = _this.exportNet.bind(_this);
 	    _this.importNet = _this.importNet.bind(_this);
 	    _this.changeNetStatus = _this.changeNetStatus.bind(_this);
 	    _this.changeNetPhase = _this.changeNetPhase.bind(_this);
 	    _this.dismissError = _this.dismissError.bind(_this);
+	    _this.copyTrain = _this.copyTrain.bind(_this);
+	    _this.addError = _this.addError.bind(_this);
+	    _this.copyLayerToTest = _this.copyLayerToTest.bind(_this);
 	    return _this;
 	  }
 
@@ -25993,19 +25997,99 @@
 	      this.setState({ net: net });
 	    }
 	  }, {
-	    key: 'deleteLayer',
-	    value: function deleteLayer() {
+	    key: 'modifyLayerParams',
+	    value: function modifyLayerParams(l) {
+	      var _this2 = this;
+
+	      var id = arguments.length <= 1 || arguments[1] === undefined ? this.state.selectedLayer : arguments[1];
+
 	      var net = this.state.net;
-	      var id = this.state.selectedLayer;
-	      var inputId = net[id].connection.input;
-	      var outputId = net[id].connection.output;
+	      var layer = net[id];
+	      var index = void 0;
+	      var l1 = JSON.parse(JSON.stringify(layer));
+	      console.log('old layer');
+	      console.log(layer);
+	      console.log('new layer');
+	      console.log(l);
+
+	      if (this.state.selectedPhase === 1 && layer.info.phase === null) {
+	        (function () {
+	          l.info.phase = 1;
+	          l.connection.output.forEach(function (outputId) {
+	            if (net[outputId].info.phase === 0) {
+	              index = l.connection.output.indexOf(outputId);
+	              l.connection.output.splice(index, 1);
+	              index = net[outputId].connection.input.indexOf(id);
+	              net[outputId].connection.input.splice(index, 1);
+	            }
+	          });
+	          l.connection.input.forEach(function (inputId) {
+	            if (net[inputId].info.phase === 0) {
+	              index = l.connection.input.indexOf(inputId);
+	              l.connection.input.splice(index, 1);
+	              index = net[inputId].connection.output.indexOf(id);
+	              net[inputId].connection.output.splice(index, 1);
+	            }
+	          });
+	          net[id] = l;
+	          _this2.setState({ net: net });
+	          console.log('added test layer');
+	          console.log(net);
+
+	          l1.info.phase = 0;
+	          l1.props.name.value = '' + _data2.default[l1.info.type].name + _this2.state.nextLayerId;
+	          l1.connection.output.forEach(function (outputId) {
+	            if (net[outputId].info.phase === 1) {
+	              index = l1.connection.output.indexOf(outputId);
+	              l1.connection.output.splice(index, 1);
+	              index = net[outputId].connection.input.indexOf(id);
+	              net[outputId].connection.input.splice(index, 1);
+	            }
+	          });
+	          l1.connection.input.forEach(function (inputId) {
+	            if (net[inputId].info.phase === 1) {
+	              index = l1.connection.input.indexOf(inputId);
+	              l1.connection.input.splice(index, 1);
+	              index = net[inputId].connection.output.indexOf(id);
+	              net[inputId].connection.output.splice(index, 1);
+	            }
+	          });
+
+	          var nextLayerId = 'l' + _this2.state.nextLayerId;
+
+	          l1.connection.output.forEach(function (outputId) {
+	            net[outputId].connection.input.push(nextLayerId);
+	          });
+
+	          l1.connection.input.forEach(function (inputId) {
+	            net[inputId].connection.output.push(nextLayerId);
+	          });
+
+	          _this2.addNewLayer(l1);
+	          console.log('added test layer');
+	          console.log(net);
+	        })();
+	      } else {
+	        net[id] = l;
+	        this.setState({ net: net });
+	      }
+	    }
+	  }, {
+	    key: 'deleteLayer',
+	    value: function deleteLayer(id) {
+	      var net = this.state.net;
+	      var input = net[id].connection.input;
+	      var output = net[id].connection.output;
+	      var index = void 0;
 	      delete net[id];
-	      if (inputId) {
-	        net[inputId].connection.output = null;
-	      }
-	      if (outputId) {
-	        net[outputId].connection.input = null;
-	      }
+	      input.forEach(function (inputId) {
+	        index = net[inputId].connection.output.indexOf(id);
+	        net[inputId].connection.output.splice(index, 1);
+	      });
+	      output.forEach(function (outputId) {
+	        index = net[outputId].connection.input.indexOf(id);
+	        net[outputId].connection.input.splice(index, 1);
+	      });
 	      this.setState({ net: net, selectedLayer: null });
 	    }
 	  }, {
@@ -26036,10 +26120,15 @@
 	            net: JSON.stringify(this.state.net)
 	          },
 	          success: function success(response) {
-	            // only for demo purpose - will be removed later
-	            document.getElementById('prototxt').innerHTML = response.result;
 	            prototxtId = response.id;
-	            $('html, body').animate({ scrollTop: $('#prototxt').offset().top }, 'slow');
+
+	            var exportResult = document.getElementById("exportResult");
+	            exportResult.style.display = "block";
+
+	            var downloadAnchor = document.getElementById("download");
+	            downloadAnchor.href = '/media/prototxt/' + prototxtId + '.prototxt';
+
+	            $('html, body').animate({ scrollTop: $('#exportResult').offset().top }, 'slow');
 	          },
 	          error: function error() {
 	            // only for demo purpose - will be removed later
@@ -26089,7 +26178,7 @@
 	          // default name
 	          l.props.name.value = '' + _data2.default[type].name + id;
 	          l.state = {
-	            top: 30 + 100 * Math.floor(id / 4) + 'px',
+	            top: 130 + 100 * Math.floor(id / 4) + 'px',
 	            left: 30 + 170 * (id % 4) + 'px',
 	            class: ''
 	          };
@@ -26129,9 +26218,42 @@
 	  }, {
 	    key: 'dismissError',
 	    value: function dismissError(i) {
-	      //const error = this.state.error;
-	      //error.splice(index, 1);
+	      var error = this.state.error;
+	      error.splice(i, 1);
+	      this.setState({ error: error });
+	    }
+	  }, {
+	    key: 'addError',
+	    value: function addError(i) {
+	      var error = this.state.error;
+	      error.push(i);
+	      this.setState({ error: error });
+	    }
+	  }, {
+	    key: 'copyTrain',
+	    value: function copyTrain() {
+	      var _this3 = this;
 
+	      console.log("copy train !");
+	      var net = this.state.net;
+	      Object.keys(net).forEach(function (layerId) {
+	        if (net[layerId].info.phase == 0) {
+	          net[layerId].info.phase = null;
+	        } else if (net[layerId].info.phase == 1) {
+	          _this3.deleteLayer(layerId);
+	        }
+	      });
+	      this.setState({ net: net,
+	        selectedLayer: null,
+	        rebuildNet: true
+	      });
+	    }
+	  }, {
+	    key: 'copyLayerToTest',
+	    value: function copyLayerToTest() {
+	      var net = this.state.net;
+	      net[this.state.selectedLayer].info.phase = null;
+	      this.setState({ net: net });
 	    }
 	  }, {
 	    key: 'render',
@@ -26157,13 +26279,18 @@
 	            changeSelectedLayer: this.changeSelectedLayer,
 	            modifyLayer: this.modifyLayer,
 	            changeNetStatus: this.changeNetStatus,
-	            error: this.state.error
+	            error: this.state.error,
+	            dismissError: this.dismissError,
+	            addError: this.addError
 	          }),
 	          _react2.default.createElement(_setParams2.default, {
 	            net: this.state.net,
 	            selectedLayer: this.state.selectedLayer,
-	            modifyLayer: this.modifyLayer,
-	            deleteLayer: this.deleteLayer
+	            modifyLayer: this.modifyLayerParams,
+	            deleteLayer: this.deleteLayer,
+	            selectedPhase: this.state.selectedPhase,
+	            copyTrain: this.copyTrain,
+	            copyLayerToTest: this.copyLayerToTest
 	          })
 	        )
 	      );
@@ -36061,8 +36188,7 @@
 
 	      instance.bind('connection', this.connectionEvent.bind(this));
 
-	      /* instance.bind('connectionDetached', function (connInfo, originalEvent) {
-	       });*/
+	      instance.bind('connectionDetached', this.detachConnectionEvent.bind(this));
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
@@ -36144,25 +36270,49 @@
 	      }
 	    }
 	  }, {
+	    key: 'detachConnectionEvent',
+	    value: function detachConnectionEvent(connInfo, originalEvent) {
+	      if (originalEvent != null) {
+	        // user manually makes a connection
+	        var srcId = connInfo.connection.sourceId;
+	        var trgId = connInfo.connection.targetId;
+	        var layerSrc = this.props.net[srcId];
+	        var layerTrg = this.props.net[trgId];
+	        var index = void 0;
+
+	        index = layerSrc.connection.output.indexOf(trgId);
+	        layerSrc.connection.output.splice(index, 1);
+	        this.props.modifyLayer(layerSrc, srcId);
+
+	        index = layerTrg.connection.input.indexOf(srcId);
+	        layerTrg.connection.input.splice(index, 1);
+	        this.props.modifyLayer(layerTrg, trgId);
+	      }
+	    }
+	  }, {
 	    key: 'drop',
 	    value: function drop(e) {
 	      e.preventDefault();
 	      var type = e.dataTransfer.getData('element_type');
-	      var l = {};
-	      l.info = { type: type, phase: this.props.selectedPhase };
-	      l.state = {
-	        top: e.clientY - e.target.offsetTop - 30 + 'px',
-	        left: e.clientX - e.target.offsetLeft - 65 + 'px',
-	        class: ''
-	      };
-	      // 30px difference between layerTop and dropping point
-	      // 65px difference between layerLeft and dropping point
-	      l.connection = { input: [], output: [] };
-	      l.params = JSON.parse(JSON.stringify(_data2.default[type].params));
-	      l.props = JSON.parse(JSON.stringify(_data2.default[type].props));
-	      // default name
-	      l.props.name.value = '' + _data2.default[type].name + this.props.nextLayerId;
-	      this.props.addNewLayer(l);
+	      if (_data2.default[type].learn && this.props.selectedPhase == 1) {
+	        this.props.addError('Error: you can not add a "' + type + '" layer in test phase');
+	      } else {
+	        var l = {};
+	        l.info = { type: type, phase: this.props.selectedPhase };
+	        l.state = {
+	          top: e.clientY - e.target.offsetTop - 30 + 'px',
+	          left: e.clientX - e.target.offsetLeft - 65 + 'px',
+	          class: ''
+	        };
+	        // 30px difference between layerTop and dropping point
+	        // 65px difference between layerLeft and dropping point
+	        l.connection = { input: [], output: [] };
+	        l.params = JSON.parse(JSON.stringify(_data2.default[type].params));
+	        l.props = JSON.parse(JSON.stringify(_data2.default[type].props));
+	        // default name
+	        l.props.name.value = '' + _data2.default[type].name + this.props.nextLayerId;
+	        this.props.addNewLayer(l);
+	      }
 	    }
 	  }, {
 	    key: 'render',
@@ -36191,7 +36341,7 @@
 	      });
 
 	      for (i = 0; i < error.length; i++) {
-	        errors.push(_react2.default.createElement(_error2.default, { text: error[i], top: i * 35 + 5 }));
+	        errors.push(_react2.default.createElement(_error2.default, { text: error[i], key: i, index: i, top: i * 35 + 5, dismissError: this.props.dismissError }));
 	      }
 
 	      return _react2.default.createElement(
@@ -36275,7 +36425,8 @@
 	        value: '',
 	        type: 'text'
 	      }
-	    }
+	    },
+	    learn: false
 	  },
 	  SoftmaxWithLoss: {
 	    name: 'loss',
@@ -36291,7 +36442,8 @@
 	        value: '',
 	        type: 'text'
 	      }
-	    }
+	    },
+	    learn: false
 	  },
 	  Convolution: {
 	    name: 'conv',
@@ -36346,7 +36498,8 @@
 	        value: '',
 	        type: 'text'
 	      }
-	    }
+	    },
+	    learn: true
 	  },
 	  ReLU: {
 	    name: 'relu',
@@ -36369,7 +36522,8 @@
 	        value: '',
 	        type: 'text'
 	      }
-	    }
+	    },
+	    learn: false
 	  },
 	  Accuracy: {
 	    name: 'acc',
@@ -36385,7 +36539,8 @@
 	        value: '',
 	        type: 'text'
 	      }
-	    }
+	    },
+	    learn: false
 	  },
 	  InnerProduct: {
 	    name: 'fc',
@@ -36422,7 +36577,8 @@
 	        value: '',
 	        type: 'text'
 	      }
-	    }
+	    },
+	    learn: true
 	  },
 	  Pooling: {
 	    name: 'pool',
@@ -36464,7 +36620,8 @@
 	        value: '',
 	        type: 'text'
 	      }
-	    }
+	    },
+	    learn: false
 	  }
 	};
 
@@ -36655,21 +36812,29 @@
 	var Error = function (_React$Component) {
 	  _inherits(Error, _React$Component);
 
-	  function Error() {
+	  function Error(props) {
 	    _classCallCheck(this, Error);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Error).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Error).call(this, props));
+
+	    _this.dismissError = _this.dismissError.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(Error, [{
+	    key: 'dismissError',
+	    value: function dismissError() {
+	      this.props.dismissError(this.props.index);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'error', style: { 'top': this.props.top.toString() } },
+	        { className: 'error', style: { 'top': this.props.top } },
 	        _react2.default.createElement(
 	          'button',
-	          { type: 'button', className: 'close', 'data-dismiss': 'alert', 'aria-label': 'Close' },
+	          { type: 'button', className: 'close', onClick: this.dismissError },
 	          _react2.default.createElement(
 	            'span',
 	            { 'aria-hidden': 'true' },
@@ -36856,6 +37021,7 @@
 
 	    _this.changeParams = _this.changeParams.bind(_this);
 	    _this.changeProps = _this.changeProps.bind(_this);
+	    _this.copyLayerToTest = _this.copyLayerToTest.bind(_this);
 	    return _this;
 	  }
 
@@ -36864,6 +37030,7 @@
 	    value: function changeProps(prop, value) {
 	      var net = this.props.net;
 	      var layer = net[this.props.selectedLayer];
+	      layer = JSON.parse(JSON.stringify(layer));
 	      layer.props[prop].value = value;
 	      this.props.modifyLayer(layer);
 	    }
@@ -36872,8 +37039,16 @@
 	    value: function changeParams(para, value) {
 	      var net = this.props.net;
 	      var layer = net[this.props.selectedLayer];
+	      layer = JSON.parse(JSON.stringify(layer));
 	      layer.params[para].value = value;
 	      this.props.modifyLayer(layer);
+	    }
+	  }, {
+	    key: 'copyLayerToTest',
+	    value: function copyLayerToTest(e) {
+	      if (e.target.checked) {
+	        this.props.copyLayerToTest();
+	      }
 	    }
 	  }, {
 	    key: 'render',
@@ -36886,12 +37061,37 @@
 	          var props = [];
 	          var layer = _this2.props.net[_this2.props.selectedLayer];
 
+	          var copyLayerToTestCheckBox = null;
+	          if (_this2.props.selectedPhase == 0) {
+	            copyLayerToTestCheckBox = _react2.default.createElement(
+	              'div',
+	              { className: 'form-group', style: { marginTop: '30px' } },
+	              _react2.default.createElement(
+	                'label',
+	                {
+	                  className: 'col-sm-6 control-label'
+	                },
+	                'copy to test'
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'col-sm-6' },
+	                _react2.default.createElement('input', {
+	                  type: 'checkbox',
+	                  onChange: _this2.copyLayerToTest
+	                })
+	              )
+	            );
+	          }
+
 	          Object.keys(layer.params).forEach(function (i) {
 	            return params.push(_react2.default.createElement(_field2.default, {
 	              id: i,
 	              key: i,
 	              data: layer.params[i],
-	              changeField: _this2.changeParams
+	              layer: layer,
+	              changeField: _this2.changeParams,
+	              selectedPhase: _this2.props.selectedPhase
 	            }));
 	          });
 
@@ -36900,7 +37100,9 @@
 	              id: i,
 	              key: i,
 	              data: layer.props[i],
-	              changeField: _this2.changeProps
+	              layer: layer,
+	              changeField: _this2.changeProps,
+	              selectedPhase: _this2.props.selectedPhase
 	            }));
 	          });
 
@@ -36935,32 +37137,52 @@
 	                  {
 	                    type: 'button',
 	                    className: 'btn btn-danger',
+	                    disabled: layer.info.phase == null && _this2.props.selectedPhase == 1 && _data2.default[layer.info.type].learn,
 	                    style: { marginLeft: '80px', marginTop: '50px' },
-	                    onClick: _this2.props.deleteLayer
+	                    onClick: function onClick() {
+	                      return _this2.props.deleteLayer(_this2.props.selectedLayer);
+	                    }
 	                  },
 	                  'Delete this layer'
-	                )
+	                ),
+	                copyLayerToTestCheckBox
 	              )
 	            )
 	          };
 	        }();
 
 	        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	      } else {
+
+	        var copyTrainButton = null;
+	        if (this.props.selectedPhase == 1) {
+	          copyTrainButton = _react2.default.createElement(
+	            'button',
+	            {
+	              className: 'btn btn-primary',
+	              onClick: this.props.copyTrain,
+	              style: { marginLeft: '80px' }
+	            },
+	            'Copy train net'
+	          );
+	        }
+
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'col-md-3 setparams' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'setHead', style: { color: 'white' } },
+	            'Settings'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { style: { padding: '30px' } },
+	            'select a layer to set its parameters'
+	          ),
+	          copyTrainButton
+	        );
 	      }
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'col-md-3 setparams' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'setHead', style: { color: 'white' } },
-	          'Settings'
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { style: { padding: '30px' } },
-	          'select a layer to set its parameters'
-	        )
-	      );
 	    }
 	  }]);
 
@@ -36991,6 +37213,10 @@
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _data = __webpack_require__(233);
+
+	var _data2 = _interopRequireDefault(_data);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37032,6 +37258,7 @@
 	      if (type === 'text') {
 	        inputElement = _react2.default.createElement('input', {
 	          type: 'text',
+	          disabled: this.props.layer.info.phase == null && this.props.selectedPhase == 1 && _data2.default[this.props.layer.info.type].learn,
 	          value: this.props.data.value,
 	          className: 'form-control',
 	          id: this.props.id,
@@ -37041,6 +37268,7 @@
 	        inputElement = _react2.default.createElement('input', {
 	          type: 'number',
 	          value: this.props.data.value,
+	          disabled: this.props.layer.info.phase == null && this.props.selectedPhase == 1 && _data2.default[this.props.layer.info.type].learn,
 	          className: 'form-control',
 	          id: this.props.id,
 	          onChange: this.change
@@ -37049,6 +37277,7 @@
 	        inputElement = _react2.default.createElement('input', {
 	          type: 'number',
 	          step: '0.01',
+	          disabled: this.props.layer.info.phase == null && this.props.selectedPhase == 1 && _data2.default[this.props.layer.info.type].learn,
 	          value: this.props.data.value,
 	          className: 'form-control',
 	          id: this.props.id,
@@ -37069,6 +37298,7 @@
 	            {
 	              value: _this2.props.data.value,
 	              id: _this2.props.id,
+	              disabled: _this2.props.layer.info.phase == null && _this2.props.selectedPhase == 1 && _data2.default[_this2.props.layer.info.type].learn,
 	              className: 'form-control',
 	              onChange: _this2.change
 	            },
@@ -37078,6 +37308,7 @@
 	      } else if (type === 'checkbox') {
 	        inputElement = _react2.default.createElement('input', {
 	          type: 'checkbox',
+	          disabled: this.props.layer.info.phase == null && this.props.selectedPhase == 1 && _data2.default[this.props.layer.info.type].learn,
 	          checked: this.props.data.value,
 	          id: this.props.id,
 	          onChange: this.change
@@ -37109,7 +37340,7 @@
 
 	Field.propTypes = {
 	  id: _react2.default.PropTypes.string.isRequired,
-	  data: _react2.default.PropTypes.object,
+	  layer: _react2.default.PropTypes.object,
 	  changeField: _react2.default.PropTypes.func
 	};
 
@@ -37366,7 +37597,7 @@
 
 
 	// module
-	exports.push([module.id, "#demo{\n    padding-left: 100px;\n    padding-right: 100px;\n}\n\n#terminal{\n    white-space:pre-wrap;\n    padding-left:50px;\n    height: 300px;\n    width: 100%;\n    padding: 20px;\n    color: #FFFFFF;\n    background-color: #2B2A2B;\n    overflow:scroll;\n}\n\n.app{\n  padding: 10px;\n}\n\n.topBar{\n  padding-bottom: 10px;\n}\n\n.topBarHead{\n  font-size: 30px;\n}\n\n.topBar .btn{\n  margin: 5px;\n  overflow: auto;\n}\n\n.content{\n  height: 565px;\n}\n\n.canvas{\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.setHead{\n  font-size: 25px;\n  color: green;\n  text-align: center;\n  padding-bottom: 20px;\n  padding-top: 20px;\n}\n\n.setContain{\n  padding-right: 40px;\n}\n\n.pane{\n  background-color: rgba(0,0,0,0.75);\n  height: 100%;\n  padding: 20px;\n  padding-top: 20px;\n}\n\n.pane .btn-block{\n  margin-bottom: 15px;\n}\n\n.setparams{\n  background-color: rgba(0,0,0,0.75);\n  height: 100%;\n  color: white;\n  overflow-y: auto;\n  padding-bottom: 50px;\n}\n\n.layer{\n  font-size: 22px;\n  border: 1px solid black;\n  -moz-border-radius: 1em;\n  border-radius: 1em;\n  padding: 20px 40px 20px 40px;\n  max-height: 320px;\n  width: 130px;\n  text-align: center;\n  position: absolute;\n  z-index: 20;\n  background: #e15e4f;\n  color: white;\n  cursor: pointer;\n}\n\n.selected{\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n  -moz-border-radius: 1em;\n}\n\n.jsplumb-connector {\n  z-index: 20;\n}\n\n.jsplumb-endpoint, .endpointTargetLabel, .endpointSourceLabel {\n  z-index: 21;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n[draggable] {\n  -moz-user-select: none;\n  -khtml-user-select: none;\n  -webkit-user-select: none;\n  user-select: none;\n  /* Required to make elements draggable in old WebKit */\n  -khtml-user-drag: element;\n  -webkit-user-drag: element;\n}\n\n.jsplumb-connected {\n  border: 1px solid black;\n  box-shadow: 0px 0px 5px #aaa;\n  -o-box-shadow: 0px 0px 5px #aaa;\n  -webkit-box-shadow: 0px 0px 5px #aaa;\n  -moz-box-shadow: 0px 0px 5px #aaa;\n  -moz-border-radius: 1em;\n}\n\n.layer.jsplumb-drag {\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n  -moz-border-radius: 1em;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.error{\n    padding: 3px;\n    width:96%;\n    padding-left: 10px;\n    color: #a94442;\n    background-color: #f2dede;\n    border: 1px solid #ebccd1;\n    z-index: 22;\n    position: absolute;\n}\n\n.alert-dismissible .close {\n    position: relative;\n    top: -2px;\n    right: -21px;\n    color: inherit;\n}\nbutton.close {\n    -webkit-appearance: none;\n    padding: 0;\n    cursor: pointer;\n    background: 0 0;\n    border: 0;\n}\n\n.close {\n    float: right;\n    font-size: 21px;\n    font-weight: 700;\n    line-height: 1;\n    color: #000;\n    text-shadow: 0 1px 0 #fff;\n    filter: alpha(opacity=20);\n    opacity: .2;\n}\n", ""]);
+	exports.push([module.id, "#demo{\n    padding-left: 100px;\n    padding-right: 100px;\n}\n\n#exportResult{\n    padding: 20px;\n    display: none;\n}\n\n#exportResultContent{\n    width:400px;\n    margin: auto;\n}\n\n#terminal{\n    white-space:pre-wrap;\n    padding-left:50px;\n    height: 300px;\n    width: 100%;\n    padding: 20px;\n    color: #FFFFFF;\n    background-color: #2B2A2B;\n    overflow:scroll;\n}\n\n.app{\n  padding: 10px;\n}\n\n.topBar{\n  padding-bottom: 10px;\n}\n\n.topBarHead{\n  font-size: 30px;\n}\n\n.topBar .btn{\n  margin: 5px;\n  overflow: auto;\n}\n\n.content{\n  height: 565px;\n}\n\n.canvas{\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.setHead{\n  font-size: 25px;\n  color: green;\n  text-align: center;\n  padding-bottom: 20px;\n  padding-top: 20px;\n}\n\n.setContain{\n  padding-right: 40px;\n}\n\n.pane{\n  background-color: rgba(0,0,0,0.75);\n  height: 100%;\n  padding: 20px;\n  padding-top: 20px;\n}\n\n.pane .btn-block{\n  margin-bottom: 15px;\n}\n\n.setparams{\n  background-color: rgba(0,0,0,0.75);\n  height: 100%;\n  color: white;\n  overflow-y: auto;\n  padding-bottom: 50px;\n}\n\n.layer{\n  font-size: 22px;\n  border: 1px solid black;\n  -moz-border-radius: 1em;\n  border-radius: 1em;\n  padding: 20px 40px 20px 40px;\n  max-height: 320px;\n  width: 130px;\n  text-align: center;\n  position: absolute;\n  z-index: 20;\n  background: #e15e4f;\n  color: white;\n  cursor: pointer;\n}\n\n.selected{\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n  -moz-border-radius: 1em;\n}\n\n.jsplumb-connector {\n  z-index: 20;\n}\n\n.jsplumb-endpoint, .endpointTargetLabel, .endpointSourceLabel {\n  z-index: 21;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n[draggable] {\n  -moz-user-select: none;\n  -khtml-user-select: none;\n  -webkit-user-select: none;\n  user-select: none;\n  /* Required to make elements draggable in old WebKit */\n  -khtml-user-drag: element;\n  -webkit-user-drag: element;\n}\n\n.jsplumb-connected {\n  border: 1px solid black;\n  box-shadow: 0px 0px 5px #aaa;\n  -o-box-shadow: 0px 0px 5px #aaa;\n  -webkit-box-shadow: 0px 0px 5px #aaa;\n  -moz-box-shadow: 0px 0px 5px #aaa;\n  -moz-border-radius: 1em;\n}\n\n.layer.jsplumb-drag {\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n  -moz-border-radius: 1em;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.error{\n    padding: 3px;\n    width:96%;\n    padding-left: 10px;\n    color: #a94442;\n    background-color: #f2dede;\n    border: 1px solid #ebccd1;\n    z-index: 22;\n    position: absolute;\n}\n\n.alert-dismissible .close {\n    position: relative;\n    top: -2px;\n    right: -21px;\n    color: inherit;\n}\nbutton.close {\n    -webkit-appearance: none;\n    padding: 0;\n    cursor: pointer;\n    background: 0 0;\n    border: 0;\n}\n\n.close {\n    float: right;\n    font-size: 21px;\n    font-weight: 700;\n    line-height: 1;\n    color: #000;\n    text-shadow: 0 1px 0 #fff;\n    filter: alpha(opacity=20);\n    opacity: .2;\n}\n", ""]);
 
 	// exports
 
