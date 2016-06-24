@@ -23,6 +23,7 @@ s.lr_policy = 'inv'
 s.gamma = 0.0001
 s.power = 0.75
 s.display = 100
+s.snapshot_after_train = False
 s.solver_mode = caffe_pb2.SolverParameter.CPU
 
 with open(solver_config_path, 'w') as f:
