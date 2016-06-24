@@ -2,6 +2,7 @@ import React from 'react';
 import data from './data';
 import jsPlumbReady from './jsplumb';
 import Layer from './layer';
+import Error from './error';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -107,7 +108,10 @@ class Canvas extends React.Component {
   }
   render() {
     const layers = [];
+    const errors = [];
     const net = this.props.net;
+    const error =this.props.error;
+    let i;
 
     Object.keys(net).forEach(i => {
       const layer = net[i];
@@ -126,6 +130,11 @@ class Canvas extends React.Component {
       }
     });
 
+    for(i=0;i<error.length;i++){
+      errors.push(<Error text={error[i]} top={(i*35+5)} ></Error>);
+    }
+
+
     return (
       <div
         className="col-md-7 canvas"
@@ -134,6 +143,7 @@ class Canvas extends React.Component {
         onDrop={this.drop}
         onClick={this.clickCanvas}
       >
+        {errors}
         {layers}
       </div>
     );

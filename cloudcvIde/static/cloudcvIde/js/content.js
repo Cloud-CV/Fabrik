@@ -15,6 +15,7 @@ class Content extends React.Component {
       nextLayerId: 0,
       rebuildNet: false,
       selectedPhase: 0,
+      error:[],
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
@@ -24,6 +25,7 @@ class Content extends React.Component {
     this.importNet = this.importNet.bind(this);
     this.changeNetStatus = this.changeNetStatus.bind(this);
     this.changeNetPhase = this.changeNetPhase.bind(this);
+    this.dismissError = this.dismissError.bind(this);
   }
   addNewLayer(l) {
     const net = this.state.net;
@@ -62,31 +64,51 @@ class Content extends React.Component {
     this.setState({ net, selectedLayer: null });
   }
   exportNet() {
-    $.ajax({
-      url: '/cloudcvide/export',
-      dataType: 'json',
-      type: 'POST',
-      data: {
-        net: JSON.stringify(this.state.net),
-      },
-      success(response) {
-        // only for demo purpose - will be removed later
-        document.getElementById('prototxt').innerHTML = response.result;
-        prototxtId = response.id;
-        $('html, body').animate(
-          { scrollTop: $('#prototxt').offset().top },
-          'slow'
-        );
-      },
-      error() {
-        // only for demo purpose - will be removed later
-        document.getElementById('prototxt').innerHTML = '<b style="color:red;">failure</b>';
-        $('html, body').animate(
-          { scrollTop: $('#prototxt').offset().top },
-          'slow'
-        );
-      },
+    this.setState({error:[]})
+    const error = [];
+    const net = this.state.net;
+
+    Object.keys(net).forEach(i => {
+      const layer = net[i];
+      Object.keys(layer.params).forEach(i => {
+        const param = layer.params[i];
+        if (param.required === true && param.value == '') {
+          error.push('Error: "'+param.name+'" required in "'+layer.props.name.value+'" Layer');
+        }
+      });
     });
+
+    if(error.length){
+      this.setState({error:error})
+    } else {
+      $.ajax({
+        url: '/cloudcvide/export',
+        dataType: 'json',
+        type: 'POST',
+        data: {
+          net: JSON.stringify(this.state.net),
+        },
+        success(response) {
+          // only for demo purpose - will be removed later
+          document.getElementById('prototxt').innerHTML = response.result;
+          prototxtId = response.id;
+          $('html, body').animate(
+            { scrollTop: $('#prototxt').offset().top },
+            'slow'
+          );
+        },
+        error() {
+          // only for demo purpose - will be removed later
+          document.getElementById('prototxt').innerHTML = '<b style="color:red;">failure</b>';
+          $('html, body').animate(
+            { scrollTop: $('#prototxt').offset().top },
+            'slow'
+          );
+        },
+      });
+    }
+
+
   }
   importNet() {
     const formData = new FormData();
@@ -109,32 +131,46 @@ class Content extends React.Component {
   initialiseImportedNet(net) {
     // this line will unmount all the layers
     // so that the new imported layers will all be mounted again
-    this.setState({ net: {}, selectedLayer: null, nextLayerId: 0, selectedPhase: 0 });
+    const error = [];
+    this.setState({ net: {}, selectedLayer: null, nextLayerId: 0, selectedPhase: 0,error: [] });
     Object.keys(net).forEach(i => {
       const l = net[i];
       const type = l.info.type;
       const id = +i.substring(1);
-      l.params = JSON.parse(JSON.stringify(data[type].params));
-      Object.keys(l.importedParams).forEach(j => {
-        l.params[j].value = l.importedParams[j];
+      if(data.hasOwnProperty(type)) {
+        l.params = JSON.parse(JSON.stringify(data[type].params));
+        Object.keys(l.importedParams).forEach(j => {
+          l.params[j].value = l.importedParams[j];
+        });
+        l.props = JSON.parse(JSON.stringify(data[type].props));
+        // default name
+        l.props.name.value = `${data[type].name}${id}`;
+        l.state = {
+          top: `${30 + 100 * Math.floor(id / 4)}px`,
+          left: `${30 + 170 * (id % 4)}px`,
+          class: '',
+        };
+      } else {
+        error.push("Error: Currently we do not support prototxt with \""+type+"\" Layer.");
+      }
+
+
+    });
+
+    if(error.length){
+      this.setState({error:error})
+    } else {
+      instance.detachEveryConnection();
+      instance.deleteEveryEndpoint();
+      this.setState({ net,
+        selectedLayer: null,
+        nextLayerId: Object.keys(net).length,
+        rebuildNet: true,
+        selectedPhase: 0,
+        error:[],
       });
-      l.props = JSON.parse(JSON.stringify(data[type].props));
-      // default name
-      l.props.name.value = `${data[type].name}${id}`;
-      l.state = {
-        top: `${30 + 100 * Math.floor(id / 4)}px`,
-        left: `${30 + 170 * (id % 4)}px`,
-        class: '',
-      };
-    });
-    instance.detachEveryConnection();
-    instance.deleteEveryEndpoint();
-    this.setState({ net,
-      selectedLayer: null,
-      nextLayerId: Object.keys(net).length,
-      rebuildNet: true,
-      selectedPhase: 0,
-    });
+    }
+
   }
   changeNetStatus(bool) {
     this.setState({ rebuildNet: bool });
@@ -145,6 +181,11 @@ class Content extends React.Component {
     instance.detachEveryConnection();
     instance.deleteEveryEndpoint();
     this.setState({ net, selectedPhase: i, rebuildNet: true });
+  }
+  dismissError(i){
+    //const error = this.state.error;
+    //error.splice(index, 1);
+
   }
   render() {
     return (
@@ -165,6 +206,7 @@ class Content extends React.Component {
             changeSelectedLayer={this.changeSelectedLayer}
             modifyLayer={this.modifyLayer}
             changeNetStatus={this.changeNetStatus}
+            error={this.state.error}
           />
           <SetParams
             net={this.state.net}

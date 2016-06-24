@@ -1,4 +1,4 @@
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect('http://gsoc.cloudcv.org:3000');
 
 $('#train').click(function(){
     socket.emit("startTraining",prototxtId);
