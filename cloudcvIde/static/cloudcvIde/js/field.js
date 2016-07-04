@@ -20,7 +20,8 @@ class Field extends React.Component {
       inputElement = (
         <input
           type="text"
-          value={this.props.data.value}
+          disabled={this.props.disabled}
+          value={this.props.value}
           className="form-control"
           id={this.props.id}
           onChange={this.change}
@@ -30,7 +31,8 @@ class Field extends React.Component {
       inputElement = (
         <input
           type="number"
-          value={this.props.data.value}
+          value={this.props.value}
+          disabled={this.props.disabled}
           className="form-control"
           id={this.props.id}
           onChange={this.change}
@@ -41,7 +43,8 @@ class Field extends React.Component {
         <input
           type="number"
           step="0.01"
-          value={this.props.data.value}
+          disabled={this.props.disabled}
+          value={this.props.value}
           className="form-control"
           id={this.props.id}
           onChange={this.change}
@@ -54,8 +57,9 @@ class Field extends React.Component {
       });
       inputElement = (
         <select
-          value={this.props.data.value}
+          value={this.props.value}
           id={this.props.id}
+          disabled={this.props.disabled}
           className="form-control"
           onChange={this.change}
         >
@@ -66,7 +70,8 @@ class Field extends React.Component {
       inputElement = (
         <input
           type="checkbox"
-          checked={this.props.data.value}
+          disabled={this.props.disabled}
+          checked={this.props.value}
           id={this.props.id}
           onChange={this.change}
         />
@@ -94,6 +99,12 @@ Field.propTypes = {
   id: React.PropTypes.string.isRequired,
   data: React.PropTypes.object,
   changeField: React.PropTypes.func,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.number,
+    React.PropTypes.bool,
+  ]),
+  disabled: React.PropTypes.bool,
 };
 
 export default Field;

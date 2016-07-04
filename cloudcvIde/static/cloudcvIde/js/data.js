@@ -11,22 +11,26 @@ export default {
         name: 'Data source',
         value: '',
         type: 'text',
+        required: true,
       },
       batch_size: {
         name: 'Batch size',
         value: '',
         type: 'number',
+        required: true,
       },
       backend: {
         name: 'Backend',
         value: 'LMDB',
         type: 'select',
         options: ['LMDB', 'LEVELDB'],
+        required: true,
       },
       scale: {
         name: 'Scale',
         value: '',
         type: 'float',
+        required: false,
       },
     },
     props: {
@@ -36,6 +40,7 @@ export default {
         type: 'text',
       },
     },
+    learn: false,
   },
   SoftmaxWithLoss: {
     name: 'loss',
@@ -53,6 +58,7 @@ export default {
         type: 'text',
       },
     },
+    learn: false,
   },
   Convolution: {
     name: 'conv',
@@ -66,33 +72,39 @@ export default {
         name: 'No of outputs',
         value: '',
         type: 'number',
+        required: true,
       },
       kernel_size: {
         name: 'Kernel size',
         value: '',
         type: 'number',
+        required: true,
       },
       stride: {
         name: 'Stride',
         value: '',
         type: 'number',
+        required: false,
       },
       pad: {
         name: 'Padding size',
         value: '',
         type: 'number',
+        required: false,
       },
       weight_filler: {
         name: 'Weight filler',
         value: 'xavier',
         type: 'select',
         options: ['xavier', 'constant'],
+        required: false,
       },
       bias_filler: {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
         options: ['xavier', 'constant'],
+        required: false,
       },
     },
     props: {
@@ -102,6 +114,7 @@ export default {
         type: 'text',
       },
     },
+    learn: true,
   },
   ReLU: {
     name: 'relu',
@@ -115,6 +128,7 @@ export default {
         name: 'Inplace operation',
         value: true,
         type: 'checkbox',
+        required: false,
       },
     },
     props: {
@@ -124,6 +138,7 @@ export default {
         type: 'text',
       },
     },
+    learn: false,
   },
   Accuracy: {
     name: 'acc',
@@ -141,6 +156,7 @@ export default {
         type: 'text',
       },
     },
+    learn: false,
   },
   InnerProduct: {
     name: 'fc',
@@ -154,18 +170,21 @@ export default {
         name: 'No of outputs',
         value: '',
         type: 'number',
+        required: true,
       },
       weight_filler: {
         name: 'Weight filler',
         value: 'xavier',
         type: 'select',
         options: ['xavier', 'constant'],
+        required: false,
       },
       bias_filler: {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
         options: ['xavier', 'constant'],
+        required: false,
       },
     },
     props: {
@@ -175,6 +194,7 @@ export default {
         type: 'text',
       },
     },
+    learn: true,
   },
   Pooling: {
     name: 'pool',
@@ -188,22 +208,26 @@ export default {
         name: 'Padding size',
         value: '',
         type: 'number',
+        required: false,
       },
       kernel_size: {
         name: 'Kernel size',
         value: '',
         type: 'number',
+        required: true,
       },
       stride: {
         name: 'Stride',
         value: '',
         type: 'number',
+        required: false,
       },
       pool: {
         name: 'Pooling method',
         value: 'MAX',
         type: 'select',
         options: ['MAX', 'AVE', 'STOCHASTIC'],
+        required: false,
       },
     },
     props: {
@@ -213,5 +237,6 @@ export default {
         type: 'text',
       },
     },
+    learn: false,
   },
 };

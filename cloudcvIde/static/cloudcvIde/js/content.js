@@ -15,77 +15,162 @@ class Content extends React.Component {
       nextLayerId: 0,
       rebuildNet: false,
       selectedPhase: 0,
+      error: [],
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
     this.modifyLayer = this.modifyLayer.bind(this);
+    this.modifyLayerParams = this.modifyLayerParams.bind(this);
     this.deleteLayer = this.deleteLayer.bind(this);
     this.exportNet = this.exportNet.bind(this);
     this.importNet = this.importNet.bind(this);
     this.changeNetStatus = this.changeNetStatus.bind(this);
     this.changeNetPhase = this.changeNetPhase.bind(this);
+    this.dismissError = this.dismissError.bind(this);
+    this.copyTrain = this.copyTrain.bind(this);
+    this.addError = this.addError.bind(this);
+    this.trainOnly = this.trainOnly.bind(this);
   }
-  addNewLayer(l) {
+  addNewLayer(layer) {
     const net = this.state.net;
-    net[`l${this.state.nextLayerId}`] = l;
+    net[`l${this.state.nextLayerId}`] = layer;
     this.setState({ net, nextLayerId: this.state.nextLayerId + 1 });
   }
-  changeSelectedLayer(n) {
+  changeSelectedLayer(layerId) {
     const net = this.state.net;
     if (this.state.selectedLayer) {
       // remove css from previously selected layer
       net[this.state.selectedLayer].info.class = '';
     }
-    if (n) {
+    if (layerId) {
       // css when layer is selected
-      net[n].info.class = 'selected';
+      net[layerId].info.class = 'selected';
     }
-    this.setState({ net, selectedLayer: n });
+    this.setState({ net, selectedLayer: layerId });
   }
-  modifyLayer(l, id = this.state.selectedLayer) {
+  modifyLayer(layer, layerId = this.state.selectedLayer) {
     const net = this.state.net;
-    net[id] = l;
+    net[layerId] = layer;
     this.setState({ net });
   }
-  deleteLayer() {
+  modifyLayerParams(layer, layerId = this.state.selectedLayer) {
     const net = this.state.net;
-    const id = this.state.selectedLayer;
-    const inputId = net[id].connection.input;
-    const outputId = net[id].connection.output;
-    delete net[id];
-    if (inputId) {
-      net[inputId].connection.output = null;
+    let index;
+
+    if (this.state.selectedPhase === 1 && net[layerId].info.phase === null) {
+      // we need to break this common layer for each phase
+      const testLayer = JSON.parse(JSON.stringify(layer));
+      const trainLayer = JSON.parse(JSON.stringify(net[layerId]));
+
+      testLayer.info.phase = 1;
+      (testLayer.connection.output).forEach(outputId => {
+        if (net[outputId].info.phase === 0) {
+          index = testLayer.connection.output.indexOf(outputId);
+          testLayer.connection.output.splice(index, 1);
+          index = net[outputId].connection.input.indexOf(layerId);
+          net[outputId].connection.input.splice(index, 1);
+        }
+      });
+      (testLayer.connection.input).forEach(inputId => {
+        if (net[inputId].info.phase === 0) {
+          index = testLayer.connection.input.indexOf(inputId);
+          testLayer.connection.input.splice(index, 1);
+          index = net[inputId].connection.output.indexOf(layerId);
+          net[inputId].connection.output.splice(index, 1);
+        }
+      });
+      net[layerId] = testLayer;
+      this.setState({ net });
+
+      trainLayer.info.phase = 0;
+      trainLayer.props.name = `${data[trainLayer.info.type].name}${this.state.nextLayerId}`;
+      (trainLayer.connection.output).forEach(outputId => {
+        if (net[outputId].info.phase === 1) {
+          index = trainLayer.connection.output.indexOf(outputId);
+          trainLayer.connection.output.splice(index, 1);
+        }
+      });
+      (trainLayer.connection.input).forEach(inputId => {
+        if (net[inputId].info.phase === 1) {
+          index = trainLayer.connection.input.indexOf(inputId);
+          trainLayer.connection.input.splice(index, 1);
+        }
+      });
+
+      const nextLayerId = `l${this.state.nextLayerId}`;
+
+      (trainLayer.connection.output).forEach(outputId => {
+        net[outputId].connection.input.push(nextLayerId);
+      });
+
+      (trainLayer.connection.input).forEach(inputId => {
+        net[inputId].connection.output.push(nextLayerId);
+      });
+
+      this.addNewLayer(trainLayer);
+    } else {
+      net[layerId] = layer;
+      this.setState({ net });
     }
-    if (outputId) {
-      net[outputId].connection.input = null;
-    }
+  }
+  deleteLayer(layerId) {
+    const net = this.state.net;
+    const input = net[layerId].connection.input;
+    const output = net[layerId].connection.output;
+    let index;
+    delete net[layerId];
+    input.forEach(inputId => {
+      index = net[inputId].connection.output.indexOf(layerId);
+      net[inputId].connection.output.splice(index, 1);
+    });
+    output.forEach(outputId => {
+      index = net[outputId].connection.input.indexOf(layerId);
+      net[outputId].connection.input.splice(index, 1);
+    });
     this.setState({ net, selectedLayer: null });
   }
   exportNet() {
-    $.ajax({
-      url: '/cloudcvide/export',
-      dataType: 'json',
-      type: 'POST',
-      data: {
-        net: JSON.stringify(this.state.net),
-      },
-      success(response) {
-        // only for demo purpose - will be removed later
-        document.getElementById('prototxt').innerHTML = response.result;
-        $('html, body').animate(
-          { scrollTop: $('#prototxt').offset().top },
-          'slow'
-        );
-      },
-      error() {
-        // only for demo purpose - will be removed later
-        document.getElementById('prototxt').innerHTML = '<b style="color:red;">failure</b>';
-        $('html, body').animate(
-          { scrollTop: $('#prototxt').offset().top },
-          'slow'
-        );
-      },
+    this.setState({ error: [] });
+    const error = [];
+    const net = this.state.net;
+
+    Object.keys(net).forEach(layerId => {
+      const layer = net[layerId];
+      Object.keys(layer.params).forEach(param => {
+        const paramData = data[layer.info.type].params[param];
+        if (paramData.required === true && layer.params[param] === '') {
+          error.push(`Error: "${paramData.name}" required in "${layer.props.name}" Layer`);
+        }
+      });
     });
+
+    if (error.length) {
+      this.setState({ error });
+    } else {
+      const netData = JSON.parse(JSON.stringify(this.state.net));
+      Object.keys(netData).forEach(layerId => {
+        delete netData[layerId].state;
+      });
+
+      $.ajax({
+        url: '/cloudcvide/export',
+        dataType: 'json',
+        type: 'POST',
+        data: {
+          net: JSON.stringify(netData),
+        },
+        success(response) {
+          prototxtId = response.id;
+          const downloadAnchor = document.getElementById('download');
+          downloadAnchor.download = `${prototxtId}.prototxt`;
+          downloadAnchor.href = `/media/prototxt/${prototxtId}.prototxt`;
+          downloadAnchor.click();
+        },
+        error() {
+          // console.log('failure in exporting');
+        },
+      });
+    }
   }
   importNet() {
     const formData = new FormData();
@@ -108,42 +193,112 @@ class Content extends React.Component {
   initialiseImportedNet(net) {
     // this line will unmount all the layers
     // so that the new imported layers will all be mounted again
-    this.setState({ net: {}, selectedLayer: null, nextLayerId: 0, selectedPhase: 0 });
-    Object.keys(net).forEach(i => {
-      const l = net[i];
-      const type = l.info.type;
-      const id = +i.substring(1);
-      l.params = JSON.parse(JSON.stringify(data[type].params));
-      Object.keys(l.importedParams).forEach(j => {
-        l.params[j].value = l.importedParams[j];
+    const tempError = {};
+    const error = [];
+    this.setState({ net: {}, selectedLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
+    Object.keys(net).forEach(layerId => {
+      const layer = net[layerId];
+      const type = layer.info.type;
+      const index = +layerId.substring(1);
+      if (data.hasOwnProperty(type)) {
+        // add the missing params with default values
+        Object.keys(data[type].params).forEach(param => {
+          if (!layer.params.hasOwnProperty(param)) {
+            layer.params[param] = data[type].params[param].value;
+          }
+        });
+        // layer.props = JSON.parse(JSON.stringify(data[type].props));
+        layer.props = {};
+        // default name
+        layer.props.name = `${data[type].name}${index}`;
+        layer.state = {
+          top: `${130 + 100 * Math.floor(index / 4)}px`,
+          left: `${30 + 170 * (index % 4)}px`,
+          class: '',
+        };
+      } else {
+        tempError[type] = null;
+      }
+    });
+
+    if (Object.keys(tempError).length) {
+      Object.keys(tempError).forEach(type => {
+        error.push(`Error: Currently we do not support prototxt with "${type}" Layer.`);
       });
-      l.props = JSON.parse(JSON.stringify(data[type].props));
-      // default name
-      l.props.name.value = `${data[type].name}${id}`;
-      l.state = {
-        top: `${30 + 100 * Math.floor(id / 4)}px`,
-        left: `${30 + 170 * (id % 4)}px`,
-        class: '',
-      };
-    });
-    instance.detachEveryConnection();
-    instance.deleteEveryEndpoint();
-    this.setState({ net,
-      selectedLayer: null,
-      nextLayerId: Object.keys(net).length,
-      rebuildNet: true,
-      selectedPhase: 0,
-    });
+      this.setState({ error });
+    } else {
+      instance.detachEveryConnection();
+      instance.deleteEveryEndpoint();
+      this.setState({
+        net,
+        selectedLayer: null,
+        nextLayerId: Object.keys(net).length,
+        rebuildNet: true,
+        selectedPhase: 0,
+        error: [],
+      });
+    }
   }
   changeNetStatus(bool) {
     this.setState({ rebuildNet: bool });
   }
-  changeNetPhase(i) {
+  changeNetPhase(phase) {
     const net = this.state.net;
     this.setState({ net: {}, selectedLayer: null });
     instance.detachEveryConnection();
     instance.deleteEveryEndpoint();
-    this.setState({ net, selectedPhase: i, rebuildNet: true });
+    this.setState({ net, selectedPhase: phase, rebuildNet: true });
+  }
+  dismissError(errorIndex) {
+    const error = this.state.error;
+    error.splice(errorIndex, 1);
+    this.setState({ error });
+  }
+  addError(errorText) {
+    const error = this.state.error;
+    error.push(errorText);
+    this.setState({ error });
+  }
+  copyTrain() {
+    const net = this.state.net;
+    Object.keys(net).forEach(layerId => {
+      if (net[layerId].info.phase === 0) {
+        net[layerId].info.phase = null;
+      } else if (net[layerId].info.phase === 1) {
+        this.deleteLayer(layerId);
+      }
+    });
+    this.setState({
+      net,
+      selectedLayer: null,
+      rebuildNet: true,
+    });
+  }
+  trainOnly() {
+    const net = this.state.net;
+    const layer = net[this.state.selectedLayer];
+    const layerId = this.state.selectedLayer;
+    let index;
+    if (layer.info.phase == null) {
+      (layer.connection.output).forEach(outputId => {
+        if (net[outputId].info.phase === 1) {
+          index = layer.connection.output.indexOf(outputId);
+          layer.connection.output.splice(index, 1);
+          index = net[outputId].connection.input.indexOf(layerId);
+          net[outputId].connection.input.splice(index, 1);
+        }
+      });
+      (layer.connection.input).forEach(inputId => {
+        if (net[inputId].info.phase === 1) {
+          index = layer.connection.input.indexOf(inputId);
+          layer.connection.input.splice(index, 1);
+          index = net[inputId].connection.output.indexOf(layerId);
+          net[inputId].connection.output.splice(index, 1);
+        }
+      });
+    }
+    layer.info.phase = 0;
+    this.setState({ net });
   }
   render() {
     return (
@@ -164,12 +319,18 @@ class Content extends React.Component {
             changeSelectedLayer={this.changeSelectedLayer}
             modifyLayer={this.modifyLayer}
             changeNetStatus={this.changeNetStatus}
+            error={this.state.error}
+            dismissError={this.dismissError}
+            addError={this.addError}
           />
           <SetParams
             net={this.state.net}
             selectedLayer={this.state.selectedLayer}
-            modifyLayer={this.modifyLayer}
+            modifyLayer={this.modifyLayerParams}
             deleteLayer={this.deleteLayer}
+            selectedPhase={this.state.selectedPhase}
+            copyTrain={this.copyTrain}
+            trainOnly={this.trainOnly}
           />
         </div>
       </div>

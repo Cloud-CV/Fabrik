@@ -2,6 +2,7 @@ import React from 'react';
 import data from './data';
 import jsPlumbReady from './jsplumb';
 import Layer from './layer';
+import Error from './error';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -10,18 +11,15 @@ class Canvas extends React.Component {
     this.drop = this.drop.bind(this);
     this.clickCanvas = this.clickCanvas.bind(this);
     this.clickLayerEvent = this.clickLayerEvent.bind(this);
-    this.clickOrDragged = 0;// whether a layer was clicked or dragged
+    // whether a layer was clicked or dragged
+    this.clickOrDragged = 0;
   }
   componentDidMount() {
     const temp = jsPlumbReady();
     instance = temp.instance;
     addLayerEndpoints = temp.addLayerEndpoints;
-
     instance.bind('connection', this.connectionEvent.bind(this));
-
-    /* instance.bind('connectionDetached', function (connInfo, originalEvent) {
-
-    });*/
+    instance.bind('connectionDetached', this.detachConnectionEvent.bind(this));
   }
   componentDidUpdate() {
     instance.draggable(jsPlumb.getSelector('.layer'),
@@ -32,13 +30,16 @@ class Canvas extends React.Component {
     );
     if (this.props.rebuildNet) {
       const net = this.props.net;
-      Object.keys(net).forEach(i => {
-        const layer = net[i];
+      Object.keys(net).forEach(inputId => {
+        const layer = net[inputId];
         if ((layer.info.phase === this.props.selectedPhase) || (layer.info.phase === null)) {
           const outputs = layer.connection.output;
-          outputs.forEach(j => {
-            if ((net[j].info.phase === this.props.selectedPhase) || (net[j].info.phase === null)) {
-              instance.connect({ uuids: [`${i}-s0`, `${j}-t0`], editable: true });
+          outputs.forEach(outputId => {
+            if ((net[outputId].info.phase === this.props.selectedPhase) || (net[outputId].info.phase === null)) {
+              instance.connect({
+                uuids: [`${inputId}-s0`, `${outputId}-t0`],
+                editable: true,
+              });
             }
           });
         }
@@ -47,30 +48,30 @@ class Canvas extends React.Component {
       // instance.repaintEverything();
     }
   }
-  allowDrop(e) {
-    e.preventDefault();
+  allowDrop(event) {
+    event.preventDefault();
   }
-  clickLayerEvent(id) { // happens when layer is clicked and also dragged
+  clickLayerEvent(layerId) { // happens when layer is clicked and also dragged
     if (this.clickOrDragged === 0) {
-      this.props.changeSelectedLayer(id); // clicked
+      this.props.changeSelectedLayer(layerId); // clicked
     } else if (this.clickOrDragged === 1) {
       this.clickOrDragged = 0; // dragged
     }
   }
-  clickCanvas(e) {
-    if (e.target.id === 'canvas') {
+  clickCanvas(event) {
+    if (event.target.id === 'canvas') {
       this.props.changeSelectedLayer(null);
     }
   }
-  updateLayerPosition(e) {
+  updateLayerPosition(event) {
     if (!this.clickOrDragged) {
       this.clickOrDragged = 1;
     }
-    const id = e.el.id;
-    const layer = this.props.net[id];
-    layer.state.left = `${e.pos['0']}px`;
-    layer.state.top = `${e.pos['1']}px`;
-    this.props.modifyLayer(layer, id);
+    const layerId = event.el.id;
+    const layer = this.props.net[layerId];
+    layer.state.left = `${event.pos['0']}px`;
+    layer.state.top = `${event.pos['1']}px`;
+    this.props.modifyLayer(layer, layerId);
   }
   connectionEvent(connInfo, originalEvent) {
     if (originalEvent != null) { // user manually makes a connection
@@ -86,36 +87,70 @@ class Canvas extends React.Component {
       this.props.modifyLayer(layerTrg, trgId);
     }
   }
-  drop(e) {
-    e.preventDefault();
-    const type = e.dataTransfer.getData('element_type');
-    const l = {};
-    l.info = { type, phase: this.props.selectedPhase };
-    l.state = {
-      top: `${e.clientY - e.target.offsetTop - 30}px`,
-      left: `${e.clientX - e.target.offsetLeft - 65}px`,
-      class: '',
-    };
-    // 30px difference between layerTop and dropping point
-    // 65px difference between layerLeft and dropping point
-    l.connection = { input: [], output: [] };
-    l.params = JSON.parse(JSON.stringify(data[type].params));
-    l.props = JSON.parse(JSON.stringify(data[type].props));
-    // default name
-    l.props.name.value = `${data[type].name}${this.props.nextLayerId}`;
-    this.props.addNewLayer(l);
+  detachConnectionEvent(connInfo, originalEvent) {
+    if (originalEvent != null) { // user manually detach a connection
+      const srcId = connInfo.connection.sourceId;
+      const trgId = connInfo.connection.targetId;
+      const layerSrc = this.props.net[srcId];
+      const layerTrg = this.props.net[trgId];
+      let index;
+
+      index = layerSrc.connection.output.indexOf(trgId);
+      layerSrc.connection.output.splice(index, 1);
+      this.props.modifyLayer(layerSrc, srcId);
+
+      index = layerTrg.connection.input.indexOf(srcId);
+      layerTrg.connection.input.splice(index, 1);
+      this.props.modifyLayer(layerTrg, trgId);
+    }
+  }
+  drop(event) {
+    event.preventDefault();
+    const type = event.dataTransfer.getData('element_type');
+    if (data[type].learn && (this.props.selectedPhase === 1)) {
+      this.props.addError(`Error: you can not add a "${type}" layer in test phase`);
+    } else {
+      const layer = {};
+      let phase = this.props.selectedPhase;
+
+      // a layer added in train phase is common
+      if (phase === 0) {
+        phase = null;
+      }
+
+      layer.info = { type, phase };
+      layer.state = {
+        top: `${event.clientY - event.target.offsetTop - 30}px`,
+        left: `${event.clientX - event.target.offsetLeft - 65}px`,
+        class: '',
+      };
+      // 30px difference between layerTop and dropping point
+      // 65px difference between layerLeft and dropping point
+      layer.connection = { input: [], output: [] };
+      layer.params = {};
+      Object.keys(data[type].params).forEach(j => {
+        layer.params[j] = data[type].params[j].value;
+      });
+      // l.props = JSON.parse(JSON.stringify(data[type].props));
+      layer.props = {};
+      // default name
+      layer.props.name = `${data[type].name}${this.props.nextLayerId}`;
+      this.props.addNewLayer(layer);
+    }
   }
   render() {
     const layers = [];
+    const errors = [];
     const net = this.props.net;
+    const error = this.props.error;
 
-    Object.keys(net).forEach(i => {
-      const layer = net[i];
+    Object.keys(net).forEach(layerId => {
+      const layer = net[layerId];
       if ((layer.info.phase === this.props.selectedPhase) || (layer.info.phase === null)) {
         layers.push(
           <Layer
-            id={i}
-            key={i}
+            id={layerId}
+            key={layerId}
             type={layer.info.type}
             class={layer.info.class}
             top={layer.state.top}
@@ -126,6 +161,17 @@ class Canvas extends React.Component {
       }
     });
 
+    error.forEach((errorText, errorIndex) => {
+      errors.push(
+        <Error
+          text={errorText}
+          key={errorIndex}
+          index={errorIndex}
+          dismissError={this.props.dismissError}
+        />
+      );
+    });
+
     return (
       <div
         className="col-md-7 canvas"
@@ -134,6 +180,7 @@ class Canvas extends React.Component {
         onDrop={this.drop}
         onClick={this.clickCanvas}
       >
+        {errors}
         {layers}
       </div>
     );
@@ -149,6 +196,9 @@ Canvas.propTypes = {
   changeSelectedLayer: React.PropTypes.func,
   rebuildNet: React.PropTypes.bool,
   changeNetStatus: React.PropTypes.func,
+  addError: React.PropTypes.func,
+  dismissError: React.PropTypes.func,
+  error: React.PropTypes.array,
 };
 
 export default Canvas;
