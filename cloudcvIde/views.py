@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 import json
 import yaml
 from django.http import HttpResponse
@@ -390,9 +391,8 @@ def exportToCaffe(request):
         with open(BASE_DIR+'/cloudcvIde/media/prototxt/'+randomId+'.prototxt', 'w') as f:
             f.write(prototxt)
 
-        return HttpResponse(
-            json.dumps({'id': randomId, 'name': randomId+'.prototxt', 'url': '/media/prototxt/'+randomId+'.prototxt'}),
-            content_type="application/json")
+        return JsonResponse({'id': randomId, 'name': randomId+'.prototxt', 'url': '/media/prototxt/'+randomId+'.prototxt'})
+
 
 @csrf_exempt
 def exportToTensorflow(request):
@@ -408,9 +408,7 @@ def exportToTensorflow(request):
 
         os.system('python '+BASE_DIR+'/cloudcvIde/caffe-tensorflow-master/convert.py '+BASE_DIR+'/cloudcvIde/media/prototxt/'+randomId+'.prototxt --code-output-path='+BASE_DIR+'/cloudcvIde/media/tensorflow/'+randomId+'.py')
 
-        return HttpResponse(
-            json.dumps({'id': randomId, 'name': randomId+'.py', 'url': '/media/tensorflow/'+randomId+'.py'}),
-            content_type="application/json")
+        return JsonResponse({'id': randomId, 'name': randomId+'.py', 'url': '/media/tensorflow/'+randomId+'.py'})
 
 
 @csrf_exempt
@@ -526,6 +524,4 @@ def importModel(request):
             net[id] = jsonLayer
             i = i + 1
 
-        return HttpResponse(
-            json.dumps({'result': 'success', 'net': net}),
-            content_type="application/json")
+        return JsonResponse({'result': 'success', 'net': net})
