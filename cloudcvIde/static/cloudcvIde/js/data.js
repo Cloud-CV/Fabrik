@@ -1,7 +1,7 @@
 export default {
   Data: {
-    name: 'input',
-    color: '#5b80bf',
+    name: 'data',
+    color: 'rgb(255, 204, 60)',
     endpoint: {
       src: ['RightMiddle'],
       trg: [],
@@ -44,7 +44,7 @@ export default {
   },
   SoftmaxWithLoss: {
     name: 'loss',
-    color: '#459046',
+    color: 'rgb(38, 105, 40)',
     endpoint: {
       src: [],
       trg: ['LeftMiddle'],
@@ -62,7 +62,7 @@ export default {
   },
   Convolution: {
     name: 'conv',
-    color: '#8cc556',
+    color: 'rgb(87, 160, 17)',
     endpoint: {
       src: ['RightMiddle'],
       trg: ['LeftMiddle'],
@@ -118,7 +118,7 @@ export default {
   },
   ReLU: {
     name: 'relu',
-    color: '#eadd66',
+    color: 'rgb(77, 101, 214)',
     endpoint: {
       src: ['RightMiddle'],
       trg: ['LeftMiddle'],
@@ -142,7 +142,7 @@ export default {
   },
   Accuracy: {
     name: 'acc',
-    color: '#d28240',
+    color: 'rgb(164, 218, 35)',
     endpoint: {
       src: [],
       trg: ['LeftMiddle'],
@@ -160,7 +160,7 @@ export default {
   },
   InnerProduct: {
     name: 'fc',
-    color: '#ac4cc5',
+    color: 'rgb(144, 29, 204)',
     endpoint: {
       src: ['RightMiddle'],
       trg: ['LeftMiddle'],
@@ -198,7 +198,7 @@ export default {
   },
   Pooling: {
     name: 'pool',
-    color: '#e15e4f',
+    color: 'rgb(228, 50, 50)',
     endpoint: {
       src: ['RightMiddle'],
       trg: ['LeftMiddle'],
@@ -228,6 +228,102 @@ export default {
         type: 'select',
         options: ['MAX', 'AVE', 'STOCHASTIC'],
         required: false,
+      },
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: false,
+  },
+  Dropout: {
+    name: 'dropout',
+    color: 'rgb(222, 29, 189)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: false,
+  },
+  Concat: {
+    name: 'concat',
+    color: 'rgb(255, 146, 52)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: false,
+  },
+  LRN: {
+    name: 'lrn',
+    color: 'rgb(29, 177, 222)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: false,
+  },
+  Softmax: {
+    name: 'softmax',
+    color: 'rgb(167, 163, 163)',
+    endpoint: {
+      src: [],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: false,
+  },
+  Input: {
+    name: 'input',
+    color: 'rgb(255, 204, 60)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: [],
+    },
+    params: {
+      dim: {
+        name: 'Dim',
+        value: '',
+        type: 'text',
+        required: true,
       },
     },
     props: {

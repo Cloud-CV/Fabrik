@@ -3,6 +3,7 @@ import data from './data';
 import jsPlumbReady from './jsplumb';
 import Layer from './layer';
 import Error from './error';
+import panZoom from './panZoom'
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -12,7 +13,8 @@ class Canvas extends React.Component {
     this.clickCanvas = this.clickCanvas.bind(this);
     this.clickLayerEvent = this.clickLayerEvent.bind(this);
     // whether a layer was clicked or dragged
-    this.clickOrDragged = 0;
+    this.clickOrDraggedLayer = 0;
+    this.mouseState = null;
   }
   componentDidMount() {
     const temp = jsPlumbReady();
@@ -20,6 +22,7 @@ class Canvas extends React.Component {
     addLayerEndpoints = temp.addLayerEndpoints;
     instance.bind('connection', this.connectionEvent.bind(this));
     instance.bind('connectionDetached', this.detachConnectionEvent.bind(this));
+    this.mouseState = panZoom();
   }
   componentDidUpdate() {
     instance.draggable(jsPlumb.getSelector('.layer'),
@@ -51,21 +54,27 @@ class Canvas extends React.Component {
   allowDrop(event) {
     event.preventDefault();
   }
-  clickLayerEvent(layerId) { // happens when layer is clicked and also dragged
-    if (this.clickOrDragged === 0) {
+  clickLayerEvent(event, layerId) { // happens when layer is clicked and also dragged
+    if (this.clickOrDraggedLayer === 0) {
       this.props.changeSelectedLayer(layerId); // clicked
-    } else if (this.clickOrDragged === 1) {
-      this.clickOrDragged = 0; // dragged
+    } else if (this.clickOrDraggedLayer === 1) {
+      this.clickOrDraggedLayer = 0; // dragged
     }
+    console.log(event.target.id);
+    event.stopPropagation();
   }
   clickCanvas(event) {
-    if (event.target.id === 'canvas') {
+    event.preventDefault();
+    if (event.target.id === 'panZoomContainer' && !this.mouseState.pan) {
       this.props.changeSelectedLayer(null);
     }
+    this.mouseState.pan = false;
+    this.mouseState.click = false;
+    event.stopPropagation();
   }
   updateLayerPosition(event) {
-    if (!this.clickOrDragged) {
-      this.clickOrDragged = 1;
+    if (!this.clickOrDraggedLayer) {
+      this.clickOrDraggedLayer = 1;
     }
     const layerId = event.el.id;
     const layer = this.props.net[layerId];
@@ -106,6 +115,11 @@ class Canvas extends React.Component {
   }
   drop(event) {
     event.preventDefault();
+    console.dir(event.target);
+    const canvas = document.getElementById('jsplumbContainer');
+    const zoom = instance.getZoom();
+    console.log(zoom);
+
     const type = event.dataTransfer.getData('element_type');
     if (data[type].learn && (this.props.selectedPhase === 1)) {
       this.props.addError(`Error: you can not add a "${type}" layer in test phase`);
@@ -120,8 +134,8 @@ class Canvas extends React.Component {
 
       layer.info = { type, phase };
       layer.state = {
-        top: `${event.clientY - event.target.offsetTop - 30}px`,
-        left: `${event.clientX - event.target.offsetLeft - 65}px`,
+        top: `${(event.clientY - event.target.getBoundingClientRect().top - canvas.y)/zoom - 30}px`,
+        left: `${(event.clientX - event.target.getBoundingClientRect().left - canvas.x)/zoom - 65}px`,
         class: '',
       };
       // 30px difference between layerTop and dropping point
@@ -174,14 +188,21 @@ class Canvas extends React.Component {
 
     return (
       <div
-        className="col-md-7 canvas"
-        id="canvas"
+        className="canvas"
+        id="panZoomContainer"
         onDragOver={this.allowDrop}
         onDrop={this.drop}
         onClick={this.clickCanvas}
       >
         {errors}
+      <div
+        id="jsplumbContainer"
+        data-zoom="1"
+        data-x="0"
+        data-y="0"
+      >
         {layers}
+      </div>
       </div>
     );
   }

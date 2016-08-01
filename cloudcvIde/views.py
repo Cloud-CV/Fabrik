@@ -11,476 +11,379 @@ import re
 from datetime import datetime
 import random, string
 import os
+import collections
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def randomword(length):
    return ''.join(random.choice(string.lowercase) for i in range(length))
 
+def get_iterable(x):
+    if isinstance(x, collections.Iterable):
+        return x
+    else:
+        return (x,)
 
 def index(request):
     return render(request, 'cloudcvIde/index.html')
 
+def convertNetToPrototxt(net):
+    # assumption: a layer can accept only one input blob
+    # the data layer produces two blobs: data and label
+    # the loss layer requires two blobs: <someData> and label
+    # the label blob is hardcoded.
+    # layers name have to be unique
+
+    # custom DFS of the network
+    print net
+
+    stack = []
+    layersProcessed = {}
+    processOrder = []
+    blobNames = {}
+    for layerId in net:
+        layersProcessed[layerId] = False
+        blobNames[layerId] = {
+            'bottom': [],
+            'top': [],
+        }
+    blobId = 0
+
+    def isProcessPossible(layerId):
+        inputs = net[layerId]['connection']['input']
+        for layerId in inputs:
+            if layersProcessed[layerId] is False:
+                return False
+        return True
+
+    # finding the data layer
+    for layerId in net:
+        if(net[layerId]['info']['type'] == 'Data' or net[layerId]['info']['type'] == 'Input'):
+            stack.append(layerId)
+
+    def changeTopBlobName(layerId, newName):
+        blobNames[layerId]['top'] = newName
+
+    while len(stack):
+
+        i = len(stack) - 1
+
+        while isProcessPossible(stack[i]) is False:
+            i = i - 1
+
+        layerId = stack[i]
+        stack.remove(stack[i])
+
+        inputs = net[layerId]['connection']['input']
+        if len(inputs) > 0:
+            if len(inputs) == 2 and (net[inputs[0]]['info']['phase'] is not None) and (net[inputs[1]]['info']['phase']):
+                commonBlobName = blobNames[inputs[0]]['top']
+                changeTopBlobName(inputs[1], commonBlobName)
+                blobNames[layerId]['bottom'] = commonBlobName
+            else:
+                inputBlobNames = []
+                for inputId in inputs:
+                    inputBlobNames.extend(blobNames[inputId]['top'])
+                blobNames[layerId]['bottom'] = inputBlobNames
+
+        blobNames[layerId]['top'] = ['blob'+str(blobId)]
+        blobId = blobId + 1
+
+        for outputId in net[layerId]['connection']['output']:
+            if outputId not in stack:
+                stack.append(outputId)
+
+        layersProcessed[layerId] = True
+        processOrder.append(layerId)
+
+
+    ns_train = caffe.NetSpec()
+    ns_test = caffe.NetSpec()
+
+    for layerId in processOrder:
+
+        layer = net[layerId]
+        layerParams = layer['params']
+        layerType = layer['info']['type']
+        layerPhase = layer['info']['phase']
+        topBlob = blobNames[layerId]['top']
+
+        if (layerType == 'Data' or layerType == 'Input'):
+
+            # This is temporary
+            # Has to be improved later
+            # If we have data layer then it is converted to input layer with some default dimensions
+            '''
+            data_param = {}
+            if layerParams['source'] != '':
+                data_param['source'] = layerParams['source']
+                # hardcoding mnsit dataset -change this later
+                if layerPhase is not None:
+                    if int(layerPhase) == 0:
+                        data_param['source'] = 'examples/mnist/mnist_train_lmdb'
+                    elif int(layerPhase) == 1:
+                        data_param['source'] = 'examples/mnist/mnist_test_lmdb'
+            if layerParams['batch_size'] != '':
+                data_param['batch_size'] = int(float(layerParams['batch_size']))
+            if layerParams['backend'] != '':
+                backend = layerParams['backend']
+                if(backend == 'LEVELDB'):
+                    backend = 0
+                elif(backend == 'LMDB'):
+                    backend = 1
+                data_param['backend'] = backend
+
+            transform_param = {}
+            if layerParams['scale'] != '':
+                transform_param['scale'] = float(layerParams['scale'])
+
+
+            if layerPhase is not None:
+                caffeLayer = get_iterable(L.Data(
+                    ntop=1,
+                    transform_param=transform_param,
+                    data_param=data_param,
+                    include={
+                        'phase': int(layerPhase)
+                    }))
+                if int(layerPhase) == 0:
+                    #for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns_train[key] = value
+                elif int(layerPhase) == 1:
+                    #for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns_test[key] = value
+            else:
+                for ns in (ns_train,ns_test):
+                    caffeLayer = get_iterable(L.Data(
+                        ntop=2,
+                        transform_param=transform_param,
+                        data_param=data_param))
+                    #for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns[key] = value
+            '''
+
+            if 'dim' not in layerParams:
+                layerParams['dim'] = '10,3,224,224'
+
+            if layerPhase is not None:
+                caffeLayer = get_iterable(L.Input(
+                    input_param={'shape':{'dim':map(int,layerParams['dim'].split(','))}},
+                    include={
+                        'phase': int(layerPhase)
+                    }))
+                if int(layerPhase) == 0:
+                    #for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns_train[key] = value
+                elif int(layerPhase) == 1:
+                    #for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns_test[key] = value
+            else:
+                for ns in (ns_train,ns_test):
+                    caffeLayer = get_iterable(L.Input(
+                        input_param={'shape':{'dim':map(int,layerParams['dim'].split(','))}}))
+                    #for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns[key] = value
+
+        elif (layerType == 'Convolution'):
+
+            convolution_param={}
+            if layerParams['kernel_size'] != '':
+                convolution_param['kernel_size'] = int(float(layerParams['kernel_size']))
+            if layerParams['stride'] != '':
+                convolution_param['stride'] = int(float(layerParams['stride']))
+            if layerParams['num_output'] != '':
+                convolution_param['num_output'] = int(float(layerParams['num_output']))
+            if layerParams['pad'] != '':
+                convolution_param['pad'] = int(float(layerParams['pad']))
+            if layerParams['weight_filler'] != '':
+                convolution_param['weight_filler']={}
+                convolution_param['weight_filler']['type'] = layerParams['weight_filler']
+            if layerParams['bias_filler'] != '':
+                convolution_param['bias_filler']={}
+                convolution_param['bias_filler']['type'] = layerParams['bias_filler']
+
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.Convolution(
+                    *[ns[x] for x in blobNames[layerId]['bottom']],
+                    convolution_param=convolution_param,
+                    param=[
+                        {
+                            'lr_mult': 1
+                        },
+                        {
+                            'lr_mult': 2
+                        }
+                    ]))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
+        elif (layerType == 'ReLU'):
+            inplace = layerParams['inplace']
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.ReLU(
+                    *[ns[x] for x in blobNames[layerId]['bottom']],
+                    in_place=inplace))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
+        elif (layerType == 'Pooling'):
+
+            pooling_param={}
+            if layerParams['kernel_size'] != '':
+                pooling_param['kernel_size'] = int(float(layerParams['kernel_size']))
+            if layerParams['stride'] != '':
+                pooling_param['stride'] = int(float(layerParams['stride']))
+            if layerParams['pad'] != '':
+                pooling_param['pad'] = int(float(layerParams['pad']))
+            if layerParams['pool'] != '':
+                pool = layerParams['pool']
+                if(pool == 'MAX'):
+                    pool = 0
+                elif(pool == 'AVE'):
+                    pool = 1
+                elif(pool == 'STOCHASTIC'):
+                    pool = 2
+                pooling_param['pool'] = pool
+
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.Pooling(
+                    *[ns[x] for x in blobNames[layerId]['bottom']],
+                    pooling_param=pooling_param))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
+        elif (layerType == 'InnerProduct'):
+
+            inner_product_param={}
+            if layerParams['num_output'] != '':
+                inner_product_param['num_output'] = int(float(layerParams['num_output']))
+            if layerParams['weight_filler'] != '':
+                inner_product_param['weight_filler']={}
+                inner_product_param['weight_filler']['type'] = layerParams['weight_filler']
+            if layerParams['bias_filler'] != '':
+                inner_product_param['bias_filler']={}
+                inner_product_param['bias_filler']['type'] = layerParams['bias_filler']
+
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.InnerProduct(
+                    *[ns[x] for x in blobNames[layerId]['bottom']],
+                    inner_product_param=inner_product_param,
+                    param=[
+                        {
+                            'lr_mult': 1
+                        },
+                        {
+                            'lr_mult': 2
+                        }
+                    ]))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
+
+        elif (layerType == 'SoftmaxWithLoss'):
+            pass
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.SoftmaxWithLoss(# try L['SoftmaxWithLoss']
+                    *([ns[x] for x in blobNames[layerId]['bottom']])))
+                    #*([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
+        elif (layerType == 'Accuracy'):
+            pass
+
+            if layerPhase is not None:
+                caffeLayer = get_iterable(L.Accuracy(
+                    *([ns[x] for x in blobNames[layerId]['bottom']]),
+                    #*([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label]),
+                    include={
+                        'phase': int(layerPhase)
+                    }))
+                if int(layerPhase) == 0:
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns_train[key] = value
+                elif int(layerPhase) == 1:
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns_test[key] = value
+            else:
+                for ns in (ns_train,ns_test):
+                    caffeLayer = get_iterable(L.Accuracy(
+                        *([ns[x] for x in blobNames[layerId]['bottom']])))
+                        #*([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns[key] = value
+
+
+        elif (layerType == 'Dropout'):
+            # inplace dropout? caffe-tensorflow do not work
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.Dropout(
+                    *[ns[x] for x in blobNames[layerId]['bottom']],
+                    in_place=inplace))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
+        elif (layerType == 'LRN'):
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.LRN(
+                    *[ns[x] for x in blobNames[layerId]['bottom']]))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
+        elif (layerType == 'Concat'):
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.Concat(
+                    *[ns[x] for x in blobNames[layerId]['bottom']],
+                    ntop=len(blobNames[layerId]['top'])))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
+        elif (layerType == 'Softmax'):
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.Softmax(
+                    *([ns[x] for x in blobNames[layerId]['bottom']])))
+                    #*([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
+    train = str(ns_train.to_proto())
+    test = str(ns_test.to_proto())
+
+    # merge the train and test prototxt to get a single train_test prototxt
+    testIndex = [m.start() for m in re.finditer('layer', test)]
+
+    previousIndex = -1
+    for i in range(len(testIndex)):
+        if i < len(testIndex)-1:
+            layer = test[testIndex[i]:testIndex[i+1]]
+        else:
+            layer = test[testIndex[i]:]
+        a = train.find(layer)
+        if a != -1:
+            l = test[testIndex[previousIndex+1]:testIndex[i]]
+            train = train[0:a]+l+train[a:]
+            previousIndex = i
+    if previousIndex < len(testIndex)-1:
+        l = test[testIndex[previousIndex+1]:]
+        train = train + l
+
+    prototxt = train
+
+    return prototxt
 
 @csrf_exempt
-def export(request):
+def exportToCaffe(request):
     if request.method == 'POST':
 
         net = yaml.safe_load(request.POST.get('net'))
 
-        # assumption: a layer can accept only one input blob
-        # the data layer produces two blobs: data and label
-        # the loss layer requires two blobs: <someData> and label
-        # the label blob is hardcoded.
-        # layers name have to be unique
-
-        # custom DFS of the network
-        stack = []
-        layersProcessed = {}
-        processOrder = []
-        blobNames = {}
-        for layerId in net:
-            layersProcessed[layerId] = False
-            inplace = False
-            if 'inplace' in net[layerId]['params']:
-                # check this new checkbox at front
-                if net[layerId]['params']['inplace'] is True:
-                    inplace = True
-            blobNames[layerId] = {
-                'bottom': None,
-                'top': None,
-                'inplace': inplace
-            }
-        blobId = 0
-
-        def isProcessPossible(layerId):
-            inputs = net[layerId]['connection']['input']
-            for layerId in inputs:
-                if layersProcessed[layerId] is False:
-                    return False
-            return True
-
-        # finding the data layer
-        for layerId in net:
-            if(net[layerId]['info']['type'] == 'Data'):
-                stack.append(layerId)
-
-        def changeTopBlobName(layerId, newName):
-            if blobNames[layerId]['top'] == newName:
-                return
-            else:
-                blobNames[layerId]['top'] = newName
-                if blobNames[layerId]['inplace']:
-                    blobNames[layerId]['bottom'] = newName
-                    for inputId in net[layerId]['connection']['input']:
-                        changeTopBlobName(inputId, newName)
-
-        while len(stack):
-
-            i = len(stack) - 1
-
-            while isProcessPossible(stack[i]) is False:
-                i = i - 1
-
-            layerId = stack[i]
-            stack.remove(stack[i])
-
-            inputs = net[layerId]['connection']['input']
-            if len(inputs) > 0:
-                topBlobNameOfInputs = blobNames[inputs[0]]['top']
-                for inputId in inputs:
-                    if blobNames[inputId]['top'] != topBlobNameOfInputs:
-                        changeTopBlobName(inputId, topBlobNameOfInputs)
-                blobNames[layerId]['bottom'] = topBlobNameOfInputs
-
-            if blobNames[layerId]['inplace']:
-                blobNames[layerId]['top'] = blobNames[layerId]['bottom']
-            else:
-                blobNames[layerId]['top'] = "blob"+str(blobId)
-                blobId = blobId + 1
-
-            for outputId in net[layerId]['connection']['output']:
-                if outputId not in stack:
-                    stack.append(outputId)
-
-            layersProcessed[layerId] = True
-            processOrder.append(layerId)
-
-        # *****************************
-        # we have figured out the final blob names
-        # but now there is a problem with inplace operations with pycaffe
-        # it requires different blob names
-        # now we have to again tweak blob names
-        # so that pycaffe again corrects them
-
-        # making all common layers to have seperate bottom blobs
-        # for train and test phases
-        for layerId in net:
-            layerPhase = net[layerId]['info']['phase']
-            if layerPhase is None:
-                blobNames[layerId]['0'] = blobNames[layerId]['bottom']
-                blobNames[layerId]['1'] = blobNames[layerId]['bottom']
-
-        # changing blob names for all layers attached to a layer
-        # with inplace operation
-        # (taking into account the phase)
-        for layerId in blobNames:
-            if blobNames[layerId]['inplace'] is True:
-                layerPhase = net[layerId]['info']['phase']
-                outputs = net[layerId]['connection']['output']
-                for outputId in outputs:
-                    phase = net[outputId]['info']['phase']
-                    if phase is None:
-                        blobNames[outputId][layerPhase] = 'blob' + str(blobId)
-                    else:
-                        blobNames[outputId]['bottom'] = 'blob' + str(blobId)
-                blobNames[layerId]['top'] = 'blob' + str(blobId)
-                blobId = blobId + 1
-
-        # ******************************
-
-        ns = caffe.NetSpec()
-        ns_test = caffe.NetSpec()
-
-        for layerId in processOrder:
-
-            layer = net[layerId]
-            layerParams = layer['params']
-            layerType = layer['info']['type']
-            layerPhase = layer['info']['phase']
-            topBlob = blobNames[layerId]['top']
-
-            if (layerType == 'Data'):
-
-                data_param = {}
-                if layerParams['source'] != '':
-                    data_param['source'] = layerParams['source']
-                    # hardcoding mnsit dataset -change this later
-                    if layerPhase is not None:
-                        if int(layerPhase) == 0:
-                            data_param['source'] = BASE_DIR+'/cloudcvIde/media/dataset/mnsit/mnist_train_lmdb'
-                        elif int(layerPhase) == 1:
-                            data_param['source'] = BASE_DIR+'/cloudcvIde/media/dataset/mnsit/mnist_test_lmdb'
-                if layerParams['batch_size'] != '':
-                    data_param['batch_size'] = int(float(layerParams['batch_size']))
-                if layerParams['backend'] != '':
-                    backend = layerParams['backend']
-                    if(backend == 'LEVELDB'):
-                        backend = 0
-                    elif(backend == 'LMDB'):
-                        backend = 1
-                    data_param['backend'] = backend
-
-                transform_param = {}
-                if layerParams['scale'] != '':
-                    transform_param['scale'] = float(layerParams['scale'])
-
-
-                if layerPhase is not None:
-                    if int(layerPhase) == 0:
-                        ns[topBlob], ns.label = L.Data(
-                            ntop=2,
-                            transform_param=transform_param,
-                            data_param=data_param,
-                            include={
-                                'phase': 0
-                            })
-                    elif int(layerPhase) == 1:
-                        ns_test[topBlob], ns_test.label = L.Data(
-                            ntop=2,
-                            transform_param=transform_param,
-                            data_param=data_param,
-                            include={
-                                'phase': 1
-                            })
-                else:
-                    ns[topBlob], ns.label = L.Data(
-                        ntop=2,
-                        transform_param=transform_param,
-                        data_param=data_param)
-                    ns_test[topBlob], ns_test.label = L.Data(
-                        ntop=2,
-                        transform_param=transform_param,
-                        data_param=data_param)
-
-            elif (layerType == 'Convolution'):
-
-                convolution_param={}
-                if layerParams['kernel_size'] != '':
-                    convolution_param['kernel_size'] = int(float(layerParams['kernel_size']))
-                if layerParams['stride'] != '':
-                    convolution_param['stride'] = int(float(layerParams['stride']))
-                if layerParams['num_output'] != '':
-                    convolution_param['num_output'] = int(float(layerParams['num_output']))
-                if layerParams['pad'] != '':
-                    convolution_param['pad'] = int(float(layerParams['pad']))
-                if layerParams['weight_filler'] != '':
-                    convolution_param['weight_filler']={}
-                    convolution_param['weight_filler']['type'] = layerParams['weight_filler']
-                if layerParams['bias_filler'] != '':
-                    convolution_param['bias_filler']={}
-                    convolution_param['bias_filler']['type'] = layerParams['bias_filler']
-
-                if layerPhase is not None:
-                    if int(layerPhase) == 0:
-                        ns[topBlob] = L.Convolution(
-                            ns[blobNames[layerId]['bottom']],
-                            convolution_param=convolution_param,
-                            param=[
-                                {
-                                    'lr_mult': 1
-                                },
-                                {
-                                    'lr_mult': 2
-                                }
-                            ],
-                            include={
-                                'phase': 0
-                            })
-                    elif int(layerPhase) == 1:
-                        ns_test[topBlob] = L.Convolution(
-                            ns_test[blobNames[layerId]['bottom']],
-                            convolution_param=convolution_param,
-                            param=[
-                                {
-                                    'lr_mult': 1
-                                },
-                                {
-                                    'lr_mult': 2
-                                }
-                            ],
-                            include={
-                                'phase': 1
-                            })
-                else:
-                    ns[topBlob] = L.Convolution(
-                        ns[blobNames[layerId]['0']],
-                        convolution_param=convolution_param,
-                        param=[
-                            {
-                                'lr_mult': 1
-                            },
-                            {
-                                'lr_mult': 2
-                            }
-                        ])
-                    ns_test[topBlob] = L.Convolution(
-                        ns_test[blobNames[layerId]['1']],
-                        convolution_param=convolution_param,
-                        param=[
-                            {
-                                'lr_mult': 1
-                            },
-                            {
-                                'lr_mult': 2
-                            }
-                        ])
-
-            elif (layerType == 'ReLU'):
-                inplace = layerParams['inplace']
-                if layerPhase is not None:
-                    if int(layerPhase) == 0:
-                        ns[topBlob] = L.ReLU(
-                            ns[blobNames[layerId]['bottom']],
-                            in_place=inplace,
-                            include={
-                                'phase': 0
-                            })
-                    elif int(layerPhase) == 1:
-                        ns_test[topBlob] = L.ReLU(
-                            ns_test[blobNames[layerId]['bottom']],
-                            in_place=inplace,
-                            include={
-                                'phase': 1
-                            })
-                else:
-                    ns[topBlob] = L.ReLU(
-                        ns[blobNames[layerId]['0']],
-                        in_place=inplace)
-                    ns_test[topBlob] = L.ReLU(
-                        ns_test[blobNames[layerId]['1']],
-                        in_place=inplace)
-
-            elif (layerType == 'Pooling'):
-
-                pooling_param={}
-                if layerParams['kernel_size'] != '':
-                    pooling_param['kernel_size'] = int(float(layerParams['kernel_size']))
-                if layerParams['stride'] != '':
-                    pooling_param['stride'] = int(float(layerParams['stride']))
-                if layerParams['pad'] != '':
-                    pooling_param['pad'] = int(float(layerParams['pad']))
-                if layerParams['pool'] != '':
-                    pool = layerParams['pool']
-                    if(pool == 'MAX'):
-                        pool = 0
-                    elif(pool == 'AVE'):
-                        pool = 1
-                    elif(pool == 'STOCHASTIC'):
-                        pool = 2
-                    pooling_param['pool'] = pool
-
-
-                if layerPhase is not None:
-                    if int(layerPhase) == 0:
-                        ns[topBlob] = L.Pooling(
-                            ns[blobNames[layerId]['bottom']],
-                            pooling_param=pooling_param,
-                            include={
-                                'phase': 0
-                            })
-                    elif int(layerPhase) == 1:
-                        ns_test[topBlob] = L.Pooling(
-                            ns_test[blobNames[layerId]['bottom']],
-                            pooling_param=pooling_param,
-                            include={
-                                'phase': 1
-                            })
-                else:
-                    ns[topBlob] = L.Pooling(
-                        ns[blobNames[layerId]['0']],
-                        pooling_param=pooling_param)
-                    ns_test[topBlob] = L.Pooling(
-                        ns_test[blobNames[layerId]['1']],
-                        pooling_param=pooling_param)
-
-            elif (layerType == 'InnerProduct'):
-
-                inner_product_param={}
-                if layerParams['num_output'] != '':
-                    inner_product_param['num_output'] = int(float(layerParams['num_output']))
-                if layerParams['weight_filler'] != '':
-                    inner_product_param['weight_filler']={}
-                    inner_product_param['weight_filler']['type'] = layerParams['weight_filler']
-                if layerParams['bias_filler'] != '':
-                    inner_product_param['bias_filler']={}
-                    inner_product_param['bias_filler']['type'] = layerParams['bias_filler']
-
-                if layerPhase is not None:
-                    if int(layerPhase) == 0:
-                        ns[topBlob] = L.InnerProduct(
-                            ns[blobNames[layerId]['bottom']],
-                            inner_product_param=inner_product_param,
-                            param=[
-                                {
-                                    'lr_mult': 1
-                                },
-                                {
-                                    'lr_mult': 2
-                                }
-                            ],
-                            include={
-                                'phase': 0
-                            })
-                    elif int(layerPhase) == 1:
-                        ns_test[topBlob] = L.InnerProduct(
-                            ns_test[blobNames[layerId]['bottom']],
-                            inner_product_param=inner_product_param,
-                            param=[
-                                {
-                                    'lr_mult': 1
-                                },
-                                {
-                                    'lr_mult': 2
-                                }
-                            ],
-                            include={
-                                'phase': 1
-                            })
-                else:
-                    ns[topBlob] = L.InnerProduct(
-                        ns[blobNames[layerId]['0']],
-                        inner_product_param=inner_product_param,
-                        param=[
-                            {
-                                'lr_mult': 1
-                            },
-                            {
-                                'lr_mult': 2
-                            }
-                        ])
-                    ns_test[topBlob] = L.InnerProduct(
-                        ns_test[blobNames[layerId]['1']],
-                        inner_product_param=inner_product_param,
-                        param=[
-                            {
-                                'lr_mult': 1
-                            },
-                            {
-                                'lr_mult': 2
-                            }
-                        ])
-
-            elif (layerType == 'SoftmaxWithLoss'):
-                if layerPhase is not None:
-                    if int(layerPhase) == 0:
-                        ns[topBlob] = L.SoftmaxWithLoss(
-                            ns[blobNames[layerId]['bottom']],
-                            ns.label,
-                            include={
-                                'phase': 0
-                            })
-                    elif int(layerPhase) == 1:
-                        ns_test[topBlob] = L.SoftmaxWithLoss(
-                            ns_test[blobNames[layerId]['bottom']],
-                            ns_test.label,
-                            include={
-                                'phase': 1
-                            })
-                else:
-                    ns[topBlob] = L.SoftmaxWithLoss(
-                        ns[blobNames[layerId]['0']],
-                        ns.label)
-                    ns_test[topBlob] = L.SoftmaxWithLoss(
-                        ns_test[blobNames[layerId]['1']],
-                        ns_test.label)
-
-            elif (layerType == 'Accuracy'):
-                if layerPhase is not None:
-                    if int(layerPhase) == 0:
-                        ns[topBlob] = L.Accuracy(
-                            ns[blobNames[layerId]['bottom']],
-                            ns.label,
-                            include={
-                                'phase': 0
-                            })
-                    elif int(layerPhase) == 1:
-                        ns_test[topBlob] = L.Accuracy(
-                            ns_test[blobNames[layerId]['bottom']],
-                            ns_test.label,
-                            include={
-                                'phase': 1
-                            })
-                else:
-                    ns[topBlob] = L.Accuracy(
-                        ns[blobNames[layerId]['0']],
-                        ns.label)
-                    ns_test[topBlob] = L.Accuracy(
-                        ns_test[blobNames[layerId]['1']],
-                        ns_test.label)
-
-        train = str(ns.to_proto())
-        test = str(ns_test.to_proto())
-
-        # merge the train and test prototxt to get a single train_test prototxt
-        testIndex = [m.start() for m in re.finditer('layer', test)]
-
-        previousIndex = -1
-        for i in range(len(testIndex)):
-            if i < len(testIndex)-1:
-                layer = test[testIndex[i]:testIndex[i+1]]
-            else:
-                layer = test[testIndex[i]:]
-            a = train.find(layer)
-            if a != -1:
-                l = test[testIndex[previousIndex+1]:testIndex[i]]
-                train = train[0:a]+l+train[a:]
-                previousIndex = i
-        if previousIndex < len(testIndex)-1:
-            l = test[testIndex[previousIndex+1]:]
-            train = train + l
-
-        prototxt = train
+        prototxt = convertNetToPrototxt(net)
 
         randomId=datetime.now().strftime('%Y%m%d%H%M%S')+randomword(5)
 
@@ -488,7 +391,25 @@ def export(request):
             f.write(prototxt)
 
         return HttpResponse(
-            json.dumps({'result': prototxt, 'id': randomId}),
+            json.dumps({'id': randomId, 'name': randomId+'.prototxt', 'url': '/media/prototxt/'+randomId+'.prototxt'}),
+            content_type="application/json")
+
+@csrf_exempt
+def exportToTensorflow(request):
+    if request.method == 'POST':
+
+        net = yaml.safe_load(request.POST.get('net'))
+        prototxt = convertNetToPrototxt(net)
+
+        randomId=datetime.now().strftime('%Y%m%d%H%M%S')+randomword(5)
+
+        with open(BASE_DIR+'/cloudcvIde/media/prototxt/'+randomId+'.prototxt', 'w') as f:
+            f.write(prototxt)
+
+        os.system('python '+BASE_DIR+'/cloudcvIde/caffe-tensorflow-master/convert.py '+BASE_DIR+'/cloudcvIde/media/prototxt/'+randomId+'.prototxt --code-output-path='+BASE_DIR+'/cloudcvIde/media/tensorflow/'+randomId+'.py')
+
+        return HttpResponse(
+            json.dumps({'id': randomId, 'name': randomId+'.py', 'url': '/media/tensorflow/'+randomId+'.py'}),
             content_type="application/json")
 
 
@@ -550,6 +471,9 @@ def importModel(request):
                 pass
             elif(layer.type == 'Accuracy'):
                 pass
+            elif(layer.type == 'Input'):
+                params['dim'] = str(map(int,layer.input_param.shape[0].dim))[1:-1]
+                # string '64,1,28,28'
 
             jsonLayer = {
                 'info': {

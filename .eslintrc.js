@@ -6,7 +6,6 @@ module.exports = {
     "globals": {
         "instance": true,
         "addLayerEndpoints": true,
-        "prototxtId": true,
         "jsPlumb": false,
         "$": false
     }

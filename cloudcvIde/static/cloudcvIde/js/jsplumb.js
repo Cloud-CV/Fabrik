@@ -1,4 +1,48 @@
 export default function () {
+  let ArrowConnector = function(params) {
+  params = params || { dx: 120, dy: 120 };
+  let _super =  jsPlumb.Connectors.AbstractConnector.apply(this, arguments);
+  this.type = "ArrowConnector";
+  let dx = params.x || 50,
+    dy = params.y || 50;
+
+  this._compute = function(paintInfo, paintParams) {
+    console.log(paintInfo);
+    console.log(paintParams);
+    let w = paintInfo.w,
+      h = paintInfo.h;
+
+    if(paintParams.targetEndpoint.isTarget && paintParams.targetEndpoint.element.attributes['data-type'].nodeValue === 'Concat'){
+      _super.addSegment(this, "Straight", {
+        x1:paintInfo.sx,
+        y1:paintInfo.sy,
+        x2:paintInfo.tx - dx,
+        y2:paintInfo.sy
+      });
+      _super.addSegment(this, "Straight", {
+        x1:paintInfo.tx - dx,
+        y1:paintInfo.sy,
+        x2:paintInfo.tx,
+        y2:paintInfo.ty
+      });
+    } else {
+      _super.addSegment(this, "Straight", {
+        x1:paintInfo.sx,
+        y1:paintInfo.sy,
+        x2:paintInfo.sx + dx,
+        y2:paintInfo.ty
+      });
+      _super.addSegment(this, "Straight", {
+        x1:paintInfo.sx + dx,
+        y1:paintInfo.ty,
+        x2:paintInfo.tx,
+        y2:paintInfo.ty
+      });
+    }
+  };
+};
+jsPlumbUtil.extend(ArrowConnector, jsPlumb.Connectors.AbstractConnector);
+jsPlumb.registerConnectorType(ArrowConnector, "ArrowConnector");
   const instance = window.jsp = jsPlumb.getInstance({
     DragOptions: { cursor: 'pointer', zIndex: 2000 },
     ConnectionOverlays: [
@@ -7,8 +51,8 @@ export default function () {
           location: 1,
           visible: true,
           id: 'ARROW',
-          width: 20,
-          length: 20,
+          width: 10,
+          length: 10,
         },
       ],
     ],
@@ -16,8 +60,8 @@ export default function () {
   });
 
   const connectorPaintStyle = {
-    lineWidth: 5,
-    strokeStyle: 'rgba(0, 122, 204,0.7)',
+    lineWidth: 2,
+    strokeStyle: 'black',
   };
 
   const sourceEndpoint = {
@@ -28,13 +72,7 @@ export default function () {
     },
     isSource: true,
     connector: [
-      'Flowchart',
-      {
-        stub: [5, 10],
-        gap: 5,
-        cornerRadius: 10,
-        alwaysRespectStubs: true,
-      },
+      'ArrowConnector'
     ],
     connectorStyle: connectorPaintStyle,
     maxConnections: -1,
@@ -68,3 +106,5 @@ export default function () {
 
   return { instance, addLayerEndpoints };
 }
+
+

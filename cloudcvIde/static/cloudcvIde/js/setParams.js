@@ -81,7 +81,7 @@ class SetParams extends React.Component {
 
 
       return (
-        <div className="col-md-3 setparams" >
+        <div className="col-md-3 setparams setparamsActive" >
 
           <div className="setHead" style={{ color: data[layer.info.type].color }}>
             {layer.props.name} layer selected

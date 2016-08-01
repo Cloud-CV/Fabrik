@@ -10,24 +10,22 @@ class TopBar extends React.Component {
           </div>
           <div className="col-md-5" >
             <div className="form-inline">
-              <div className="form-group">
-                <input id="inputFile" type="file" />
+              <div className="form-group" style={{'float':'right'}}>
+                <div className="dropdown">
+                  <button className="btn btn-primary dropdown-toggle form-control" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Export
+                  </button>
+                  <ul className="dropdown-menu pull-right"  aria-labelledby="dropdownMenu1">
+                    <li><a href="#" onClick={() => this.props.exportNet('caffe')}>caffe</a></li>
+                    <li><a href="#" onClick={() => this.props.exportNet('tensorflow')}>tensorflow</a></li>
+                  </ul>
+                </div>
               </div>
-              <div className="form-group">
-                <input
-                  className="btn btn-success form-control"
-                  type="submit"
-                  value="Import"
-                  onClick={this.props.importNet}
-                />
-              </div>
-              <div className="form-group">
-                <input
-                  className="btn btn-success form-control"
-                  onClick={this.props.exportNet}
-                  type="submit"
-                  value="Export"
-                />
+              <div className="form-group" style={{'float':'right'}}>
+                <label htmlFor="inputFile" className="btn btn-primary form-control">
+                  Import
+                </label>
+                <input id="inputFile" type="file" onChange={this.props.importNet}/>
               </div>
             </div>
           </div>

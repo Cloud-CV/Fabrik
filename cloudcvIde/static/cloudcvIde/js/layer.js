@@ -19,11 +19,12 @@ class Layer extends React.Component {
         className={`layer ${this.props.class}`}
         id={this.props.id}
         style={{
-          top: this.props.top,
-          left: this.props.left,
+          top:this.props.top,
+          left:this.props.left,
           background: data[this.props.type].color,
         }}
-        onClick={() => this.props.click(this.props.id)}
+        data-type={this.props.type}
+        onClick={(event) => this.props.click(event, this.props.id)}
       >
         {data[this.props.type].name}
       </div>

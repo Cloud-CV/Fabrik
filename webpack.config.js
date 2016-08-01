@@ -6,13 +6,6 @@ module.exports = {
          path: './cloudcvIde/static/cloudcvIde/bundle/',
          filename: 'bundle.js',
      },
-     plugins: [
-        new webpack.ProvidePlugin({ 
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery' 
-        })
-    ],
      module: {
          loaders: [{
              test: /\.js$/,

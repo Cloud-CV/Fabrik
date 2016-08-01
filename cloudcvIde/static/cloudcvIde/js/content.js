@@ -5,6 +5,7 @@ import SetParams from './setParams';
 import TopBar from './topBar';
 import Tabs from './tabs';
 import data from './data';
+import netLayout from './netLayout';
 
 class Content extends React.Component {
   constructor(props) {
@@ -129,7 +130,7 @@ class Content extends React.Component {
     });
     this.setState({ net, selectedLayer: null });
   }
-  exportNet() {
+  exportNet(framework) {
     this.setState({ error: [] });
     const error = [];
     const net = this.state.net;
@@ -152,18 +153,19 @@ class Content extends React.Component {
         delete netData[layerId].state;
       });
 
+      const url = {'caffe': '/cloudcvide/export_caffe', 'tensorflow': '/cloudcvide/export_tensorflow'}
+
       $.ajax({
-        url: '/cloudcvide/export',
+        url: url[framework],
         dataType: 'json',
         type: 'POST',
         data: {
           net: JSON.stringify(netData),
         },
         success(response) {
-          prototxtId = response.id;
           const downloadAnchor = document.getElementById('download');
-          downloadAnchor.download = `${prototxtId}.prototxt`;
-          downloadAnchor.href = `/media/prototxt/${prototxtId}.prototxt`;
+          downloadAnchor.download = response.name;
+          downloadAnchor.href = response.url;
           downloadAnchor.click();
         },
         error() {
@@ -193,6 +195,7 @@ class Content extends React.Component {
   initialiseImportedNet(net) {
     // this line will unmount all the layers
     // so that the new imported layers will all be mounted again
+    console.log(net);
     const tempError = {};
     const error = [];
     this.setState({ net: {}, selectedLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
@@ -219,6 +222,18 @@ class Content extends React.Component {
       } else {
         tempError[type] = null;
       }
+    });
+
+    // initialize the position of layers
+    let positions = netLayout(net);
+    console.log(positions);
+    Object.keys(positions).forEach(layerId => {
+      const layer = net[layerId];
+      layer.state = {
+        top: `${250 + 50 * positions[layerId][1]}px`,
+        left: `${20 + 180 * positions[layerId][0]}px`,
+        class: '',
+      };
     });
 
     if (Object.keys(tempError).length) {
@@ -307,9 +322,17 @@ class Content extends React.Component {
           exportNet={this.exportNet}
           importNet={this.importNet}
         />
-        <Tabs selectedPhase={this.state.selectedPhase} changeNetPhase={this.changeNetPhase} />
-        <div className="content row">
+
+        <div className="content">
+          <div className="pane">
+          <ul className="nav nav-pills">
           <Pane />
+          <li style={{paddingTop:'4px'}}>
+          <button><span className="glyphicon glyphicon-cog" style={{fontSize:'24px'}}></span></button>
+          </li>
+          <Tabs selectedPhase={this.state.selectedPhase} changeNetPhase={this.changeNetPhase} />
+          </ul>
+          </div>
           <Canvas
             net={this.state.net}
             selectedPhase={this.state.selectedPhase}
