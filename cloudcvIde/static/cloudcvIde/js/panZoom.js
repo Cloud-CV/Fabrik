@@ -3,7 +3,7 @@ export default function() {
 
   var panZoom = document.getElementById('panZoomContainer'),
     canvas = document.getElementById('jsplumbContainer');
-  console.log(panZoom.offsetLeft)
+
   if (!canvas) { return; }
 
   var params = { x: getQueryVariable('x'), y: getQueryVariable('y'), zoom: getQueryVariable('zoom') };
@@ -43,7 +43,6 @@ export default function() {
     previousMousePosition;
 
   panZoom.onmousedown = function(e) {
-    console.log('mouse down');
     e.preventDefault();
     dragging = true;
     state.click = true;
@@ -52,17 +51,14 @@ export default function() {
 
   window.onmouseup = function() {
   //panZoom.onmouseup = function() {
-    console.log('mouse up');
     dragging = false;
   };
 
   panZoom.ondragstart = function(e) {
-    console.log('on drag start');
     e.preventDefault();
   };
 
   panZoom.onmousemove = function(e) {
-    console.log('on mouse move');
     if(state.click){
       state.pan = true;
     }

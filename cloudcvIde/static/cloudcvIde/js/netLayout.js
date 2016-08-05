@@ -29,9 +29,6 @@ function isProcessPossible(layerId){
 
 // allocatePosition finds the closest position available to preferred position
 function allocatePosition(layerId, preferredPosition){
-  console.log(layerId);
-  console.log('preferred position '+preferredPosition);
-  console.log('map '+JSON.stringify(map));
   if (!map.hasOwnProperty(preferredPosition[0])) {
     map[preferredPosition[0]] = [];
   }
@@ -44,7 +41,6 @@ function allocatePosition(layerId, preferredPosition){
         // may be avoid overlapping edges
         if (map[preferredPosition[0] - 1].indexOf(temp + i) === -1) {
           position[layerId] = [preferredPosition[0], temp + i];
-          console.log('temp+i '+preferredPosition[0]+' , '+(temp + i))
           map[preferredPosition[0]].push(position[layerId][1]);
           return;
         }
@@ -53,7 +49,6 @@ function allocatePosition(layerId, preferredPosition){
         // may be avoid overlapping edges
         if (map[preferredPosition[0] - 1].indexOf(temp - i) === -1) {
           position[layerId] = [preferredPosition[0], temp - i];
-          console.log('temp-i '+preferredPosition[0]+' , '+(temp - i))
           map[preferredPosition[0]].push(position[layerId][1]);
           return;
         }
@@ -63,7 +58,6 @@ function allocatePosition(layerId, preferredPosition){
 
   } else {
     position[layerId] = preferredPosition;
-    console.log('exact '+preferredPosition[0]+' , '+preferredPosition[1]);
     map[preferredPosition[0]].push(position[layerId][1]);
     return;
   }

@@ -17,9 +17,7 @@ class Canvas extends React.Component {
     this.mouseState = null;
   }
   componentDidMount() {
-    const temp = jsPlumbReady();
-    instance = temp.instance;
-    addLayerEndpoints = temp.addLayerEndpoints;
+    instance = jsPlumbReady();
     instance.bind('connection', this.connectionEvent.bind(this));
     instance.bind('connectionDetached', this.detachConnectionEvent.bind(this));
     this.mouseState = panZoom();
@@ -60,7 +58,6 @@ class Canvas extends React.Component {
     } else if (this.clickOrDraggedLayer === 1) {
       this.clickOrDraggedLayer = 0; // dragged
     }
-    console.log(event.target.id);
     event.stopPropagation();
   }
   clickCanvas(event) {
@@ -115,10 +112,8 @@ class Canvas extends React.Component {
   }
   drop(event) {
     event.preventDefault();
-    console.dir(event.target);
     const canvas = document.getElementById('jsplumbContainer');
     const zoom = instance.getZoom();
-    console.log(zoom);
 
     const type = event.dataTransfer.getData('element_type');
     if (data[type].learn && (this.props.selectedPhase === 1)) {
@@ -134,12 +129,12 @@ class Canvas extends React.Component {
 
       layer.info = { type, phase };
       layer.state = {
-        top: `${(event.clientY - event.target.getBoundingClientRect().top - canvas.y)/zoom - 30}px`,
-        left: `${(event.clientX - event.target.getBoundingClientRect().left - canvas.x)/zoom - 65}px`,
+        top: `${(event.clientY - event.target.getBoundingClientRect().top - canvas.y)/zoom - 25}px`,
+        left: `${(event.clientX - event.target.getBoundingClientRect().left - canvas.x)/zoom - 45}px`,
         class: '',
       };
-      // 30px difference between layerTop and dropping point
-      // 65px difference between layerLeft and dropping point
+      // 25px difference between layerTop and dropping point
+      // 45px difference between layerLeft and dropping point
       layer.connection = { input: [], output: [] };
       layer.params = {};
       Object.keys(data[type].params).forEach(j => {

@@ -6,10 +6,8 @@ class Tabs extends React.Component {
       e.preventDefault();
       if (e.target.id === 'train') {
         this.props.changeNetPhase(0);
-        console.log("train phase");
       } else if (e.target.id === 'test') {
         this.props.changeNetPhase(1);
-        console.log("test phase");
       }
     });
   }

@@ -26840,7 +26840,6 @@
 	    value: function initialiseImportedNet(net) {
 	      // this line will unmount all the layers
 	      // so that the new imported layers will all be mounted again
-	      console.log(net);
 	      var tempError = {};
 	      var error = [];
 	      this.setState({ net: {}, selectedLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
@@ -26859,11 +26858,6 @@
 	          layer.props = {};
 	          // default name
 	          layer.props.name = '' + _data2.default[type].name + index;
-	          layer.state = {
-	            top: 130 + 100 * Math.floor(index / 4) + 'px',
-	            left: 30 + 170 * (index % 4) + 'px',
-	            class: ''
-	          };
 	        } else {
 	          tempError[type] = null;
 	        }
@@ -26871,7 +26865,6 @@
 
 	      // initialize the position of layers
 	      var positions = (0, _netLayout2.default)(net);
-	      console.log(positions);
 	      Object.keys(positions).forEach(function (layerId) {
 	        var layer = net[layerId];
 	        layer.state = {
@@ -27103,9 +27096,7 @@
 	  _createClass(Canvas, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var temp = (0, _jsplumb2.default)();
-	      instance = temp.instance;
-	      addLayerEndpoints = temp.addLayerEndpoints;
+	      instance = (0, _jsplumb2.default)();
 	      instance.bind('connection', this.connectionEvent.bind(this));
 	      instance.bind('connectionDetached', this.detachConnectionEvent.bind(this));
 	      this.mouseState = (0, _panZoom2.default)();
@@ -27155,7 +27146,6 @@
 	      } else if (this.clickOrDraggedLayer === 1) {
 	        this.clickOrDraggedLayer = 0; // dragged
 	      }
-	      console.log(event.target.id);
 	      event.stopPropagation();
 	    }
 	  }, {
@@ -27224,10 +27214,8 @@
 	      var _this3 = this;
 
 	      event.preventDefault();
-	      console.dir(event.target);
 	      var canvas = document.getElementById('jsplumbContainer');
 	      var zoom = instance.getZoom();
-	      console.log(zoom);
 
 	      var type = event.dataTransfer.getData('element_type');
 	      if (_data2.default[type].learn && this.props.selectedPhase === 1) {
@@ -27244,12 +27232,12 @@
 
 	          layer.info = { type: type, phase: phase };
 	          layer.state = {
-	            top: (event.clientY - event.target.getBoundingClientRect().top - canvas.y) / zoom - 30 + 'px',
-	            left: (event.clientX - event.target.getBoundingClientRect().left - canvas.x) / zoom - 65 + 'px',
+	            top: (event.clientY - event.target.getBoundingClientRect().top - canvas.y) / zoom - 25 + 'px',
+	            left: (event.clientX - event.target.getBoundingClientRect().left - canvas.x) / zoom - 45 + 'px',
 	            class: ''
 	          };
-	          // 30px difference between layerTop and dropping point
-	          // 65px difference between layerLeft and dropping point
+	          // 25px difference between layerTop and dropping point
+	          // 45px difference between layerLeft and dropping point
 	          layer.connection = { input: [], output: [] };
 	          layer.params = {};
 	          Object.keys(_data2.default[type].params).forEach(function (j) {
@@ -27701,8 +27689,6 @@
 	        dy = params.y || 50;
 
 	    this._compute = function (paintInfo, paintParams) {
-	      console.log(paintInfo);
-	      console.log(paintParams);
 	      var w = paintInfo.w,
 	          h = paintInfo.h;
 
@@ -27777,7 +27763,7 @@
 	    isTarget: true
 	  };
 
-	  function addLayerEndpoints(toId, sourceAnchors, targetAnchors) {
+	  instance.addLayerEndpoints = function addLayerEndpoints(toId, sourceAnchors, targetAnchors) {
 	    var i = void 0;
 	    var sourceUUID = void 0;
 	    var targetUUID = void 0;
@@ -27789,9 +27775,9 @@
 	      targetUUID = toId + '-t' + i;
 	      instance.addEndpoint(toId, targetEndpoint, { anchor: targetAnchors[i], uuid: targetUUID });
 	    }
-	  }
+	  };
 
-	  return { instance: instance, addLayerEndpoints: addLayerEndpoints };
+	  return instance;
 	};
 
 /***/ },
@@ -27835,7 +27821,7 @@
 	  _createClass(Layer, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      addLayerEndpoints(this.props.id, _data2.default[this.props.type].endpoint.src, _data2.default[this.props.type].endpoint.trg);
+	      instance.addLayerEndpoints(this.props.id, _data2.default[this.props.type].endpoint.src, _data2.default[this.props.type].endpoint.trg);
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -27969,7 +27955,7 @@
 
 	  var panZoom = document.getElementById('panZoomContainer'),
 	      canvas = document.getElementById('jsplumbContainer');
-	  console.log(panZoom.offsetLeft);
+
 	  if (!canvas) {
 	    return;
 	  }
@@ -28013,7 +27999,6 @@
 	      previousMousePosition;
 
 	  panZoom.onmousedown = function (e) {
-	    console.log('mouse down');
 	    e.preventDefault();
 	    dragging = true;
 	    state.click = true;
@@ -28022,17 +28007,14 @@
 
 	  window.onmouseup = function () {
 	    //panZoom.onmouseup = function() {
-	    console.log('mouse up');
 	    dragging = false;
 	  };
 
 	  panZoom.ondragstart = function (e) {
-	    console.log('on drag start');
 	    e.preventDefault();
 	  };
 
 	  panZoom.onmousemove = function (e) {
-	    console.log('on mouse move');
 	    if (state.click) {
 	      state.pan = true;
 	    }
@@ -28843,10 +28825,8 @@
 	        e.preventDefault();
 	        if (e.target.id === 'train') {
 	          _this2.props.changeNetPhase(0);
-	          console.log("train phase");
 	        } else if (e.target.id === 'test') {
 	          _this2.props.changeNetPhase(1);
-	          console.log("test phase");
 	        }
 	      });
 	    }
@@ -28921,9 +28901,6 @@
 
 	  // allocatePosition finds the closest position available to preferred position
 	  function allocatePosition(layerId, preferredPosition) {
-	    console.log(layerId);
-	    console.log('preferred position ' + preferredPosition);
-	    console.log('map ' + JSON.stringify(map));
 	    if (!map.hasOwnProperty(preferredPosition[0])) {
 	      map[preferredPosition[0]] = [];
 	    }
@@ -28937,7 +28914,6 @@
 	          // may be avoid overlapping edges
 	          if (map[preferredPosition[0] - 1].indexOf(temp + _i) === -1) {
 	            position[layerId] = [preferredPosition[0], temp + _i];
-	            console.log('temp+i ' + preferredPosition[0] + ' , ' + (temp + _i));
 	            map[preferredPosition[0]].push(position[layerId][1]);
 	            return;
 	          }
@@ -28946,7 +28922,6 @@
 	          // may be avoid overlapping edges
 	          if (map[preferredPosition[0] - 1].indexOf(temp - _i) === -1) {
 	            position[layerId] = [preferredPosition[0], temp - _i];
-	            console.log('temp-i ' + preferredPosition[0] + ' , ' + (temp - _i));
 	            map[preferredPosition[0]].push(position[layerId][1]);
 	            return;
 	          }
@@ -28955,7 +28930,6 @@
 	      }
 	    } else {
 	      position[layerId] = preferredPosition;
-	      console.log('exact ' + preferredPosition[0] + ' , ' + preferredPosition[1]);
 	      map[preferredPosition[0]].push(position[layerId][1]);
 	      return;
 	    }

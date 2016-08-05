@@ -4,7 +4,7 @@ import data from './data';
 
 class Layer extends React.Component {
   componentDidMount() {
-    addLayerEndpoints(this.props.id,
+    instance.addLayerEndpoints(this.props.id,
       data[this.props.type].endpoint.src,
       data[this.props.type].endpoint.trg
     );

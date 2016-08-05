@@ -195,7 +195,6 @@ class Content extends React.Component {
   initialiseImportedNet(net) {
     // this line will unmount all the layers
     // so that the new imported layers will all be mounted again
-    console.log(net);
     const tempError = {};
     const error = [];
     this.setState({ net: {}, selectedLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
@@ -214,11 +213,6 @@ class Content extends React.Component {
         layer.props = {};
         // default name
         layer.props.name = `${data[type].name}${index}`;
-        layer.state = {
-          top: `${130 + 100 * Math.floor(index / 4)}px`,
-          left: `${30 + 170 * (index % 4)}px`,
-          class: '',
-        };
       } else {
         tempError[type] = null;
       }
@@ -226,7 +220,6 @@ class Content extends React.Component {
 
     // initialize the position of layers
     let positions = netLayout(net);
-    console.log(positions);
     Object.keys(positions).forEach(layerId => {
       const layer = net[layerId];
       layer.state = {
@@ -322,16 +315,15 @@ class Content extends React.Component {
           exportNet={this.exportNet}
           importNet={this.importNet}
         />
-
         <div className="content">
           <div className="pane">
-          <ul className="nav nav-pills">
-          <Pane />
-          <li style={{paddingTop:'4px'}}>
-          <button><span className="glyphicon glyphicon-cog" style={{fontSize:'24px'}}></span></button>
-          </li>
-          <Tabs selectedPhase={this.state.selectedPhase} changeNetPhase={this.changeNetPhase} />
-          </ul>
+            <ul className="nav nav-pills">
+              <Pane />
+              <li style={{paddingTop:'4px'}}>
+                <button><span className="glyphicon glyphicon-cog" style={{fontSize:'24px'}}></span></button>
+              </li>
+              <Tabs selectedPhase={this.state.selectedPhase} changeNetPhase={this.changeNetPhase} />
+            </ul>
           </div>
           <Canvas
             net={this.state.net}

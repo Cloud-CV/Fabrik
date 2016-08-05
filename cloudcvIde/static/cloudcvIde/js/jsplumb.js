@@ -7,8 +7,6 @@ export default function () {
     dy = params.y || 50;
 
   this._compute = function(paintInfo, paintParams) {
-    console.log(paintInfo);
-    console.log(paintParams);
     let w = paintInfo.w,
       h = paintInfo.h;
 
@@ -90,7 +88,7 @@ jsPlumb.registerConnectorType(ArrowConnector, "ArrowConnector");
   };
 
 
-  function addLayerEndpoints(toId, sourceAnchors, targetAnchors) {
+  instance.addLayerEndpoints = function addLayerEndpoints(toId, sourceAnchors, targetAnchors) {
     let i;
     let sourceUUID;
     let targetUUID;
@@ -104,7 +102,7 @@ jsPlumb.registerConnectorType(ArrowConnector, "ArrowConnector");
     }
   }
 
-  return { instance, addLayerEndpoints };
+  return instance;
 }
 
 
