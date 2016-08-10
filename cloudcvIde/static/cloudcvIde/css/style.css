@@ -1,7 +1,4 @@
-#demo{
-    padding-left: 100px;
-    padding-right: 100px;
-}
+
 
 #jsplumbContainer {
   position: absolute;
@@ -12,8 +9,15 @@
 
 }
 
-.container-fluid {
+html,body,#app,.app{
+  height:100%;
+}
 
+.container-fluid{
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  padding-bottom: 15px;
 }
 
 .topBarHead{
@@ -23,16 +27,20 @@
 .topBar .btn{
   margin: 5px;
   overflow: auto;
+  flex: 0 1 auto;
 }
 
 .content{
-  height: 600px;
+  flex: 1 1 auto;
+  height:100%;
+  display: flex;
+  flex-flow: column;
   overflow: hidden;
   position: relative;
 }
 
 .canvas{
-  height: 100%;
+  flex: 1 1 auto;
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -70,19 +78,23 @@
   position: absolute;
   background-color: rgba(0,0,0,0.75);
   height: 80%;
+  width:26%;
+  min-width:335px;
+  max-width: 400px;
+  padding-left: 25px;
   color: white;
   overflow: auto;
   padding-bottom: 50px;
   top:10%;
-  right:0px;
+  left:100%;
   border-top-left-radius: 2em;
   border-bottom-left-radius: 2em;
   transition: transform 0.1s;
-  transform: translateX(400px);
+  transform: translateX(0px);
 }
 
 .setparamsActive{
-    transform: translateX(0);
+    transform: translateX(-100%);
 }
 
 .layer{
