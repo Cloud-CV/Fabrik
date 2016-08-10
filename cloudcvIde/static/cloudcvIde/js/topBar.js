@@ -12,20 +12,35 @@ class TopBar extends React.Component {
             <div className="form-inline">
               <div className="form-group" style={{'float':'right'}}>
                 <div className="dropdown">
-                  <button className="btn btn-primary dropdown-toggle form-control" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <button className="btn btn-primary dropdown-toggle form-control" data-toggle="dropdown">
                     Export
                   </button>
-                  <ul className="dropdown-menu pull-right"  aria-labelledby="dropdownMenu1">
+                  <ul className="dropdown-menu pull-right">
                     <li><a href="#" onClick={() => this.props.exportNet('caffe')}>caffe</a></li>
                     <li><a href="#" onClick={() => this.props.exportNet('tensorflow')}>tensorflow</a></li>
                   </ul>
                 </div>
               </div>
               <div className="form-group" style={{'float':'right'}}>
-                <label htmlFor="inputFile" className="btn btn-primary form-control">
-                  Import
-                </label>
-                <input id="inputFile" type="file" onChange={this.props.importNet}/>
+                <div className="dropdown">
+                  <button className="btn btn-primary dropdown-toggle form-control" data-toggle="dropdown">
+                    Import
+                  </button>
+                  <ul className="dropdown-menu pull-right">
+                    <li>
+                        <a>
+                        <label htmlFor="inputFilecaffe">caffe</label>
+                        <input id="inputFilecaffe" type="file" onChange={() => this.props.importNet('caffe')}/>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                        <label htmlFor="inputFiletensorflow">tensorflow</label>
+                        <input id="inputFiletensorflow" type="file" onChange={() => this.props.importNet('tensorflow')}/>
+                        </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

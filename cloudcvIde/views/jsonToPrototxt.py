@@ -174,10 +174,14 @@ def jsonToPrototxt(net):
         elif (layerType == 'Convolution'):
 
             convolution_param={}
-            if layerParams['kernel_size'] != '':
-                convolution_param['kernel_size'] = int(float(layerParams['kernel_size']))
-            if layerParams['stride'] != '':
-                convolution_param['stride'] = int(float(layerParams['stride']))
+            if layerParams['kernel_h'] != '':
+                convolution_param['kernel_h'] = int(float(layerParams['kernel_h']))
+            if layerParams['kernel_w'] != '':
+                convolution_param['kernel_w'] = int(float(layerParams['kernel_w']))
+            if layerParams['stride_h'] != '':
+                convolution_param['stride_h'] = int(float(layerParams['stride_h']))
+            if layerParams['stride_w'] != '':
+                convolution_param['stride_w'] = int(float(layerParams['stride_w']))
             if layerParams['num_output'] != '':
                 convolution_param['num_output'] = int(float(layerParams['num_output']))
             if layerParams['pad'] != '':
@@ -216,10 +220,14 @@ def jsonToPrototxt(net):
         elif (layerType == 'Pooling'):
 
             pooling_param={}
-            if layerParams['kernel_size'] != '':
-                pooling_param['kernel_size'] = int(float(layerParams['kernel_size']))
-            if layerParams['stride'] != '':
-                pooling_param['stride'] = int(float(layerParams['stride']))
+            if layerParams['kernel_h'] != '':
+                pooling_param['kernel_h'] = int(float(layerParams['kernel_h']))
+            if layerParams['kernel_w'] != '':
+                pooling_param['kernel_w'] = int(float(layerParams['kernel_w']))
+            if layerParams['stride_h'] != '':
+                pooling_param['stride_h'] = int(float(layerParams['stride_h']))
+            if layerParams['stride_w'] != '':
+                pooling_param['stride_w'] = int(float(layerParams['stride_w']))
             if layerParams['pad'] != '':
                 pooling_param['pad'] = int(float(layerParams['pad']))
             if layerParams['pool'] != '':

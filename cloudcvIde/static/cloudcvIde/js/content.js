@@ -174,11 +174,12 @@ class Content extends React.Component {
       });
     }
   }
-  importNet() {
+  importNet(framework) {
     const formData = new FormData();
-    formData.append('file', $('#inputFile')[0].files[0]);
+    formData.append('file', $('#inputFile'+framework)[0].files[0]);
+    const url = {'caffe': '/cloudcvide/import_caffe', 'tensorflow': '/cloudcvide/import_tensorflow'};
     $.ajax({
-      url: '/cloudcvide/import',
+      url: url[framework],
       dataType: 'json',
       type: 'POST',
       data: formData,
@@ -212,7 +213,7 @@ class Content extends React.Component {
         // layer.props = JSON.parse(JSON.stringify(data[type].props));
         layer.props = {};
         // default name
-        layer.props.name = `${data[type].name}${index}`;
+        layer.props.name = layerId;
       } else {
         tempError[type] = null;
       }
@@ -246,6 +247,7 @@ class Content extends React.Component {
         error: [],
       });
     }
+
   }
   changeNetStatus(bool) {
     this.setState({ rebuildNet: bool });

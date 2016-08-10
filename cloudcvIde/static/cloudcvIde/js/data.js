@@ -74,14 +74,26 @@ export default {
         type: 'number',
         required: true,
       },
-      kernel_size: {
-        name: 'Kernel size',
+      kernel_h: {
+        name: 'Kernel height',
         value: '',
         type: 'number',
         required: true,
       },
-      stride: {
-        name: 'Stride',
+      kernel_w: {
+        name: 'Kernel width',
+        value: '',
+        type: 'number',
+        required: true,
+      },
+      stride_h: {
+        name: 'Stride height',
+        value: '',
+        type: 'number',
+        required: false,
+      },
+      stride_w: {
+        name: 'Stride width',
         value: '',
         type: 'number',
         required: false,
@@ -210,14 +222,26 @@ export default {
         type: 'number',
         required: false,
       },
-      kernel_size: {
-        name: 'Kernel size',
+      kernel_h: {
+        name: 'Kernel height',
         value: '',
         type: 'number',
         required: true,
       },
-      stride: {
-        name: 'Stride',
+      kernel_w: {
+        name: 'Kernel width',
+        value: '',
+        type: 'number',
+        required: true,
+      },
+      stride_h: {
+        name: 'Stride height',
+        value: '',
+        type: 'number',
+        required: false,
+      },
+      stride_w: {
+        name: 'Stride width',
         value: '',
         type: 'number',
         required: false,

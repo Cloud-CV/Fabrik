@@ -26817,11 +26817,12 @@
 	    }
 	  }, {
 	    key: 'importNet',
-	    value: function importNet() {
+	    value: function importNet(framework) {
 	      var formData = new FormData();
-	      formData.append('file', $('#inputFile')[0].files[0]);
+	      formData.append('file', $('#inputFile' + framework)[0].files[0]);
+	      var url = { 'caffe': '/cloudcvide/import_caffe', 'tensorflow': '/cloudcvide/import_tensorflow' };
 	      $.ajax({
-	        url: '/cloudcvide/import',
+	        url: url[framework],
 	        dataType: 'json',
 	        type: 'POST',
 	        data: formData,
@@ -26857,7 +26858,7 @@
 	          // layer.props = JSON.parse(JSON.stringify(data[type].props));
 	          layer.props = {};
 	          // default name
-	          layer.props.name = '' + _data2.default[type].name + index;
+	          layer.props.name = layerId;
 	        } else {
 	          tempError[type] = null;
 	        }
@@ -27412,14 +27413,26 @@
 	        type: 'number',
 	        required: true
 	      },
-	      kernel_size: {
-	        name: 'Kernel size',
+	      kernel_h: {
+	        name: 'Kernel height',
 	        value: '',
 	        type: 'number',
 	        required: true
 	      },
-	      stride: {
-	        name: 'Stride',
+	      kernel_w: {
+	        name: 'Kernel width',
+	        value: '',
+	        type: 'number',
+	        required: true
+	      },
+	      stride_h: {
+	        name: 'Stride height',
+	        value: '',
+	        type: 'number',
+	        required: false
+	      },
+	      stride_w: {
+	        name: 'Stride width',
 	        value: '',
 	        type: 'number',
 	        required: false
@@ -27547,14 +27560,26 @@
 	        type: 'number',
 	        required: false
 	      },
-	      kernel_size: {
-	        name: 'Kernel size',
+	      kernel_h: {
+	        name: 'Kernel height',
 	        value: '',
 	        type: 'number',
 	        required: true
 	      },
-	      stride: {
-	        name: 'Stride',
+	      kernel_w: {
+	        name: 'Kernel width',
+	        value: '',
+	        type: 'number',
+	        required: true
+	      },
+	      stride_h: {
+	        name: 'Stride height',
+	        value: '',
+	        type: 'number',
+	        required: false
+	      },
+	      stride_w: {
+	        name: 'Stride width',
 	        value: '',
 	        type: 'number',
 	        required: false
@@ -28725,12 +28750,12 @@
 	                  { className: "dropdown" },
 	                  _react2.default.createElement(
 	                    "button",
-	                    { className: "btn btn-primary dropdown-toggle form-control", type: "button", id: "dropdownMenu1", "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "true" },
+	                    { className: "btn btn-primary dropdown-toggle form-control", "data-toggle": "dropdown" },
 	                    "Export"
 	                  ),
 	                  _react2.default.createElement(
 	                    "ul",
-	                    { className: "dropdown-menu pull-right", "aria-labelledby": "dropdownMenu1" },
+	                    { className: "dropdown-menu pull-right" },
 	                    _react2.default.createElement(
 	                      "li",
 	                      null,
@@ -28760,11 +28785,50 @@
 	                "div",
 	                { className: "form-group", style: { 'float': 'right' } },
 	                _react2.default.createElement(
-	                  "label",
-	                  { htmlFor: "inputFile", className: "btn btn-primary form-control" },
-	                  "Import"
-	                ),
-	                _react2.default.createElement("input", { id: "inputFile", type: "file", onChange: this.props.importNet })
+	                  "div",
+	                  { className: "dropdown" },
+	                  _react2.default.createElement(
+	                    "button",
+	                    { className: "btn btn-primary dropdown-toggle form-control", "data-toggle": "dropdown" },
+	                    "Import"
+	                  ),
+	                  _react2.default.createElement(
+	                    "ul",
+	                    { className: "dropdown-menu pull-right" },
+	                    _react2.default.createElement(
+	                      "li",
+	                      null,
+	                      _react2.default.createElement(
+	                        "a",
+	                        null,
+	                        _react2.default.createElement(
+	                          "label",
+	                          { htmlFor: "inputFilecaffe" },
+	                          "caffe"
+	                        ),
+	                        _react2.default.createElement("input", { id: "inputFilecaffe", type: "file", onChange: function onChange() {
+	                            return _this2.props.importNet('caffe');
+	                          } })
+	                      )
+	                    ),
+	                    _react2.default.createElement(
+	                      "li",
+	                      null,
+	                      _react2.default.createElement(
+	                        "a",
+	                        null,
+	                        _react2.default.createElement(
+	                          "label",
+	                          { htmlFor: "inputFiletensorflow" },
+	                          "tensorflow"
+	                        ),
+	                        _react2.default.createElement("input", { id: "inputFiletensorflow", type: "file", onChange: function onChange() {
+	                            return _this2.props.importNet('tensorflow');
+	                          } })
+	                      )
+	                    )
+	                  )
+	                )
 	              )
 	            )
 	          )
@@ -29037,7 +29101,7 @@
 
 
 	// module
-	exports.push([module.id, "#demo{\n    padding-left: 100px;\n    padding-right: 100px;\n}\n\n#jsplumbContainer {\n  position: absolute;\n  transform-origin: top left;\n}\n\n.topBar{\n\n}\n\n.container-fluid {\n\n}\n\n.topBarHead{\n  font-size: 30px;\n}\n\n.topBar .btn{\n  margin: 5px;\n  overflow: auto;\n}\n\n.content{\n  height: 600px;\n  overflow: hidden;\n  position: relative;\n}\n\n.canvas{\n  height: 100%;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  border: 1px solid #ddd;\n  border-radius: 4px 4px 4px 4px;\n\n  /*background: yellow;*/\n}\n\n.setHead{\n  font-size: 25px;\n  color: green;\n  text-align: center;\n  padding-bottom: 20px;\n  padding-top: 20px;\n}\n\n.dropdown {\n  z-index: 99;\n}\n\n.pane {\n    position: absolute;\n    left:50px;\n    top:25px;\n    z-index: 23;\n}\n\n.setContain{\n  padding-right: 40px;\n}\n\n\n.setparams{\n  position: absolute;\n  background-color: rgba(0,0,0,0.75);\n  height: 80%;\n  color: white;\n  overflow: auto;\n  padding-bottom: 50px;\n  top:10%;\n  right:0px;\n  border-top-left-radius: 2em;\n  border-bottom-left-radius: 2em;\n  transition: transform 0.1s;\n  transform: translateX(400px);\n}\n\n.setparamsActive{\n    transform: translateX(0);\n}\n\n.layer{\n  font-size: 22px;\n  padding: 10px 25px 10px 25px;\n  text-align: center;\n  position: absolute;\n  z-index: 20;\n  background: #e15e4f;\n  color: white;\n  cursor: pointer;\n}\n\n.selected{\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-connector {\n  z-index: 21;\n}\n\n.jsplumb-endpoint, .endpointTargetLabel, .endpointSourceLabel {\n  z-index: 20;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.jsplumb-drag {\n  cursor: move;\n}\n\n[draggable] {\n  -moz-user-select: none;\n  -khtml-user-select: none;\n  -webkit-user-select: none;\n  user-select: none;\n  /* Required to make elements draggable in old WebKit */\n  -khtml-user-drag: element;\n  -webkit-user-drag: element;\n}\n\n.jsplumb-connected {\n  /*border: 1px solid black;\n  box-shadow: 0px 0px 5px #aaa;\n  -o-box-shadow: 0px 0px 5px #aaa;\n  -webkit-box-shadow: 0px 0px 5px #aaa;\n  -moz-box-shadow: 0px 0px 5px #aaa;*/\n}\n\n.layer.jsplumb-drag {\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.error{\n    padding: 3px;\n    width:400px;\n    padding-left: 10px;\n    color: #a94442;\n    background-color: #f2dede;\n    border: 1px solid #ebccd1;\n    z-index: 22;\n    position: absolute;\n    left:500px;\n}\n\n.alert-dismissible .close {\n    position: relative;\n    top: -2px;\n    right: -21px;\n    color: inherit;\n}\nbutton.close {\n    -webkit-appearance: none;\n    padding: 0;\n    cursor: pointer;\n    background: 0 0;\n    border: 0;\n}\n\n.close {\n    float: right;\n    font-size: 21px;\n    font-weight: 700;\n    line-height: 1;\n    color: #000;\n    text-shadow: 0 1px 0 #fff;\n    filter: alpha(opacity=20);\n    opacity: .2;\n}\n\n#pane-dropdown:hover .dropdown-menu {\n    display: block;\n}\n\n/*.nav-pills .dropdown-menu {*/\n.dropdown-menu {\n    margin-top: 0;\n}\n\n.nav-pills>li {\n    margin-right: 30px !important;\n    padding-bottom: 5px;\n}\n\n#addLayerDropdown .btn{\n    border-radius: 0px;\n    border: 1px solid transparent;\n    cursor: move;\n}\n\nbutton\n{\n    border: 0;\n    padding: 0px;\n    margin: 0px;\n    /*font-size: 28px;*/\n    -webkit-appearance: none;\n    outline: none;\n    background: transparent;\n    text-align: center;\n    white-space: nowrap;\n    vertical-align: middle;\n    /*user-select: none;*/\n}\n\ninput[type=\"file\"] {\n    display: none;\n}\n", ""]);
+	exports.push([module.id, "#demo{\n    padding-left: 100px;\n    padding-right: 100px;\n}\n\n#jsplumbContainer {\n  position: absolute;\n  transform-origin: top left;\n}\n\n.topBar{\n\n}\n\n.container-fluid {\n\n}\n\n.topBarHead{\n  font-size: 30px;\n}\n\n.topBar .btn{\n  margin: 5px;\n  overflow: auto;\n}\n\n.content{\n  height: 600px;\n  overflow: hidden;\n  position: relative;\n}\n\n.canvas{\n  height: 100%;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  border: 1px solid #ddd;\n  border-radius: 4px 4px 4px 4px;\n\n  /*background: yellow;*/\n}\n\n.setHead{\n  font-size: 25px;\n  color: green;\n  text-align: center;\n  padding-bottom: 20px;\n  padding-top: 20px;\n}\n\n.dropdown {\n  z-index: 99;\n}\n\n.pane {\n    position: absolute;\n    left:50px;\n    top:25px;\n    z-index: 23;\n}\n\n.setContain{\n  padding-right: 40px;\n}\n\n\n.setparams{\n  position: absolute;\n  background-color: rgba(0,0,0,0.75);\n  height: 80%;\n  color: white;\n  overflow: auto;\n  padding-bottom: 50px;\n  top:10%;\n  right:0px;\n  border-top-left-radius: 2em;\n  border-bottom-left-radius: 2em;\n  transition: transform 0.1s;\n  transform: translateX(400px);\n}\n\n.setparamsActive{\n    transform: translateX(0);\n}\n\n.layer{\n  font-size: 22px;\n  padding: 10px 25px 10px 25px;\n  text-align: center;\n  position: absolute;\n  z-index: 20;\n  background: #e15e4f;\n  color: white;\n  cursor: pointer;\n}\n\n.selected{\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-connector {\n  z-index: 21;\n}\n\n.jsplumb-endpoint, .endpointTargetLabel, .endpointSourceLabel {\n  z-index: 20;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.jsplumb-drag {\n  cursor: move;\n}\n\n[draggable] {\n  -moz-user-select: none;\n  -khtml-user-select: none;\n  -webkit-user-select: none;\n  user-select: none;\n  /* Required to make elements draggable in old WebKit */\n  -khtml-user-drag: element;\n  -webkit-user-drag: element;\n}\n\n.jsplumb-connected {\n  /*border: 1px solid black;\n  box-shadow: 0px 0px 5px #aaa;\n  -o-box-shadow: 0px 0px 5px #aaa;\n  -webkit-box-shadow: 0px 0px 5px #aaa;\n  -moz-box-shadow: 0px 0px 5px #aaa;*/\n}\n\n.layer.jsplumb-drag {\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.error{\n    padding: 3px;\n    width:400px;\n    padding-left: 10px;\n    color: #a94442;\n    background-color: #f2dede;\n    border: 1px solid #ebccd1;\n    z-index: 22;\n    position: absolute;\n    left:500px;\n}\n\n.alert-dismissible .close {\n    position: relative;\n    top: -2px;\n    right: -21px;\n    color: inherit;\n}\nbutton.close {\n    -webkit-appearance: none;\n    padding: 0;\n    cursor: pointer;\n    background: 0 0;\n    border: 0;\n}\n\n.close {\n    float: right;\n    font-size: 21px;\n    font-weight: 700;\n    line-height: 1;\n    color: #000;\n    text-shadow: 0 1px 0 #fff;\n    filter: alpha(opacity=20);\n    opacity: .2;\n}\n\n#pane-dropdown:hover .dropdown-menu {\n    display: block;\n}\n\n/*.nav-pills .dropdown-menu {*/\n.dropdown-menu {\n    margin-top: 0;\n}\n\n.nav-pills>li {\n    margin-right: 30px !important;\n    padding-bottom: 5px;\n}\n\n#addLayerDropdown .btn{\n    border-radius: 0px;\n    border: 1px solid transparent;\n    cursor: move;\n}\n\nbutton\n{\n    border: 0;\n    padding: 0px;\n    margin: 0px;\n    /*font-size: 28px;*/\n    -webkit-appearance: none;\n    outline: none;\n    background: transparent;\n    text-align: center;\n    white-space: nowrap;\n    vertical-align: middle;\n    /*user-select: none;*/\n}\n\ninput[type=\"file\"] {\n    display: none;\n}\n\n.dropdown-menu label{\n    width:100%;\n    font-weight: normal;\n    padding: 0px;\n    margin: 0px;\n}\n", ""]);
 
 	// exports
 

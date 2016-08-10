@@ -35,11 +35,13 @@ def importPrototxt(request):
 
             elif(layer.type == 'Convolution'):
                 if len(layer.convolution_param.kernel_size):
-                    params['kernel_size'] = layer.convolution_param.kernel_size[0]
+                    params['kernel_h'] = layer.convolution_param.kernel_h or layer.convolution_param.kernel_size[0]
+                    params['kernel_w'] = layer.convolution_param.kernel_w or layer.convolution_param.kernel_size[0]
                 if len(layer.convolution_param.pad):
                     params['pad'] = layer.convolution_param.pad[0]
                 if len(layer.convolution_param.stride):
-                    params['stride'] = layer.convolution_param.stride[0]
+                    params['stride_h'] = layer.convolution_param.stride_h or layer.convolution_param.stride[0]
+                    params['stride_w'] = layer.convolution_param.stride_w or layer.convolution_param.stride[0]
                 params['weight_filler'] = layer.convolution_param.weight_filler.type
                 params['bias_filler'] = layer.convolution_param.bias_filler.type
                 params['num_output'] = layer.convolution_param.num_output
@@ -50,8 +52,10 @@ def importPrototxt(request):
 
             elif(layer.type == 'Pooling'):
                 params['pad'] = layer.pooling_param.pad
-                params['stride'] = layer.pooling_param.stride
-                params['kernel_size'] = layer.pooling_param.kernel_size
+                params['stride_h'] = layer.pooling_param.stride_h or layer.pooling_param.stride
+                params['stride_w'] = layer.pooling_param.stride_w or layer.pooling_param.stride
+                params['kernel_h'] = layer.pooling_param.kernel_h or layer.pooling_param.kernel_size
+                params['kernel_w'] = layer.pooling_param.kernel_w or layer.pooling_param.kernel_size
                 params['pool'] = layer.pooling_param.pool
 
             elif(layer.type == 'InnerProduct'):

@@ -10,7 +10,7 @@ from jsonToPrototxt import jsonToPrototxt
 
 
 def randomword(length):
-   return ''.join(random.choice(string.lowercase) for i in range(length))
+    return ''.join(random.choice(string.lowercase) for i in range(length))
 
 
 def index(request):

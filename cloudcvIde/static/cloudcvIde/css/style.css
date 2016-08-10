@@ -223,3 +223,10 @@ button
 input[type="file"] {
     display: none;
 }
+
+.dropdown-menu label{
+    width:100%;
+    font-weight: normal;
+    padding: 0px;
+    margin: 0px;
+}
