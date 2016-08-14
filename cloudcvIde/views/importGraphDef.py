@@ -69,7 +69,7 @@ def importGraphDef(request):
                 if str(node.op) == 'Conv2D':
                     layer['params']['stride_h'] = int(node.attr['strides'].list.i[1])
                     layer['params']['stride_w'] = int(node.attr['strides'].list.i[2])
-                    layer['params']['pad'] = 0 # SAME / VALID ?
+                    layer['params']['pad'] = '' # SAME / VALID ?
                 if str(node.name) == name + '/weights':
                     layer['params']['kernel_h'] = int(node.attr['shape'].shape.dim[0].size)
                     layer['params']['kernel_w'] = int(node.attr['shape'].shape.dim[1].size)
@@ -82,14 +82,14 @@ def importGraphDef(request):
                     layer['params']['kernel_w'] = int(node.attr['ksize'].list.i[2])
                     layer['params']['stride_h'] = int(node.attr['strides'].list.i[1])
                     layer['params']['stride_w'] = int(node.attr['strides'].list.i[2])
-                    layer['params']['pad'] = 0 # SAME / VALID ?
+                    layer['params']['pad'] = '' # SAME / VALID ?
                 if str(node.op) == 'AvgPool':
                     layer['params']['pool'] = 1
                     layer['params']['kernel_h'] = int(node.attr['ksize'].list.i[1])
                     layer['params']['kernel_w'] = int(node.attr['ksize'].list.i[2])
                     layer['params']['stride_h'] = int(node.attr['strides'].list.i[1])
                     layer['params']['stride_w'] = int(node.attr['strides'].list.i[2])
-                    layer['params']['pad'] = 0 # SAME / VALID ?
+                    layer['params']['pad'] = '' # SAME / VALID ?
 
             elif layer['type'][0] == 'InnerProduct':
                 if str(node.name) == name + '/weights':
@@ -121,5 +121,5 @@ def importGraphDef(request):
                     'params': d[key]['params']
                 }
 
-        return JsonResponse({'result': 'success', 'net': net})
+        return JsonResponse({'result': 'success', 'net': net, 'net_name': ''})
 

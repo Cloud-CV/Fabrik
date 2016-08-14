@@ -16,6 +16,7 @@ def importPrototxt(request):
         net = {}
         i = 0
         blobMap = {}
+        net_name = caffe_net.name
         for layer in caffe_net.layer:
             id = "l" + str(i)
             input = []
@@ -122,4 +123,4 @@ def importPrototxt(request):
             net[id] = jsonLayer
             i = i + 1
 
-        return JsonResponse({'result': 'success', 'net': net})
+        return JsonResponse({'result': 'success', 'net': net, 'net_name':net_name })

@@ -39,5 +39,3 @@ def exportToTensorflow(request):
         os.system('python '+BASE_DIR+'/caffe-tensorflow-master/convert.py '+BASE_DIR+'/media/prototxt/'+randomId+'.prototxt --code-output-path='+BASE_DIR+'/media/tensorflow/'+randomId+'.py')
         return JsonResponse({'id': randomId, 'name': randomId+'.py', 'url': '/media/tensorflow/'+randomId+'.py'})
 
-
-

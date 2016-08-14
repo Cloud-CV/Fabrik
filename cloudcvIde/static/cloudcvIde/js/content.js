@@ -12,6 +12,7 @@ class Content extends React.Component {
     super(props);
     this.state = {
       net: {},
+      net_name: null,
       selectedLayer: null,
       nextLayerId: 0,
       rebuildNet: false,
@@ -161,6 +162,7 @@ class Content extends React.Component {
         type: 'POST',
         data: {
           net: JSON.stringify(netData),
+          net_name: this.state.net_name,
         },
         success(response) {
           const downloadAnchor = document.getElementById('download');
@@ -186,14 +188,14 @@ class Content extends React.Component {
       processData: false,  // tell jQuery not to process the data
       contentType: false,
       success: function (response) {
-        this.initialiseImportedNet(response.net);
+        this.initialiseImportedNet(response.net,response.net_name);
       }.bind(this),
       error() {
         // console.log('failure');
       },
     });
   }
-  initialiseImportedNet(net) {
+  initialiseImportedNet(net,net_name) {
     // this line will unmount all the layers
     // so that the new imported layers will all be mounted again
     const tempError = {};
@@ -240,6 +242,7 @@ class Content extends React.Component {
       instance.deleteEveryEndpoint();
       this.setState({
         net,
+        net_name,
         selectedLayer: null,
         nextLayerId: Object.keys(net).length,
         rebuildNet: true,

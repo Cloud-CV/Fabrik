@@ -113,12 +113,9 @@ def jsonToPrototxt(net):
                 elif(backend == 'LMDB'):
                     backend = 1
                 data_param['backend'] = backend
-
             transform_param = {}
             if layerParams['scale'] != '':
                 transform_param['scale'] = float(layerParams['scale'])
-
-
             if layerPhase is not None:
                 caffeLayer = get_iterable(L.Data(
                     ntop=1,

@@ -26627,6 +26627,7 @@
 
 	    _this.state = {
 	      net: {},
+	      net_name: null,
 	      selectedLayer: null,
 	      nextLayerId: 0,
 	      rebuildNet: false,
@@ -26800,7 +26801,8 @@
 	            dataType: 'json',
 	            type: 'POST',
 	            data: {
-	              net: JSON.stringify(netData)
+	              net: JSON.stringify(netData),
+	              net_name: _this3.state.net_name
 	            },
 	            success: function success(response) {
 	              var downloadAnchor = document.getElementById('download');
@@ -26829,7 +26831,7 @@
 	        processData: false, // tell jQuery not to process the data
 	        contentType: false,
 	        success: function (response) {
-	          this.initialiseImportedNet(response.net);
+	          this.initialiseImportedNet(response.net, response.net_name);
 	        }.bind(this),
 	        error: function error() {
 	          // console.log('failure');
@@ -26838,7 +26840,7 @@
 	    }
 	  }, {
 	    key: 'initialiseImportedNet',
-	    value: function initialiseImportedNet(net) {
+	    value: function initialiseImportedNet(net, net_name) {
 	      // this line will unmount all the layers
 	      // so that the new imported layers will all be mounted again
 	      var tempError = {};
@@ -26885,6 +26887,7 @@
 	        instance.deleteEveryEndpoint();
 	        this.setState({
 	          net: net,
+	          net_name: net_name,
 	          selectedLayer: null,
 	          nextLayerId: Object.keys(net).length,
 	          rebuildNet: true,
@@ -28074,22 +28077,21 @@
 	    //instance.repaintEverything();
 	  }
 
-	  var mousewheeldelta = 0,
-	      last_e,
-	      mousewheeltimer = null,
-	      mousewheel;
+	  var mousewheel,
+	      lastMouseWheelEventTime = Date.now();
 
 	  mousewheel = function mousewheel(e) {
 	    e.preventDefault();
-	    var delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.detail));
+	    var delta = e.wheelDeltaY;
+
 	    //onZoom((delta > 0) ? current.zoom / 1.7 : current.zoom * 1.7, e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
-	    onZoom(delta > 0 ? current.zoom / 1.7 : current.zoom * 1.7, e.clientX - panZoom.getBoundingClientRect().left, e.clientY - panZoom.getBoundingClientRect().top);
+	    onZoom(delta > 0 ? current.zoom / 1.1 : delta < 0 ? current.zoom * 1.1 : current.zoom, e.clientX - panZoom.getBoundingClientRect().left, e.clientY - panZoom.getBoundingClientRect().top);
 	  };
 
 	  if ("onmousewheel" in document) {
 	    panZoom.onmousewheel = mousewheel;
 	  } else {
-	    panZoom.addEventListener('DOMMouseScroll', mousewheel, false);
+	    panZoom.addEventListener('wheel', mousewheel, false);
 	  }
 
 	  function getQueryVariable(id) {

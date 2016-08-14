@@ -93,20 +93,18 @@ export default function() {
     //instance.repaintEverything();
   }
 
-  var mousewheeldelta = 0,
-    last_e,
-    mousewheeltimer = null,
-    mousewheel;
+  var mousewheel, lastMouseWheelEventTime = Date.now();
 
   mousewheel = function(e) {
     e.preventDefault();
-    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+    var delta = e.wheelDeltaY;
+
     //onZoom((delta > 0) ? current.zoom / 1.7 : current.zoom * 1.7, e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
-    onZoom((delta > 0) ? current.zoom / 1.7 : current.zoom * 1.7, e.clientX - panZoom.getBoundingClientRect().left, e.clientY - panZoom.getBoundingClientRect().top);
+    onZoom((delta > 0) ? current.zoom / 1.1 : ((delta < 0) ? current.zoom * 1.1 : current.zoom), e.clientX - panZoom.getBoundingClientRect().left, e.clientY - panZoom.getBoundingClientRect().top);
   };
 
   if ("onmousewheel" in document) { panZoom.onmousewheel = mousewheel; }
-  else { panZoom.addEventListener('DOMMouseScroll', mousewheel, false); }
+  else { panZoom.addEventListener('wheel', mousewheel, false); }
 
   function getQueryVariable(id) { var params = window.location.search.substring(1).split("&");  for (var i = 0; i < params.length; i++) { var p = params[i].split("="); if (p[0] == id) { return p[1]; } } return(false); }
 
