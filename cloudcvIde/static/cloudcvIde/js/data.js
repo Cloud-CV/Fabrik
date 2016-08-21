@@ -98,8 +98,14 @@ export default {
         type: 'number',
         required: false,
       },
-      pad: {
-        name: 'Padding size',
+      pad_h: {
+        name: 'Padding height',
+        value: '',
+        type: 'number',
+        required: false,
+      },
+      pad_w: {
+        name: 'Padding width',
         value: '',
         type: 'number',
         required: false,
@@ -216,8 +222,14 @@ export default {
       trg: ['LeftMiddle'],
     },
     params: {
-      pad: {
-        name: 'Padding size',
+      pad_h: {
+        name: 'Padding height',
+        value: '',
+        type: 'number',
+        required: false,
+      },
+      pad_w: {
+        name: 'Padding width',
         value: '',
         type: 'number',
         required: false,

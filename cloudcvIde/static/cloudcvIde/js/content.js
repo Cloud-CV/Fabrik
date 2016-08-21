@@ -18,6 +18,7 @@ class Content extends React.Component {
       rebuildNet: false,
       selectedPhase: 0,
       error: [],
+      load: false,
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
@@ -29,8 +30,9 @@ class Content extends React.Component {
     this.changeNetStatus = this.changeNetStatus.bind(this);
     this.changeNetPhase = this.changeNetPhase.bind(this);
     this.dismissError = this.dismissError.bind(this);
-    this.copyTrain = this.copyTrain.bind(this);
     this.addError = this.addError.bind(this);
+    this.dismissAllErrors = this.dismissAllErrors.bind(this);
+    this.copyTrain = this.copyTrain.bind(this);
     this.trainOnly = this.trainOnly.bind(this);
   }
   addNewLayer(layer) {
@@ -132,7 +134,7 @@ class Content extends React.Component {
     this.setState({ net, selectedLayer: null });
   }
   exportNet(framework) {
-    this.setState({ error: [] });
+    this.dismissAllErrors();
     const error = [];
     const net = this.state.net;
 
@@ -155,7 +157,7 @@ class Content extends React.Component {
       });
 
       const url = {'caffe': '/cloudcvide/export_caffe', 'tensorflow': '/cloudcvide/export_tensorflow'}
-
+      this.setState({ load: true });
       $.ajax({
         url: url[framework],
         dataType: 'json',
@@ -164,22 +166,30 @@ class Content extends React.Component {
           net: JSON.stringify(netData),
           net_name: this.state.net_name,
         },
-        success(response) {
-          const downloadAnchor = document.getElementById('download');
-          downloadAnchor.download = response.name;
-          downloadAnchor.href = response.url;
-          downloadAnchor.click();
-        },
+        success : function (response) {
+          if (response.result == 'success') {
+            const downloadAnchor = document.getElementById('download');
+            downloadAnchor.download = response.name;
+            downloadAnchor.href = response.url;
+            downloadAnchor.click();
+          } else if (response.result == 'error') {
+            this.addError(response.error);
+          }
+          this.setState({ load: false });
+        }.bind(this),
         error() {
           // console.log('failure in exporting');
+          this.setState({ load: false });
         },
       });
     }
   }
   importNet(framework) {
+    this.dismissAllErrors();
     const formData = new FormData();
     formData.append('file', $('#inputFile'+framework)[0].files[0]);
     const url = {'caffe': '/cloudcvide/import_caffe', 'tensorflow': '/cloudcvide/import_tensorflow'};
+    this.setState({ load: true });
     $.ajax({
       url: url[framework],
       dataType: 'json',
@@ -188,10 +198,16 @@ class Content extends React.Component {
       processData: false,  // tell jQuery not to process the data
       contentType: false,
       success: function (response) {
-        this.initialiseImportedNet(response.net,response.net_name);
+        if (response.result === 'success'){
+          this.initialiseImportedNet(response.net,response.net_name);
+        } else if (response.result === 'error'){
+          this.addError(response.error);
+        }
+        this.setState({ load: false });
       }.bind(this),
       error() {
         // console.log('failure');
+        this.setState({ load: false });
       },
     });
   }
@@ -272,6 +288,9 @@ class Content extends React.Component {
     error.push(errorText);
     this.setState({ error });
   }
+  dismissAllErrors() {
+    this.setState({ error: [] });
+  }
   copyTrain() {
     const net = this.state.net;
     Object.keys(net).forEach(layerId => {
@@ -314,6 +333,10 @@ class Content extends React.Component {
     this.setState({ net });
   }
   render() {
+    let loader = null;
+    if (this.state.load) {
+      loader = (<div className="loader"></div>);
+    }
     return (
       <div className="container-fluid">
         <TopBar
@@ -330,6 +353,7 @@ class Content extends React.Component {
               <Tabs selectedPhase={this.state.selectedPhase} changeNetPhase={this.changeNetPhase} />
             </ul>
           </div>
+          {loader}
           <Canvas
             net={this.state.net}
             selectedPhase={this.state.selectedPhase}

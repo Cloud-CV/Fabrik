@@ -3,7 +3,7 @@ import caffe
 from caffe import layers as L
 import re
 
-def jsonToPrototxt(net):
+def jsonToPrototxt(net,net_name):
     # assumption: a layer can accept only one input blob
     # the data layer produces two blobs: data and label
     # the loss layer requires two blobs: <someData> and label
@@ -11,6 +11,7 @@ def jsonToPrototxt(net):
     # layers name have to be unique
 
     # custom DFS of the network
+    input_dim = None;
 
     def get_iterable(x):
         if isinstance(x, collections.Iterable):
@@ -146,6 +147,8 @@ def jsonToPrototxt(net):
             if 'dim' not in layerParams:
                 layerParams['dim'] = '10,3,224,224'
 
+            input_dim = layerParams['dim']
+
             if layerPhase is not None:
                 caffeLayer = get_iterable(L.Input(
                     input_param={'shape':{'dim':map(int,layerParams['dim'].split(','))}},
@@ -181,8 +184,10 @@ def jsonToPrototxt(net):
                 convolution_param['stride_w'] = int(float(layerParams['stride_w']))
             if layerParams['num_output'] != '':
                 convolution_param['num_output'] = int(float(layerParams['num_output']))
-            if layerParams['pad'] != '':
-                convolution_param['pad'] = int(float(layerParams['pad']))
+            if layerParams['pad_h'] != '':
+                convolution_param['pad_h'] = int(float(layerParams['pad_h']))
+            if layerParams['pad_w'] != '':
+                convolution_param['pad_w'] = int(float(layerParams['pad_w']))
             if layerParams['weight_filler'] != '':
                 convolution_param['weight_filler']={}
                 convolution_param['weight_filler']['type'] = layerParams['weight_filler']
@@ -225,8 +230,10 @@ def jsonToPrototxt(net):
                 pooling_param['stride_h'] = int(float(layerParams['stride_h']))
             if layerParams['stride_w'] != '':
                 pooling_param['stride_w'] = int(float(layerParams['stride_w']))
-            if layerParams['pad'] != '':
-                pooling_param['pad'] = int(float(layerParams['pad']))
+            if layerParams['pad_h'] != '':
+                pooling_param['pad_h'] = int(float(layerParams['pad_h']))
+            if layerParams['pad_w'] != '':
+                pooling_param['pad_w'] = int(float(layerParams['pad_w']))
             if layerParams['pool'] != '':
                 pool = layerParams['pool']
                 if(pool == 'MAX'):
@@ -338,7 +345,7 @@ def jsonToPrototxt(net):
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
 
-    train = str(ns_train.to_proto())
+    train = 'name: "' + net_name + '"\n' + str(ns_train.to_proto())
     test = str(ns_test.to_proto())
 
     # merge the train and test prototxt to get a single train_test prototxt
@@ -361,4 +368,4 @@ def jsonToPrototxt(net):
 
     prototxt = train
 
-    return prototxt
+    return prototxt,input_dim
