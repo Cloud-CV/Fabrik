@@ -1,5 +1,0 @@
-Django==1.9.3
-pyaml==15.8.2
-numpy==1.11.0
-scikit-image==0.12.3
-protobuf==2.6.1
