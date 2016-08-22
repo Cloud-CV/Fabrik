@@ -26632,7 +26632,8 @@
 	      nextLayerId: 0,
 	      rebuildNet: false,
 	      selectedPhase: 0,
-	      error: []
+	      error: [],
+	      load: false
 	    };
 	    _this.addNewLayer = _this.addNewLayer.bind(_this);
 	    _this.changeSelectedLayer = _this.changeSelectedLayer.bind(_this);
@@ -26644,8 +26645,9 @@
 	    _this.changeNetStatus = _this.changeNetStatus.bind(_this);
 	    _this.changeNetPhase = _this.changeNetPhase.bind(_this);
 	    _this.dismissError = _this.dismissError.bind(_this);
-	    _this.copyTrain = _this.copyTrain.bind(_this);
 	    _this.addError = _this.addError.bind(_this);
+	    _this.dismissAllErrors = _this.dismissAllErrors.bind(_this);
+	    _this.copyTrain = _this.copyTrain.bind(_this);
 	    _this.trainOnly = _this.trainOnly.bind(_this);
 	    return _this;
 	  }
@@ -26771,7 +26773,7 @@
 	    value: function exportNet(framework) {
 	      var _this3 = this;
 
-	      this.setState({ error: [] });
+	      this.dismissAllErrors();
 	      var error = [];
 	      var net = this.state.net;
 
@@ -26795,7 +26797,7 @@
 	          });
 
 	          var url = { 'caffe': '/cloudcvide/export_caffe', 'tensorflow': '/cloudcvide/export_tensorflow' };
-
+	          _this3.setState({ load: true });
 	          $.ajax({
 	            url: url[framework],
 	            dataType: 'json',
@@ -26804,14 +26806,20 @@
 	              net: JSON.stringify(netData),
 	              net_name: _this3.state.net_name
 	            },
-	            success: function success(response) {
-	              var downloadAnchor = document.getElementById('download');
-	              downloadAnchor.download = response.name;
-	              downloadAnchor.href = response.url;
-	              downloadAnchor.click();
-	            },
+	            success: function (response) {
+	              if (response.result == 'success') {
+	                var downloadAnchor = document.getElementById('download');
+	                downloadAnchor.download = response.name;
+	                downloadAnchor.href = response.url;
+	                downloadAnchor.click();
+	              } else if (response.result == 'error') {
+	                this.addError(response.error);
+	              }
+	              this.setState({ load: false });
+	            }.bind(_this3),
 	            error: function error() {
 	              // console.log('failure in exporting');
+	              this.setState({ load: false });
 	            }
 	          });
 	        })();
@@ -26820,9 +26828,11 @@
 	  }, {
 	    key: 'importNet',
 	    value: function importNet(framework) {
+	      this.dismissAllErrors();
 	      var formData = new FormData();
 	      formData.append('file', $('#inputFile' + framework)[0].files[0]);
 	      var url = { 'caffe': '/cloudcvide/import_caffe', 'tensorflow': '/cloudcvide/import_tensorflow' };
+	      this.setState({ load: true });
 	      $.ajax({
 	        url: url[framework],
 	        dataType: 'json',
@@ -26831,10 +26841,16 @@
 	        processData: false, // tell jQuery not to process the data
 	        contentType: false,
 	        success: function (response) {
-	          this.initialiseImportedNet(response.net, response.net_name);
+	          if (response.result === 'success') {
+	            this.initialiseImportedNet(response.net, response.net_name);
+	          } else if (response.result === 'error') {
+	            this.addError(response.error);
+	          }
+	          this.setState({ load: false });
 	        }.bind(this),
 	        error: function error() {
 	          // console.log('failure');
+	          this.setState({ load: false });
 	        }
 	      });
 	    }
@@ -26925,6 +26941,11 @@
 	      this.setState({ error: error });
 	    }
 	  }, {
+	    key: 'dismissAllErrors',
+	    value: function dismissAllErrors() {
+	      this.setState({ error: [] });
+	    }
+	  }, {
 	    key: 'copyTrain',
 	    value: function copyTrain() {
 	      var _this4 = this;
@@ -26974,6 +26995,10 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var loader = null;
+	      if (this.state.load) {
+	        loader = _react2.default.createElement('div', { className: 'loader' });
+	      }
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container-fluid' },
@@ -27003,6 +27028,7 @@
 	              _react2.default.createElement(_tabs2.default, { selectedPhase: this.state.selectedPhase, changeNetPhase: this.changeNetPhase })
 	            )
 	          ),
+	          loader,
 	          _react2.default.createElement(_canvas2.default, {
 	            net: this.state.net,
 	            selectedPhase: this.state.selectedPhase,
@@ -27440,8 +27466,14 @@
 	        type: 'number',
 	        required: false
 	      },
-	      pad: {
-	        name: 'Padding size',
+	      pad_h: {
+	        name: 'Padding height',
+	        value: '',
+	        type: 'number',
+	        required: false
+	      },
+	      pad_w: {
+	        name: 'Padding width',
 	        value: '',
 	        type: 'number',
 	        required: false
@@ -27557,8 +27589,14 @@
 	      trg: ['LeftMiddle']
 	    },
 	    params: {
-	      pad: {
-	        name: 'Padding size',
+	      pad_h: {
+	        name: 'Padding height',
+	        value: '',
+	        type: 'number',
+	        required: false
+	      },
+	      pad_w: {
+	        name: 'Padding width',
 	        value: '',
 	        type: 'number',
 	        required: false
@@ -29103,7 +29141,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n#jsplumbContainer {\n  position: absolute;\n  transform-origin: top left;\n}\n\n.topBar{\n\n}\n\nhtml,body,#app,.app{\n  height:100%;\n}\n\n.container-fluid{\n  display: flex;\n  flex-flow: column;\n  height: 100%;\n  padding-bottom: 15px;\n}\n\n.topBarHead{\n  font-size: 30px;\n}\n\n.topBar .btn{\n  margin: 5px;\n  overflow: auto;\n  flex: 0 1 auto;\n}\n\n.content{\n  flex: 1 1 auto;\n  height:100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  position: relative;\n}\n\n.canvas{\n  flex: 1 1 auto;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  border: 1px solid #ddd;\n  border-radius: 4px 4px 4px 4px;\n\n  /*background: yellow;*/\n}\n\n.setHead{\n  font-size: 25px;\n  color: green;\n  text-align: center;\n  padding-bottom: 20px;\n  padding-top: 20px;\n}\n\n.dropdown {\n  z-index: 99;\n}\n\n.pane {\n    position: absolute;\n    left:50px;\n    top:25px;\n    z-index: 23;\n}\n\n.setContain{\n  padding-right: 40px;\n}\n\n\n.setparams{\n  position: absolute;\n  background-color: rgba(0,0,0,0.75);\n  height: 80%;\n  width:26%;\n  min-width:335px;\n  max-width: 400px;\n  padding-left: 25px;\n  color: white;\n  overflow: auto;\n  padding-bottom: 50px;\n  top:10%;\n  left:100%;\n  border-top-left-radius: 2em;\n  border-bottom-left-radius: 2em;\n  transition: transform 0.1s;\n  transform: translateX(0px);\n}\n\n.setparamsActive{\n    transform: translateX(-100%);\n}\n\n.layer{\n  font-size: 22px;\n  padding: 10px 25px 10px 25px;\n  text-align: center;\n  position: absolute;\n  z-index: 20;\n  background: #e15e4f;\n  color: white;\n  cursor: pointer;\n}\n\n.selected{\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-connector {\n  z-index: 21;\n}\n\n.jsplumb-endpoint, .endpointTargetLabel, .endpointSourceLabel {\n  z-index: 20;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.jsplumb-drag {\n  cursor: move;\n}\n\n[draggable] {\n  -moz-user-select: none;\n  -khtml-user-select: none;\n  -webkit-user-select: none;\n  user-select: none;\n  /* Required to make elements draggable in old WebKit */\n  -khtml-user-drag: element;\n  -webkit-user-drag: element;\n}\n\n.jsplumb-connected {\n  /*border: 1px solid black;\n  box-shadow: 0px 0px 5px #aaa;\n  -o-box-shadow: 0px 0px 5px #aaa;\n  -webkit-box-shadow: 0px 0px 5px #aaa;\n  -moz-box-shadow: 0px 0px 5px #aaa;*/\n}\n\n.layer.jsplumb-drag {\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.error{\n    padding: 3px;\n    width:400px;\n    padding-left: 10px;\n    color: #a94442;\n    background-color: #f2dede;\n    border: 1px solid #ebccd1;\n    z-index: 22;\n    position: absolute;\n    left:500px;\n}\n\n.alert-dismissible .close {\n    position: relative;\n    top: -2px;\n    right: -21px;\n    color: inherit;\n}\nbutton.close {\n    -webkit-appearance: none;\n    padding: 0;\n    cursor: pointer;\n    background: 0 0;\n    border: 0;\n}\n\n.close {\n    float: right;\n    font-size: 21px;\n    font-weight: 700;\n    line-height: 1;\n    color: #000;\n    text-shadow: 0 1px 0 #fff;\n    filter: alpha(opacity=20);\n    opacity: .2;\n}\n\n#pane-dropdown:hover .dropdown-menu {\n    display: block;\n}\n\n/*.nav-pills .dropdown-menu {*/\n.dropdown-menu {\n    margin-top: 0;\n}\n\n.nav-pills>li {\n    margin-right: 30px !important;\n    padding-bottom: 5px;\n}\n\n#addLayerDropdown .btn{\n    border-radius: 0px;\n    border: 1px solid transparent;\n    cursor: move;\n}\n\nbutton\n{\n    border: 0;\n    padding: 0px;\n    margin: 0px;\n    /*font-size: 28px;*/\n    -webkit-appearance: none;\n    outline: none;\n    background: transparent;\n    text-align: center;\n    white-space: nowrap;\n    vertical-align: middle;\n    /*user-select: none;*/\n}\n\ninput[type=\"file\"] {\n    display: none;\n}\n\n.dropdown-menu label{\n    width:100%;\n    font-weight: normal;\n    padding: 0px;\n    margin: 0px;\n}\n", ""]);
+	exports.push([module.id, "\n\n#jsplumbContainer {\n  position: absolute;\n  transform-origin: top left;\n}\n\n.topBar{\n\n}\n\nhtml,body,#app,.app{\n  height:100%;\n}\n\n.container-fluid{\n  display: flex;\n  flex-flow: column;\n  height: 100%;\n  padding-bottom: 15px;\n}\n\n.topBarHead{\n  font-size: 30px;\n}\n\n.topBar .btn{\n  margin: 5px;\n  overflow: auto;\n  flex: 0 1 auto;\n}\n\n.content{\n  flex: 1 1 auto;\n  height:100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  position: relative;\n}\n\n.canvas{\n  flex: 1 1 auto;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  border: 1px solid #ddd;\n  border-radius: 4px 4px 4px 4px;\n\n  /*background: yellow;*/\n}\n\n.setHead{\n  font-size: 25px;\n  color: green;\n  text-align: center;\n  padding-bottom: 20px;\n  padding-top: 20px;\n}\n\n.dropdown {\n  z-index: 99;\n}\n\n.pane {\n    position: absolute;\n    left:50px;\n    top:25px;\n    z-index: 23;\n}\n\n.setContain{\n  padding-right: 40px;\n}\n\n\n.setparams{\n  position: absolute;\n  background-color: rgba(0,0,0,0.75);\n  height: 80%;\n  width:26%;\n  min-width:335px;\n  max-width: 400px;\n  padding-left: 25px;\n  color: white;\n  overflow: auto;\n  padding-bottom: 50px;\n  top:10%;\n  left:100%;\n  border-top-left-radius: 2em;\n  border-bottom-left-radius: 2em;\n  transition: transform 0.1s;\n  transform: translateX(0px);\n}\n\n.setparamsActive{\n    transform: translateX(-100%);\n}\n\n.layer{\n  font-size: 22px;\n  padding: 10px 25px 10px 25px;\n  text-align: center;\n  position: absolute;\n  z-index: 20;\n  background: #e15e4f;\n  color: white;\n  cursor: pointer;\n}\n\n.selected{\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-connector {\n  z-index: 21;\n}\n\n.jsplumb-endpoint, .endpointTargetLabel, .endpointSourceLabel {\n  z-index: 20;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.jsplumb-drag {\n  cursor: move;\n}\n\n[draggable] {\n  -moz-user-select: none;\n  -khtml-user-select: none;\n  -webkit-user-select: none;\n  user-select: none;\n  /* Required to make elements draggable in old WebKit */\n  -khtml-user-drag: element;\n  -webkit-user-drag: element;\n}\n\n.jsplumb-connected {\n  /*border: 1px solid black;\n  box-shadow: 0px 0px 5px #aaa;\n  -o-box-shadow: 0px 0px 5px #aaa;\n  -webkit-box-shadow: 0px 0px 5px #aaa;\n  -moz-box-shadow: 0px 0px 5px #aaa;*/\n}\n\n.layer.jsplumb-drag {\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.error{\n    padding: 3px;\n    width:400px;\n    padding-left: 10px;\n    color: #a94442;\n    background-color: #f2dede;\n    border: 1px solid #ebccd1;\n    z-index: 22;\n    position: absolute;\n    left:500px;\n}\n\n.alert-dismissible .close {\n    position: relative;\n    top: -2px;\n    right: -21px;\n    color: inherit;\n}\nbutton.close {\n    -webkit-appearance: none;\n    padding: 0;\n    cursor: pointer;\n    background: 0 0;\n    border: 0;\n}\n\n.close {\n    float: right;\n    font-size: 21px;\n    font-weight: 700;\n    line-height: 1;\n    color: #000;\n    text-shadow: 0 1px 0 #fff;\n    filter: alpha(opacity=20);\n    opacity: .2;\n}\n\n#pane-dropdown:hover .dropdown-menu {\n    display: block;\n}\n\n/*.nav-pills .dropdown-menu {*/\n.dropdown-menu {\n    margin-top: 0;\n}\n\n.nav-pills>li {\n    margin-right: 30px !important;\n    padding-bottom: 5px;\n}\n\n#addLayerDropdown .btn{\n    border-radius: 0px;\n    border: 1px solid transparent;\n    cursor: move;\n}\n\nbutton\n{\n    border: 0;\n    padding: 0px;\n    margin: 0px;\n    /*font-size: 28px;*/\n    -webkit-appearance: none;\n    outline: none;\n    background: transparent;\n    text-align: center;\n    white-space: nowrap;\n    vertical-align: middle;\n    /*user-select: none;*/\n}\n\ninput[type=\"file\"] {\n    display: none;\n}\n\n.dropdown-menu label{\n    width:100%;\n    font-weight: normal;\n    padding: 0px;\n    margin: 0px;\n}\n\n\n\n/* css loader*/\n.loader:before,\n.loader:after,\n.loader {\n  border-radius: 50%;\n  width: 2.5em;\n  height: 2.5em;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation: load7 1.8s infinite ease-in-out;\n  animation: load7 1.8s infinite ease-in-out;\n}\n.loader {\n  color: #bcbcbc;\n  font-size: 10px;\n  position: absolute;\n  right:65px;\n  top:15px;\n  -webkit-transform: translateZ(0);\n  -ms-transform: translateZ(0);\n  transform: translateZ(0);\n  -webkit-animation-delay: -0.16s;\n  animation-delay: -0.16s;\n  transform:scale(0.5);\n}\n.loader:before {\n  left: -3.5em;\n  -webkit-animation-delay: -0.32s;\n  animation-delay: -0.32s;\n}\n.loader:after {\n  left: 3.5em;\n}\n.loader:before,\n.loader:after {\n  content: '';\n  position: absolute;\n  top: 0;\n}\n@-webkit-keyframes load7 {\n  0%,\n  80%,\n  100% {\n    box-shadow: 0 2.5em 0 -1.3em;\n  }\n  40% {\n    box-shadow: 0 2.5em 0 0;\n  }\n}\n@keyframes load7 {\n  0%,\n  80%,\n  100% {\n    box-shadow: 0 2.5em 0 -1.3em;\n  }\n  40% {\n    box-shadow: 0 2.5em 0 0;\n  }\n}\n", ""]);
 
 	// exports
 
