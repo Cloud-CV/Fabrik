@@ -26,6 +26,7 @@ def exportToTensorflow(request):
         randomId=datetime.now().strftime('%Y%m%d%H%M%S')+randomword(5)
         with open(BASE_DIR+'/media/'+randomId+'.prototxt', 'w') as f:
             f.write(prototxt)
+
         os.system('python '+BASE_DIR+'/tensorflow_app/caffe-tensorflow/convert.py '+BASE_DIR+'/media/'+randomId+'.prototxt --code-output-path='+BASE_DIR+'/media/'+randomId+'.py')
 
         # NCHW to NHWC data format
@@ -43,6 +44,8 @@ def exportToTensorflow(request):
             with open(BASE_DIR+'/media/'+randomId+'.pbtxt', 'w') as f: f.write(str(graph_def))
         except AssertionError:
             return JsonResponse({'result': 'error', 'error': 'Cannot convert to GraphDef'})
+        except AttributeError:
+            return JsonResponse({'result': 'error', 'error': 'GraphDef not supported'})
 
         return JsonResponse({'result': 'success','id': randomId, 'name': randomId+'.pbtxt', 'url': '/media/'+randomId+'.pbtxt'})
 
