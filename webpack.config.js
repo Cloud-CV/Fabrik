@@ -1,9 +1,9 @@
 var webpack=require('webpack');
 
 module.exports = {
-     entry: './cloudcvIde/static/cloudcvIde/js/index.js',
+     entry: './ide/static/js/index.js',
      output: {
-         path: './cloudcvIde/static/cloudcvIde/bundle/',
+         path: './ide/static/bundle/',
          filename: 'bundle.js',
      },
      module: {
