@@ -27329,7 +27329,7 @@
 	            delete netData[layerId].state;
 	          });
 
-	          var url = { 'caffe': '/cloudcvide/export_caffe', 'tensorflow': '/cloudcvide/export_tensorflow' };
+	          var url = { 'caffe': '/caffe/export', 'tensorflow': '/tensorflow/export' };
 	          _this3.setState({ load: true });
 	          $.ajax({
 	            url: url[framework],
@@ -27364,7 +27364,7 @@
 	      this.dismissAllErrors();
 	      var formData = new FormData();
 	      formData.append('file', $('#inputFile' + framework)[0].files[0]);
-	      var url = { 'caffe': '/cloudcvide/import_caffe', 'tensorflow': '/cloudcvide/import_tensorflow' };
+	      var url = { 'caffe': '/caffe/import', 'tensorflow': '/tensorflow/import' };
 	      this.setState({ load: true });
 	      $.ajax({
 	        url: url[framework],
