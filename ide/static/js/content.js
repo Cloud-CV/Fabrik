@@ -156,11 +156,7 @@ class Content extends React.Component {
         delete netData[layerId].state;
       });
 
-<<<<<<< HEAD:ide/static/js/content.js
       const url = {'caffe': '/caffe/export', 'tensorflow': '/tensorflow/export'}
-=======
-      const url = {'caffe': '/cloudcvide/export_caffe', 'tensorflow': '/cloudcvide/export_tensorflow'}
->>>>>>> a2f7feeed24dbc47a78a470261545a57435fa4fa:cloudcvIde/static/cloudcvIde/js/content.js
       this.setState({ load: true });
       $.ajax({
         url: url[framework],
@@ -192,11 +188,7 @@ class Content extends React.Component {
     this.dismissAllErrors();
     const formData = new FormData();
     formData.append('file', $('#inputFile'+framework)[0].files[0]);
-<<<<<<< HEAD:ide/static/js/content.js
     const url = {'caffe': '/caffe/import', 'tensorflow': '/tensorflow/import'};
-=======
-    const url = {'caffe': '/cloudcvide/import_caffe', 'tensorflow': '/cloudcvide/import_tensorflow'};
->>>>>>> a2f7feeed24dbc47a78a470261545a57435fa4fa:cloudcvIde/static/cloudcvIde/js/content.js
     this.setState({ load: true });
     $.ajax({
       url: url[framework],
