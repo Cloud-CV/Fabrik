@@ -1,9 +1,13 @@
 # IDE
-This is a user interface to draw and configure deep neural networks and supports import/export of model configuration 
-file from/to caffe/tensorflow deep learning frameworks
+
+This is a React+Django webapp with a simple drag and drop interface to build and configure deep neural networks with support for export of model configuration files to caffe/tensorflow. It also supports import from these frameworks to visualize different archictures. Our motivation is to build an online IDE where researchers can share models, collaborate and try out different architectures without having to know / learn new deep learning frameworks.
+
+![alt text](https://github.com/Cloud-CV/IDE/example/snapshot.png "IDE Snapshot")
+
+This app is presently under active development and we welcome contributions. Please check out our [issues thread](https://github.com/Cloud-CV/IDE/issues) to find things to work on, or ping us on [Gitter](https://gitter.im/batra-mlp-lab/CloudCV). 
 
 ### Requirements
-1. install [caffe](http://installing-caffe-the-right-way.wikidot.com/start)
+1. install [caffe](http://caffe.berkeleyvision.org/installation.html)
 2. install [tensorflow](https://www.tensorflow.org/versions/r0.10/get_started/os_setup.html#pip-installation)
 
 ### Build instructions
@@ -19,3 +23,7 @@ file from/to caffe/tensorflow deep learning frameworks
 ### Example
 * Use `example/GoogleNet.pbtxt` for tensorflow import
 * Use `example/GoogleNet.prototxt` for caffe import
+
+### License
+
+This software is licensed under GNU GPLv3. Please see the included License file. All external libraries, if modified, will be mentioned below explicitly.
