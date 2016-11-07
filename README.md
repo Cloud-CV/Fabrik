@@ -1,6 +1,6 @@
 # IDE
 
-This is a React+Django webapp with a simple drag and drop interface to build and configure deep neural networks with support for export of model configuration files to caffe/tensorflow. It also supports import from these frameworks to visualize different archictures. Our motivation is to build an online IDE where researchers can share models, collaborate and try out different architectures without having to know / learn new deep learning frameworks.
+This is a React+Django webapp with a simple drag and drop interface to build and configure deep neural networks with support for export of model configuration files to caffe and tensorflow. It also supports import from these frameworks to visualize different model architectures. Our motivation is to build an online IDE where researchers can share models and collaborate without having to deal with deep learning code.
 
 ![alt text](https://github.com/Cloud-CV/IDE/blob/master/example/snapshot.png "IDE Snapshot")
 
