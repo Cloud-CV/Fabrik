@@ -3,3 +3,4 @@ pyaml==15.8.2
 numpy==1.11.0
 scikit-image==0.12.3
 protobuf==2.6.1
+tensorflow==0.9.0
