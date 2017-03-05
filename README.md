@@ -17,11 +17,13 @@ This app is presently under active development and we welcome contributions. Ple
 2. `git submodule init`
 3. `git submodule update`
 4. `pip install -r requirements.txt`
-While installing tensorflow through conda use tensorflow version >= 0.12.0 in requirements.txt
 5. `npm install`
 
 ### Usage
 `python manage.py runserver`
+
+### Note
+* While installing tensorflow through conda use tensorflow version >= 0.12.0 in requirements.txt
 
 ### Example
 * Use `example/GoogleNet.pbtxt` for tensorflow import
