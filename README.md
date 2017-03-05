@@ -22,6 +22,9 @@ This app is presently under active development and we welcome contributions. Ple
 ### Usage
 `python manage.py runserver`
 
+### Note
+* While installing tensorflow through conda use tensorflow version >= 0.12.0 in requirements.txt
+
 ### Example
 * Use `example/GoogleNet.pbtxt` for tensorflow import
 * Use `example/GoogleNet.prototxt` for caffe import
