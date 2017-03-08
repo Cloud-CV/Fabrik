@@ -28313,6 +28313,31 @@
 	    },
 	    learn: false,
 	  },
+	  Eltwise: {
+	    name: 'eltwise',
+	    color: 'rgb(255, 146, 100)',
+	    endpoint: {
+	      src: ['RightMiddle'],
+	      trg: ['LeftMiddle'],
+	    },
+	    params: {
+	      operation: {
+	        name: 'Eltwise method',
+	        value: 'SUM',
+	        type: 'select',
+	        options: ['SUM', 'PROD', 'Max'],
+	        required: false,
+	      },
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text',
+	      },
+	    },
+	    learn: false,
+	  },
 	  LRN: {
 	    name: 'lrn',
 	    color: 'rgb(29, 177, 222)',
@@ -28902,6 +28927,15 @@
 	          _paneElement2.default,
 	          { id: 'Crop' },
 	          'Crop'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'li',
+	        null,
+	        _react2.default.createElement(
+	          _paneElement2.default,
+	          { id: 'Eltwise' },
+	          'Eltwise'
 	        )
 	      ),
 	      _react2.default.createElement(

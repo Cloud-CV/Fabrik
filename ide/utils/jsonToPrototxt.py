@@ -393,6 +393,26 @@ def jsonToPrototxt(net,net_name):
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
 
+        elif (layerType == 'Eltwise'):
+            eltwise_param={}
+            if layerParams['operation'] != '':
+                elt = layerParams['operation']
+                if(elt == 'PROD'):
+                    elt = 0
+                elif(elt == 'SUM'):
+                    elt = 1
+                elif(elt == 'MAX'):
+                    elt = 2
+            else:
+                elt = 1 #Default is sum
+            eltwise_param['operation'] = elt
+            for ns in (ns_train,ns_test):
+                caffeLayer = get_iterable(L.Eltwise(
+                    *[ns[x] for x in blobNames[layerId]['bottom']],
+                    eltwise_param=eltwise_param))
+                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                    ns[key] = value
+
         elif (layerType == 'Softmax'):
             for ns in (ns_train,ns_test):
                 caffeLayer = get_iterable(L.Softmax(

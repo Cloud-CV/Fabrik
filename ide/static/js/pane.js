@@ -18,6 +18,7 @@ function Pane() {
     <li><PaneElement id="InnerProduct">Inner Product</PaneElement></li>
     <li><PaneElement id="Dropout">Dropout</PaneElement></li>
     <li><PaneElement id="Concat">Concat</PaneElement></li>
+    <li><PaneElement id="Eltwise">Eltwise</PaneElement></li>
     <li><PaneElement id="LRN">LRN</PaneElement></li>
     <li><PaneElement id="SoftmaxWithLoss">Softmax With Loss</PaneElement></li>
     <li><PaneElement id="Softmax">Softmax</PaneElement></li>

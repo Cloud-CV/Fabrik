@@ -80,6 +80,12 @@ def importPrototxt(request):
                 if(layer.top == layer.bottom):
                     params['inplace'] = True
 
+            elif(layer.type == 'Eltwise'):
+                if layer.eltwise_param.operation:
+                    params['operation'] = layer.eltwise_param.operation
+                else:
+                    params['operation'] = 1
+
             elif(layer.type == 'Pooling'):
                 params['pad_h'] = layer.pooling_param.pad_h or layer.pooling_param.pad
                 params['pad_w'] = layer.pooling_param.pad_w or layer.pooling_param.pad
