@@ -42,7 +42,27 @@ def importPrototxt(request):
                 params['backend'] = layer.data_param.backend
                 params['scale'] = layer.transform_param.scale
 
+            elif(layer.type == 'Crop'):
+                if layer.crop_param.axis:
+                    params['axis'] = layer.crop_param.axis
+                if len(layer.crop_param.offset):
+                    params['offset'] = layer.crop_param.offset[0]
+
             elif(layer.type == 'Convolution'):
+                if len(layer.convolution_param.kernel_size):
+                    params['kernel_h'] = layer.convolution_param.kernel_h or layer.convolution_param.kernel_size[0]
+                    params['kernel_w'] = layer.convolution_param.kernel_w or layer.convolution_param.kernel_size[0]
+                if len(layer.convolution_param.pad):
+                    params['pad_h'] = layer.convolution_param.pad_h or layer.convolution_param.pad[0]
+                    params['pad_w'] = layer.convolution_param.pad_w or layer.convolution_param.pad[0]
+                if len(layer.convolution_param.stride):
+                    params['stride_h'] = layer.convolution_param.stride_h or layer.convolution_param.stride[0]
+                    params['stride_w'] = layer.convolution_param.stride_w or layer.convolution_param.stride[0]
+                params['weight_filler'] = layer.convolution_param.weight_filler.type
+                params['bias_filler'] = layer.convolution_param.bias_filler.type
+                params['num_output'] = layer.convolution_param.num_output
+
+            elif(layer.type == 'Deconvolution'):
                 if len(layer.convolution_param.kernel_size):
                     params['kernel_h'] = layer.convolution_param.kernel_h or layer.convolution_param.kernel_size[0]
                     params['kernel_w'] = layer.convolution_param.kernel_w or layer.convolution_param.kernel_size[0]

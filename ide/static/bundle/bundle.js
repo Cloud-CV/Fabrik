@@ -28035,6 +28035,80 @@
 	    },
 	    learn: true
 	  },
+	  Deconvolution: {
+	    name: 'deconv',
+	    color: 'rgb(87, 100, 17)',
+	    endpoint: {
+	      src: ['RightMiddle'],
+	      trg: ['LeftMiddle']
+	    },
+	    params: {
+	      num_output: {
+	        name: 'No of outputs',
+	        value: '',
+	        type: 'number',
+	        required: true
+	      },
+	      kernel_h: {
+	        name: 'Kernel height',
+	        value: '',
+	        type: 'number',
+	        required: true
+	      },
+	      kernel_w: {
+	        name: 'Kernel width',
+	        value: '',
+	        type: 'number',
+	        required: true
+	      },
+	      stride_h: {
+	        name: 'Stride height',
+	        value: '',
+	        type: 'number',
+	        required: false
+	      },
+	      stride_w: {
+	        name: 'Stride width',
+	        value: '',
+	        type: 'number',
+	        required: false
+	      },
+	      pad_h: {
+	        name: 'Padding height',
+	        value: '',
+	        type: 'number',
+	        required: false
+	      },
+	      pad_w: {
+	        name: 'Padding width',
+	        value: '',
+	        type: 'number',
+	        required: false
+	      },
+	      weight_filler: {
+	        name: 'Weight filler',
+	        value: 'xavier',
+	        type: 'select',
+	        options: ['xavier', 'constant'],
+	        required: false
+	      },
+	      bias_filler: {
+	        name: 'Bias filler',
+	        value: 'constant',
+	        type: 'select',
+	        options: ['xavier', 'constant'],
+	        required: false
+	      }
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text'
+	      }
+	    },
+	    learn: true
+	  },
 	  ReLU: {
 	    name: 'relu',
 	    color: 'rgb(77, 101, 214)',
@@ -28208,6 +28282,36 @@
 	      }
 	    },
 	    learn: false
+	  },
+	  Crop: {
+	    name: 'crop',
+	    color: 'rgb(255, 250, 100)',
+	    endpoint: {
+	      src: ['RightMiddle'],
+	      trg: ['LeftMiddle'],
+	    },
+	    params: {
+	      axis: {
+	        name: 'axis',
+	        value: '2',
+	        type: 'number',
+	        required: false,
+	      },
+	      offset: {
+	        name: 'offset',
+	        value: '0',
+	        type: 'number',
+	        required: false,
+	      },
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text',
+	      },
+	    },
+	    learn: false,
 	  },
 	  LRN: {
 	    name: 'lrn',
@@ -28742,6 +28846,15 @@
 	        null,
 	        _react2.default.createElement(
 	          _paneElement2.default,
+	          { id: 'Deconvolution' },
+	          'Deconvolution'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'li',
+	        null,
+	        _react2.default.createElement(
+	          _paneElement2.default,
 	          { id: 'Pooling' },
 	          'Pool'
 	        )
@@ -28780,6 +28893,15 @@
 	          _paneElement2.default,
 	          { id: 'Concat' },
 	          'Concat'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'li',
+	        null,
+	        _react2.default.createElement(
+	          _paneElement2.default,
+	          { id: 'Crop' },
+	          'Crop'
 	        )
 	      ),
 	      _react2.default.createElement(

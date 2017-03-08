@@ -10,7 +10,9 @@ function Pane() {
   <ul className="dropdown-menu" id="addLayerDropdown">
     <li><PaneElement id="Data">Data</PaneElement></li>
     <li><PaneElement id="Input">Input</PaneElement></li>
+    <li><PaneElement id="Crop">Crop</PaneElement></li>
     <li><PaneElement id="Convolution">Convolution</PaneElement></li>
+    <li><PaneElement id="Deconvolution">Deconvolution</PaneElement></li>
     <li><PaneElement id="Pooling">Pool</PaneElement></li>
     <li><PaneElement id="ReLU">ReLU</PaneElement></li>
     <li><PaneElement id="InnerProduct">Inner Product</PaneElement></li>
