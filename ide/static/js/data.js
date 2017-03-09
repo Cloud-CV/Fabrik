@@ -500,4 +500,79 @@ export default {
     },
     learn: false,
   },
+  BatchNorm: {
+    name: 'batchnorm',
+    color: 'rgb(31, 218, 45)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+      use_global_stats: {
+        name: 'Use Global Stats',
+        value: '',
+        type: 'select',
+        options: ['true', 'false'],
+        required: true,
+      },
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: true,
+  },
+  Scale: {
+    name: 'scale',
+    color: 'rgb(243, 75, 214)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+      bias_term: {
+        name: 'Bias term',
+        value: '',
+        type: 'select',
+        options: ['true', 'false'],
+        required: true,
+      },
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: true,
+  },
+  Eltwise: {
+    name: 'elementwise',
+    color: 'rgb(162, 146, 27)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+      operation: {
+        name: 'Operation',
+        value: '',
+        type: 'select',
+        options: ['Product', 'Sum', 'Max'],
+        required: true,
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: true,
+  },
 };
