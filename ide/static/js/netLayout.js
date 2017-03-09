@@ -6,7 +6,6 @@
 // but the UI may not be clean.
 
 export default function(net){
-
 // map[x] = [y1, y2, y3]
 let map = {};
 let position = {};
@@ -15,7 +14,6 @@ let processed = {};
 Object.keys(net).forEach(layerId => {
   processed[layerId] = false;
 });
-
 function isProcessPossible(layerId){
   let inputs = net[layerId].connection.input;
   let i = 0;
@@ -32,7 +30,6 @@ function allocatePosition(layerId, preferredPosition){
   if (!map.hasOwnProperty(preferredPosition[0])) {
     map[preferredPosition[0]] = [];
   }
-
   let positionsY = map[preferredPosition[0]];
   if (positionsY.indexOf(preferredPosition[1]) != -1) {
     let temp = preferredPosition[1], i=2;
@@ -69,7 +66,7 @@ let i = null, layerId = null, parentId =  null, inputLength = null, outputLength
 
 // finding the input layers to start DFS
 Object.keys(net).forEach(layerId => {
-  if (net[layerId].info.type === 'Data' || net[layerId].info.type === 'Input') {
+  if (net[layerId].info.type === 'Data' || net[layerId].info.type === 'Input' || net[layerId].info.type === 'HDF5Data') {
     stack.push(layerId);
     parentMap[layerId] = null;
   }
@@ -119,6 +116,5 @@ while (stack.length) {
   processed[layerId] = true;
 
 }
-
 return position;
 }

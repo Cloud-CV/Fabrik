@@ -27970,7 +27970,10 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = {
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	exports.default = _defineProperty({
 	  Data: {
 	    name: 'data',
 	    color: 'rgb(255, 204, 60)',
@@ -28353,6 +28356,61 @@
 	    },
 	    learn: false
 	  },
+	  Eltwise: {
+	    name: 'eltwise',
+	    color: 'rgb(255, 146, 100)',
+	    endpoint: {
+	      src: ['RightMiddle'],
+	      trg: ['LeftMiddle']
+	    },
+	    params: {
+	      operation: {
+	        name: 'Eltwise method',
+	        value: 'SUM',
+	        type: 'select',
+	        options: ['SUM', 'PROD', 'Max'],
+	        required: false
+	      }
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text'
+	      }
+	    },
+	    learn: false
+	  },
+	  Crop: {
+	    name: 'crop',
+	    color: 'rgb(255, 250, 100)',
+	    endpoint: {
+	      src: ['RightMiddle'],
+	      trg: ['LeftMiddle']
+	    },
+	    params: {
+	      axis: {
+	        name: 'axis',
+	        value: '2',
+	        type: 'number',
+	        required: false
+	      },
+	      offset: {
+	        name: 'offset',
+	        value: '0',
+	        type: 'number',
+	        required: false
+	      }
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text'
+	      }
+	    },
+	    learn: false
+	  },
 	  LRN: {
 	    name: 'lrn',
 	    color: 'rgb(29, 177, 222)',
@@ -28399,6 +28457,142 @@
 	        name: 'Dim',
 	        value: '',
 	        type: 'text',
+	        required: true
+	      }
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text'
+	      }
+	    },
+	    learn: false
+	  },
+	  LSTM: {
+	    name: 'lstm',
+	    color: 'rgb(1, 116, 121)',
+	    endpoint: {
+	      src: ['RightMiddle'],
+	      trg: ['LeftMiddle']
+	    },
+	    params: {
+	      num_output: {
+	        name: 'No of outputs',
+	        value: '',
+	        type: 'number',
+	        required: true
+	      },
+	      weight_filler: {
+	        name: 'Weight filler',
+	        value: 'xavier',
+	        type: 'select',
+	        options: ['xavier', 'constant'],
+	        required: false
+	      },
+	      bias_filler: {
+	        name: 'Bias filler',
+	        value: 'constant',
+	        type: 'select',
+	        options: ['xavier', 'constant'],
+	        required: false
+	      }
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text'
+	      }
+	    },
+	    learn: true
+	  },
+	  Embed: {
+	    name: 'embed',
+	    color: 'rgb(23, 212, 90)',
+	    endpoint: {
+	      src: ['RightMiddle'],
+	      trg: ['LeftMiddle']
+	    },
+	    params: {
+	      num_output: {
+	        name: 'No of outputs',
+	        value: '',
+	        type: 'number',
+	        required: true
+	      },
+	      weight_filler: {
+	        name: 'Weight filler',
+	        value: 'xavier',
+	        type: 'select',
+	        options: ['xavier', 'constant'],
+	        required: false
+	      },
+	      bias_term: {
+	        name: 'Bias Term',
+	        value: 'False',
+	        type: 'select',
+	        options: ['True', 'False'],
+	        required: false
+	      },
+	      input_dim: {
+	        name: 'Input Dimensions',
+	        value: '',
+	        type: 'number',
+	        required: true
+	      }
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text'
+	      }
+	    },
+	    learn: true
+	  },
+	  Reshape: {
+	    name: 'reshape',
+	    color: 'rgb(134, 44, 44)',
+	    endpoint: {
+	      src: ['RightMiddle'],
+	      trg: ['LeftMiddle']
+	    },
+	    params: {
+	      dim: {
+	        name: 'Dim',
+	        value: '',
+	        type: 'text',
+	        required: true
+	      }
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text'
+	      }
+	    },
+	    learn: false
+	  },
+	  HDF5Data: {
+	    name: 'hdf5data',
+	    color: 'rgb(241, 206, 38)',
+	    endpoint: {
+	      src: ['RightMiddle'],
+	      trg: []
+	    },
+	    params: {
+	      source: {
+	        name: 'HDF5 Data source',
+	        value: '',
+	        type: 'text',
+	        required: true
+	      },
+	      batch_size: {
+	        name: 'Batch size',
+	        value: '',
+	        type: 'number',
 	        required: true
 	      }
 	    },
@@ -28460,33 +28654,32 @@
 	      }
 	    },
 	    learn: true
+	  }
+	}, 'Eltwise', {
+	  name: 'elementwise',
+	  color: 'rgb(162, 146, 27)',
+	  endpoint: {
+	    src: ['RightMiddle'],
+	    trg: ['LeftMiddle']
 	  },
-	  Eltwise: {
-	    name: 'eltwise',
-	    color: 'rgb(255, 146, 100)',
-	    endpoint: {
-	      src: ['RightMiddle'],
-	      trg: ['LeftMiddle'],
-	    },
-	    params: {
-	      operation: {
-	        name: 'Eltwise method',
-	        value: 'SUM',
-	        type: 'select',
-	        options: ['SUM', 'PROD', 'Max'],
-	        required: false,
-	      },
-	    },
-	    props: {
-	      name: {
-	        name: 'Name',
-	        value: '',
-	        type: 'text',
-	      },
-	    },
-	    learn: false,
+	  params: {
+	    operation: {
+	      name: 'Operation',
+	      value: '',
+	      type: 'select',
+	      options: ['Product', 'Sum', 'Max'],
+	      required: true
+	    }
 	  },
-	};
+	  props: {
+	    name: {
+	      name: 'Name',
+	      value: '',
+	      type: 'text'
+	    }
+	  },
+	  learn: true
+	});
 
 /***/ },
 /* 245 */
@@ -28952,6 +29145,15 @@
 	        null,
 	        _react2.default.createElement(
 	          _paneElement2.default,
+	          { id: 'Crop' },
+	          'Crop'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'li',
+	        null,
+	        _react2.default.createElement(
+	          _paneElement2.default,
 	          { id: 'Convolution' },
 	          'Convolution'
 	        )
@@ -29015,24 +29217,6 @@
 	        null,
 	        _react2.default.createElement(
 	          _paneElement2.default,
-	          { id: 'Crop' },
-	          'Crop'
-	        )
-	      ),
-	      _react2.default.createElement(
-	        'li',
-	        null,
-	        _react2.default.createElement(
-	          _paneElement2.default,
-	          { id: 'Eltwise' },
-	          'Eltwise'
-	        )
-	      ),
-	      _react2.default.createElement(
-	        'li',
-	        null,
-	        _react2.default.createElement(
-	          _paneElement2.default,
 	          { id: 'LRN' },
 	          'LRN'
 	        )
@@ -29062,6 +29246,42 @@
 	          _paneElement2.default,
 	          { id: 'Accuracy' },
 	          'Accuracy'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'li',
+	        null,
+	        _react2.default.createElement(
+	          _paneElement2.default,
+	          { id: 'HDF5Data' },
+	          'HDF5Data'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'li',
+	        null,
+	        _react2.default.createElement(
+	          _paneElement2.default,
+	          { id: 'Reshape' },
+	          'Reshape'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'li',
+	        null,
+	        _react2.default.createElement(
+	          _paneElement2.default,
+	          { id: 'Embed' },
+	          'Embed'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'li',
+	        null,
+	        _react2.default.createElement(
+	          _paneElement2.default,
+	          { id: 'LSTM' },
+	          'LSTM'
 	        )
 	      ),
 	      _react2.default.createElement(
@@ -29776,7 +29996,6 @@
 	});
 
 	exports.default = function (net) {
-
 	  // map[x] = [y1, y2, y3]
 	  var map = {};
 	  var position = {};
@@ -29785,7 +30004,6 @@
 	  Object.keys(net).forEach(function (layerId) {
 	    processed[layerId] = false;
 	  });
-
 	  function isProcessPossible(layerId) {
 	    var inputs = net[layerId].connection.input;
 	    var i = 0;
@@ -29802,7 +30020,6 @@
 	    if (!map.hasOwnProperty(preferredPosition[0])) {
 	      map[preferredPosition[0]] = [];
 	    }
-
 	    var positionsY = map[preferredPosition[0]];
 	    if (positionsY.indexOf(preferredPosition[1]) != -1) {
 	      var temp = preferredPosition[1],
@@ -29843,7 +30060,7 @@
 
 	  // finding the input layers to start DFS
 	  Object.keys(net).forEach(function (layerId) {
-	    if (net[layerId].info.type === 'Data' || net[layerId].info.type === 'Input') {
+	    if (net[layerId].info.type === 'Data' || net[layerId].info.type === 'Input' || net[layerId].info.type === 'HDF5Data') {
 	      stack.push(layerId);
 	      parentMap[layerId] = null;
 	    }
@@ -29896,7 +30113,6 @@
 
 	    processed[layerId] = true;
 	  }
-
 	  return position;
 	};
 

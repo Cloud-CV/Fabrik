@@ -500,6 +500,142 @@ export default {
     },
     learn: false,
   },
+  LSTM: {
+    name: 'lstm',
+    color: 'rgb(1, 116, 121)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+      num_output: {
+        name: 'No of outputs',
+        value: '',
+        type: 'number',
+        required: true,
+      },
+      weight_filler: {
+        name: 'Weight filler',
+        value: 'xavier',
+        type: 'select',
+        options: ['xavier', 'constant'],
+        required: false,
+      },
+      bias_filler: {
+        name: 'Bias filler',
+        value: 'constant',
+        type: 'select',
+        options: ['xavier', 'constant'],
+        required: false,
+      },
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: true,
+  },
+  Embed: {
+    name: 'embed',
+    color: 'rgb(23, 212, 90)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+      num_output: {
+        name: 'No of outputs',
+        value: '',
+        type: 'number',
+        required: true,
+      },
+      weight_filler: {
+        name: 'Weight filler',
+        value: 'xavier',
+        type: 'select',
+        options: ['xavier', 'constant'],
+        required: false,
+      },
+      bias_term: {
+        name: 'Bias Term',
+        value: 'False',
+        type: 'select',
+        options: ['True', 'False'],
+        required: false,
+      },
+      input_dim: {
+        name: 'Input Dimensions',
+        value: '',
+        type: 'number',
+        required: true,
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: true,
+  },
+  Reshape: {
+    name: 'reshape',
+    color: 'rgb(134, 44, 44)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: ['LeftMiddle'],
+    },
+    params: {
+      dim: {
+        name: 'Dim',
+        value: '',
+        type: 'text',
+        required: true,
+      },
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: false,
+  },
+  HDF5Data: {
+    name: 'hdf5data',
+    color: 'rgb(241, 206, 38)',
+    endpoint: {
+      src: ['RightMiddle'],
+      trg: [],
+    },
+    params: {
+      source: {
+        name: 'HDF5 Data source',
+        value: '',
+        type: 'text',
+        required: true,
+      },
+      batch_size: {
+        name: 'Batch size',
+        value: '',
+        type: 'number',
+        required: true,
+      },
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text',
+      },
+    },
+    learn: false,
+  },
   BatchNorm: {
     name: 'batchnorm',
     color: 'rgb(31, 218, 45)',
