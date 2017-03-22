@@ -1,4 +1,4 @@
-import React from 'react';
+  import React from 'react';
 import Canvas from './canvas';
 import Pane from './pane';
 import SetParams from './setParams';
@@ -156,7 +156,7 @@ class Content extends React.Component {
         delete netData[layerId].state;
       });
 
-      const url = {'caffe': '/caffe/export', 'tensorflow': '/tensorflow/export'}
+      const url = {'caffe': '/caffe/export', 'tensorflow': '/tensorflow/export', 'url': '/caffe/export'}
       this.setState({ load: true });
       $.ajax({
         url: url[framework],
@@ -167,7 +167,12 @@ class Content extends React.Component {
           net_name: this.state.net_name,
         },
         success : function (response) {
-          if (response.result == 'success') {
+          if (response.result == 'success' && framework == 'url'){
+            var id = response.url.split('/')[2];
+            id = id.split('.')[0];
+            prompt('Your prototxt ID is ',id);
+          }
+          else if (response.result == 'success') {
             const downloadAnchor = document.getElementById('download');
             downloadAnchor.download = response.name;
             downloadAnchor.href = response.url;
@@ -178,7 +183,6 @@ class Content extends React.Component {
           this.setState({ load: false });
         }.bind(this),
         error() {
-          // console.log('failure in exporting');
           this.setState({ load: false });
         },
       });
@@ -186,9 +190,14 @@ class Content extends React.Component {
   }
   importNet(framework) {
     this.dismissAllErrors();
+    const url = {'caffe': '/caffe/import', 'tensorflow': '/tensorflow/import', 'url': '/caffe/import'};
     const formData = new FormData();
-    formData.append('file', $('#inputFile'+framework)[0].files[0]);
-    const url = {'caffe': '/caffe/import', 'tensorflow': '/tensorflow/import'};
+    if (framework == 'url'){
+      const id = prompt('Please enter prototxt id ',id);
+      formData.append('proto_id', id);
+    }
+    else
+      formData.append('file', $('#inputFile'+framework)[0].files[0]);
     this.setState({ load: true });
     $.ajax({
       url: url[framework],
