@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import yaml
+import mimetypes
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from caffe.proto import caffe_pb2
@@ -10,18 +11,17 @@ from google.protobuf import text_format
 @csrf_exempt
 def importPrototxt(request):
     if request.method == 'POST':
-        if 'file' in request.FILES:
+        if ('file' in request.FILES) and (request.FILES['file'].content_type=='application/octet-stream') :
             try:
                 prototxt = request.FILES['file']
             except Exception:
                 return JsonResponse({'result': 'error', 'error': 'No Prototxt model file found'})
         elif 'proto_id' in request.POST:
             try:
-                prototxt = open(BASE_DIR+'/media/'+request.POST['proto_id']+'.prototxt', 'r')
+                prototxt = open(os.path.join(BASE_DIR,'media',request.POST['proto_id']+'.prototxt'), 'r')
             except Exception:
                 return JsonResponse({'result': 'error', 'error': 'No Prototxt model file found'})
         caffe_net = caffe_pb2.NetParameter()
-
         try:
             text_format.Merge(prototxt.read(), caffe_net)
         except Exception:
