@@ -1,26 +1,31 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.conf import settings
 import yaml
+import os
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
 
 @csrf_exempt
 def importPrototxt(request):
     if request.method == 'POST':
-        try:
-            prototxt = request.FILES['file']
-        except Exception:
-            return JsonResponse({'result': 'error', 'error': 'No Prototxt model file found'})
-
+        if ('file' in request.FILES) and (request.FILES['file'].content_type=='application/octet-stream') :
+            try:
+                prototxt = request.FILES['file']
+            except Exception:
+                return JsonResponse({'result': 'error', 'error': 'No Prototxt model file found'})
+        elif 'proto_id' in request.POST:
+            try:
+                prototxt = open(os.path.join(settings.BASE_DIR,'media',request.POST['proto_id']+'.prototxt'), 'r')
+            except Exception:
+                return JsonResponse({'result': 'error', 'error': 'No Prototxt model file found'})
         caffe_net = caffe_pb2.NetParameter()
-
         try:
             text_format.Merge(prototxt.read(), caffe_net)
         except Exception:
             return JsonResponse({'result': 'error', 'error': 'Invalid Prototxt'})
-
-
+            
         net = {}
         i = 0
         blobMap = {}

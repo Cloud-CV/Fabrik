@@ -18303,10 +18303,10 @@
 	 */
 
 	function getUnboundedScrollPosition(scrollable) {
-	  if (scrollable === window) {
+	  if (scrollable.Window && scrollable instanceof scrollable.Window) {
 	    return {
-	      x: window.pageXOffset || document.documentElement.scrollLeft,
-	      y: window.pageYOffset || document.documentElement.scrollTop
+	      x: scrollable.pageXOffset || scrollable.document.documentElement.scrollLeft,
+	      y: scrollable.pageYOffset || scrollable.document.documentElement.scrollTop
 	    };
 	  }
 	  return {
@@ -19055,7 +19055,9 @@
 	 * @return {boolean} Whether or not the object is a DOM node.
 	 */
 	function isNode(object) {
-	  return !!(object && (typeof Node === 'function' ? object instanceof Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
+	  var doc = object ? object.ownerDocument || object : document;
+	  var defaultView = doc.defaultView || window;
+	  return !!(object && (typeof defaultView.Node === 'function' ? object instanceof defaultView.Node : typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string'));
 	}
 
 	module.exports = isNode;
@@ -19064,7 +19066,7 @@
 /* 152 */
 /***/ function(module, exports) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
 	/**
 	 * Copyright (c) 2013-present, Facebook, Inc.
@@ -19085,19 +19087,24 @@
 	 *
 	 * The activeElement will be null only if the document or document body is not
 	 * yet defined.
+	 *
+	 * @param {?DOMDocument} doc Defaults to current document.
+	 * @return {?DOMElement}
 	 */
-	function getActiveElement() /*?DOMElement*/{
-	  if (typeof document === 'undefined') {
+	function getActiveElement(doc) /*?DOMElement*/{
+	  doc = doc || global.document;
+	  if (typeof doc === 'undefined') {
 	    return null;
 	  }
 	  try {
-	    return document.activeElement || document.body;
+	    return doc.activeElement || doc.body;
 	  } catch (e) {
-	    return document.body;
+	    return doc.body;
 	  }
 	}
 
 	module.exports = getActiveElement;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 153 */
@@ -27406,7 +27413,7 @@
 	          delete netData[layerId].state;
 	        });
 
-	        var url = { 'caffe': '/caffe/export', 'tensorflow': '/tensorflow/export' };
+	        var url = { 'caffe': '/caffe/export', 'tensorflow': '/tensorflow/export', 'url': '/caffe/export' };
 	        this.setState({ load: true });
 	        $.ajax({
 	          url: url[framework],
@@ -27417,7 +27424,11 @@
 	            net_name: this.state.net_name
 	          },
 	          success: function (response) {
-	            if (response.result == 'success') {
+	            if (response.result == 'success' && framework == 'url') {
+	              var id = response.url.split('/')[2];
+	              id = id.split('.')[0];
+	              prompt('Your prototxt ID is ', id);
+	            } else if (response.result == 'success') {
 	              var downloadAnchor = document.getElementById('download');
 	              downloadAnchor.download = response.name;
 	              downloadAnchor.href = response.url;
@@ -27428,7 +27439,6 @@
 	            this.setState({ load: false });
 	          }.bind(this),
 	          error: function error() {
-	            // console.log('failure in exporting');
 	            this.setState({ load: false });
 	          }
 	        });
@@ -27438,9 +27448,12 @@
 	    key: 'importNet',
 	    value: function importNet(framework) {
 	      this.dismissAllErrors();
+	      var url = { 'caffe': '/caffe/import', 'tensorflow': '/tensorflow/import', 'url': '/caffe/import' };
 	      var formData = new FormData();
-	      formData.append('file', $('#inputFile' + framework)[0].files[0]);
-	      var url = { 'caffe': '/caffe/import', 'tensorflow': '/tensorflow/import' };
+	      if (framework == 'url') {
+	        var id = prompt('Please enter prototxt id ', id);
+	        formData.append('proto_id', id);
+	      } else formData.append('file', $('#inputFile' + framework)[0].files[0]);
 	      this.setState({ load: true });
 	      $.ajax({
 	        url: url[framework],
@@ -29831,6 +29844,17 @@
 	                          } },
 	                        "tensorflow"
 	                      )
+	                    ),
+	                    _react2.default.createElement(
+	                      "li",
+	                      null,
+	                      _react2.default.createElement(
+	                        "a",
+	                        { href: "#", onClick: function onClick() {
+	                            return _this2.props.exportNet('url');
+	                          } },
+	                        "url"
+	                      )
 	                    )
 	                  )
 	                )
@@ -29879,6 +29903,17 @@
 	                        _react2.default.createElement("input", { id: "inputFiletensorflow", type: "file", onChange: function onChange() {
 	                            return _this2.props.importNet('tensorflow');
 	                          } })
+	                      )
+	                    ),
+	                    _react2.default.createElement(
+	                      "li",
+	                      null,
+	                      _react2.default.createElement(
+	                        "a",
+	                        { href: "#", onClick: function onClick() {
+	                            return _this2.props.importNet('url');
+	                          } },
+	                        "url"
 	                      )
 	                    )
 	                  )
