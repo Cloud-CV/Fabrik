@@ -4,7 +4,6 @@ from django.http import JsonResponse
 from django.conf import settings
 import yaml
 import os
-#BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
 
