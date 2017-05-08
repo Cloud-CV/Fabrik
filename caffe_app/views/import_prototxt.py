@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.conf import settings
 import yaml
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
 
@@ -17,7 +18,7 @@ def importPrototxt(request):
                 return JsonResponse({'result': 'error', 'error': 'No Prototxt model file found'})
         elif 'proto_id' in request.POST:
             try:
-                prototxt = open(os.path.join(BASE_DIR,'media',request.POST['proto_id']+'.prototxt'), 'r')
+                prototxt = open(os.path.join(settings.BASE_DIR,'media',request.POST['proto_id']+'.prototxt'), 'r')
             except Exception:
                 return JsonResponse({'result': 'error', 'error': 'No Prototxt model file found'})
         caffe_net = caffe_pb2.NetParameter()
