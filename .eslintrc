@@ -1,0 +1,22 @@
+{
+  parser: "babel-eslint",
+  "plugins": [
+    "react"
+  ],
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "jquery": true,
+  },
+  "globals": {
+        "instance": true,
+        "addLayerEndpoints": true,
+        "jsPlumb": false,
+        "jsPlumbUtil": false,
+    },
+  "rules": {
+    "max-len": [1, 150, 2, {ignoreComments: true}],
+  },
+  "extends": ["eslint:recommended", "plugin:react/recommended"]
+}

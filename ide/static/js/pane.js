@@ -5,7 +5,8 @@ function Pane() {
   return (
 
 <li className="dropdown" id="pane-dropdown" style={{paddingTop:'4px'}}>
-  <button data-toggle="dropdown" className="dropdown-toggle" aria-haspopup="true" aria-expanded="true"><span className="glyphicon glyphicon-plus-sign" style={{fontSize:'24px'}}></span></button>
+  <button data-toggle="dropdown" className="dropdown-toggle" aria-haspopup="true" 
+  aria-expanded="true"><span className="glyphicon glyphicon-plus-sign" style={{fontSize:'24px'}}></span></button>
 
   <ul className="dropdown-menu" id="addLayerDropdown">
     <li><PaneElement id="Data">Data</PaneElement></li>

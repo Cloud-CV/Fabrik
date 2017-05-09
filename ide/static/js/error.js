@@ -23,7 +23,7 @@ class Error extends React.Component {
 Error.propTypes = {
   text: React.PropTypes.string.isRequired,
   index: React.PropTypes.number,
-  dismissError: React.PropTypes.func,
+  dismissError: React.PropTypes.func
 };
 
 export default Error;

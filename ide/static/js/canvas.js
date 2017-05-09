@@ -26,7 +26,7 @@ class Canvas extends React.Component {
     instance.draggable(jsPlumb.getSelector('.layer'),
       {
         drag: this.updateLayerPosition.bind(this),
-        grid: [8, 8],
+        grid: [8, 8]
       }
     );
     if (this.props.rebuildNet) {
@@ -39,7 +39,7 @@ class Canvas extends React.Component {
             if ((net[outputId].info.phase === this.props.selectedPhase) || (net[outputId].info.phase === null)) {
               instance.connect({
                 uuids: [`${inputId}-s0`, `${outputId}-t0`],
-                editable: true,
+                editable: true
               });
             }
           });
@@ -131,7 +131,7 @@ class Canvas extends React.Component {
       layer.state = {
         top: `${(event.clientY - event.target.getBoundingClientRect().top - canvas.y)/zoom - 25}px`,
         left: `${(event.clientX - event.target.getBoundingClientRect().left - canvas.x)/zoom - 45}px`,
-        class: '',
+        class: ''
       };
       // 25px difference between layerTop and dropping point
       // 45px difference between layerLeft and dropping point
@@ -214,7 +214,7 @@ Canvas.propTypes = {
   changeNetStatus: React.PropTypes.func,
   addError: React.PropTypes.func,
   dismissError: React.PropTypes.func,
-  error: React.PropTypes.array,
+  error: React.PropTypes.array
 };
 
 export default Canvas;

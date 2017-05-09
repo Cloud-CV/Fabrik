@@ -24,7 +24,7 @@ class PaneElement extends React.Component {
 
 PaneElement.propTypes = {
   id: React.PropTypes.string.isRequired,
-  children: React.PropTypes.string.isRequired,
+  children: React.PropTypes.string.isRequired
 };
 
 export default PaneElement;

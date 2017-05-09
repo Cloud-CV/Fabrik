@@ -27172,6 +27172,7 @@
 	});
 
 	exports.default = function () {
+	  // eslint-disable-line
 	  return _react2.default.createElement(
 	    'div',
 	    { className: 'app' },
@@ -27487,7 +27488,7 @@
 	      Object.keys(net).forEach(function (layerId) {
 	        var layer = net[layerId];
 	        var type = layer.info.type;
-	        var index = +layerId.substring(1);
+	        // const index = +layerId.substring(1);
 	        if (_data2.default.hasOwnProperty(type)) {
 	          // add the missing params with default values
 	          Object.keys(_data2.default[type].params).forEach(function (param) {
@@ -27983,10 +27984,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	exports.default = _defineProperty({
+	exports.default = {
 	  Data: {
 	    name: 'data',
 	    color: 'rgb(255, 204, 60)',
@@ -28668,31 +28666,7 @@
 	    },
 	    learn: true
 	  }
-	}, 'Eltwise', {
-	  name: 'elementwise',
-	  color: 'rgb(162, 146, 27)',
-	  endpoint: {
-	    src: ['RightMiddle'],
-	    trg: ['LeftMiddle']
-	  },
-	  params: {
-	    operation: {
-	      name: 'Operation',
-	      value: '',
-	      type: 'select',
-	      options: ['Product', 'Sum', 'Max'],
-	      required: true
-	    }
-	  },
-	  props: {
-	    name: {
-	      name: 'Name',
-	      value: '',
-	      type: 'text'
-	    }
-	  },
-	  learn: true
-	});
+	};
 
 /***/ },
 /* 245 */
@@ -28709,12 +28683,9 @@
 	    params = params || { dx: 120, dy: 120 };
 	    var _super = jsPlumb.Connectors.AbstractConnector.apply(this, arguments);
 	    this.type = "ArrowConnector";
-	    var dx = params.x || 50,
-	        dy = params.y || 50;
+	    var dx = params.x || 50;
 
 	    this._compute = function (paintInfo, paintParams) {
-	      var w = paintInfo.w,
-	          h = paintInfo.h;
 
 	      if (paintParams.targetEndpoint.isTarget && paintParams.targetEndpoint.element.attributes['data-type'].nodeValue === 'Concat') {
 	        _super.addSegment(this, "Straight", {
@@ -29002,12 +28973,12 @@
 	  canvas.updateContainerPosition();
 	  canvas.updateContainerScale();
 
-	  function updateTextPosition(e) {
-	    e.style.left = $(e).data("x") / current.zoom + 'px';
-	    e.style.top = $(e).data("y") / current.zoom + 'px';
-	  }
+	  /*function updateTextPosition(e) {
+	    e.style.left = ($(e).data("x")) / current.zoom + 'px';
+	    e.style.top = ($(e).data("y")) / current.zoom  + 'px';
+	  }*/
 
-	  function newText(x, y, size, text) {
+	  /*function newText(x, y, size, text) {
 	    var tb = document.createElement('div');
 	    tb.className = "text";
 	    tb.contentEditable = true;
@@ -29016,7 +28987,7 @@
 	    updateTextPosition(tb);
 	    canvas.appendChild(tb);
 	    return tb;
-	  }
+	  }*/
 
 	  var dragging = false,
 	      state = { click: false, pan: false },
@@ -29073,8 +29044,7 @@
 	    //instance.repaintEverything();
 	  }
 
-	  var mousewheel,
-	      lastMouseWheelEventTime = Date.now();
+	  var mousewheel = Date.now();
 
 	  mousewheel = function mousewheel(e) {
 	    e.preventDefault();
@@ -29091,17 +29061,18 @@
 	  }
 
 	  function getQueryVariable(id) {
-	    var params = window.location.search.substring(1).split("&");for (var i = 0; i < params.length; i++) {
-	      var p = params[i].split("=");if (p[0] == id) {
+	    var params = window.location.search.substring(1).split("&");
+	    for (var i = 0; i < params.length; i++) {
+	      var p = params[i].split("=");
+	      if (p[0] == id) {
 	        return p[1];
 	      }
-	    }return false;
+	    }
+	    return false;
 	  }
 
 	  return state;
 	};
-
-	;
 
 /***/ },
 /* 249 */
@@ -29129,7 +29100,8 @@
 	    { className: 'dropdown', id: 'pane-dropdown', style: { paddingTop: '4px' } },
 	    _react2.default.createElement(
 	      'button',
-	      { 'data-toggle': 'dropdown', className: 'dropdown-toggle', 'aria-haspopup': 'true', 'aria-expanded': 'true' },
+	      { 'data-toggle': 'dropdown', className: 'dropdown-toggle', 'aria-haspopup': 'true',
+	        'aria-expanded': 'true' },
 	      _react2.default.createElement('span', { className: 'glyphicon glyphicon-plus-sign', style: { fontSize: '24px' } })
 	    ),
 	    _react2.default.createElement(
@@ -30060,6 +30032,7 @@
 	      var temp = preferredPosition[1],
 	          _i = 2;
 	      while (1) {
+	        // eslint-disable-line
 	        if (positionsY.indexOf(temp + _i) === -1) {
 	          // may be avoid overlapping edges
 	          if (map[preferredPosition[0] - 1].indexOf(temp + _i) === -1) {

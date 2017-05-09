@@ -54,7 +54,7 @@ class TopBar extends React.Component {
 
 TopBar.propTypes = {
   exportNet: React.PropTypes.func,
-  importNet: React.PropTypes.func,
+  importNet: React.PropTypes.func
 };
 
 export default TopBar;

@@ -21,7 +21,7 @@ class Layer extends React.Component {
         style={{
           top:this.props.top,
           left:this.props.left,
-          background: data[this.props.type].color,
+          background: data[this.props.type].color
         }}
         data-type={this.props.type}
         onClick={(event) => this.props.click(event, this.props.id)}
@@ -38,7 +38,8 @@ Layer.propTypes = {
   top: React.PropTypes.string.isRequired,
   left: React.PropTypes.string.isRequired,
   class: React.PropTypes.string,
-  click: React.PropTypes.func,
+  click: React.PropTypes.func
 };
 
 export default Layer;
+

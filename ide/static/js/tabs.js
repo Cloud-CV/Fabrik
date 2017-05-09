@@ -30,7 +30,7 @@ class Tabs extends React.Component {
 
 Tabs.propTypes = {
   changeNetPhase: React.PropTypes.func,
-  selectedPhase: React.PropTypes.number,
+  selectedPhase: React.PropTypes.number
 };
 
 export default Tabs;
