@@ -2,7 +2,7 @@ export default function() {
   "use strict";
 
   var panZoom = document.getElementById('panZoomContainer'),
-    canvas = document.getElementById('jsplumbContainer');
+  canvas = document.getElementById('jsplumbContainer');
 
   if (!canvas) { return; }
 
@@ -21,13 +21,13 @@ export default function() {
   canvas.updateContainerScale();
 
 
-  function updateTextPosition(e) {
+  /*function updateTextPosition(e) {
     e.style.left = ($(e).data("x")) / current.zoom + 'px';
     e.style.top = ($(e).data("y")) / current.zoom  + 'px';
-  }
+  }*/
 
 
-  function newText(x, y, size, text) {
+  /*function newText(x, y, size, text) {
     var tb = document.createElement('div');
     tb.className = "text";
     tb.contentEditable = true;
@@ -36,7 +36,7 @@ export default function() {
     updateTextPosition(tb);
     canvas.appendChild(tb);
     return tb;
-  }
+  }*/
 
   var  dragging = false,
     state = { click: false, pan: false },
@@ -74,7 +74,8 @@ export default function() {
 
   panZoom.ondblclick = function(e) {
     e.preventDefault();
-    onZoom((e.ctrlKey || e.metaKey) ? current.zoom * 1.7 * 1.7 : current.zoom / 1.7 / 1.7, e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
+    onZoom((e.ctrlKey || e.metaKey) ? current.zoom * 1.7 * 1.7 : current.zoom / 1.7 / 1.7,
+     e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
   };
 
   function onZoom(zoom, cx, cy) {
@@ -93,21 +94,30 @@ export default function() {
     //instance.repaintEverything();
   }
 
-  var mousewheel, lastMouseWheelEventTime = Date.now();
+  var mousewheel = Date.now();
 
   mousewheel = function(e) {
     e.preventDefault();
     var delta = e.wheelDeltaY;
 
     //onZoom((delta > 0) ? current.zoom / 1.7 : current.zoom * 1.7, e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
-    onZoom((delta > 0) ? current.zoom / 1.1 : ((delta < 0) ? current.zoom * 1.1 : current.zoom), e.clientX - panZoom.getBoundingClientRect().left, e.clientY - panZoom.getBoundingClientRect().top);
+    onZoom((delta > 0) ? current.zoom / 1.1 : ((delta < 0) ? current.zoom * 1.1 : current.zoom),
+     e.clientX - panZoom.getBoundingClientRect().left, e.clientY - panZoom.getBoundingClientRect().top);
   };
 
   if ("onmousewheel" in document) { panZoom.onmousewheel = mousewheel; }
   else { panZoom.addEventListener('wheel', mousewheel, false); }
 
-  function getQueryVariable(id) { var params = window.location.search.substring(1).split("&");  for (var i = 0; i < params.length; i++) { var p = params[i].split("="); if (p[0] == id) { return p[1]; } } return(false); }
+  function getQueryVariable(id) { 
+    var params = window.location.search.substring(1).split("&");  
+    for (var i = 0; i < params.length; i++) {
+      var p = params[i].split("="); 
+      if (p[0] == id) { 
+        return p[1]; 
+      } } 
+      return(false); 
+    }
 
   return state;
 
-};
+}

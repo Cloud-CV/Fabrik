@@ -18,7 +18,7 @@ class Content extends React.Component {
       rebuildNet: false,
       selectedPhase: 0,
       error: [],
-      load: false,
+      load: false
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
@@ -164,7 +164,7 @@ class Content extends React.Component {
         type: 'POST',
         data: {
           net: JSON.stringify(netData),
-          net_name: this.state.net_name,
+          net_name: this.state.net_name
         },
         success : function (response) {
           if (response.result == 'success' && framework == 'url'){
@@ -184,7 +184,7 @@ class Content extends React.Component {
         }.bind(this),
         error() {
           this.setState({ load: false });
-        },
+        }
       });
     }
   }
@@ -217,7 +217,7 @@ class Content extends React.Component {
       error() {
         // console.log('failure');
         this.setState({ load: false });
-      },
+      }
     });
   }
   initialiseImportedNet(net,net_name) {
@@ -229,7 +229,7 @@ class Content extends React.Component {
     Object.keys(net).forEach(layerId => {
       const layer = net[layerId];
       const type = layer.info.type;
-      const index = +layerId.substring(1);
+      // const index = +layerId.substring(1);
       if (data.hasOwnProperty(type)) {
         // add the missing params with default values
         Object.keys(data[type].params).forEach(param => {
@@ -253,7 +253,7 @@ class Content extends React.Component {
       layer.state = {
         top: `${250 + 50 * positions[layerId][1]}px`,
         left: `${20 + 180 * positions[layerId][0]}px`,
-        class: '',
+        class: ''
       };
     });
 
@@ -272,7 +272,7 @@ class Content extends React.Component {
         nextLayerId: Object.keys(net).length,
         rebuildNet: true,
         selectedPhase: 0,
-        error: [],
+        error: []
       });
     }
 
@@ -312,7 +312,7 @@ class Content extends React.Component {
     this.setState({
       net,
       selectedLayer: null,
-      rebuildNet: true,
+      rebuildNet: true
     });
   }
   trainOnly() {

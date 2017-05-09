@@ -145,7 +145,7 @@ SetParams.propTypes = {
   modifyLayer: React.PropTypes.func,
   trainOnly: React.PropTypes.func,
   selectedPhase: React.PropTypes.number,
-  copyTrain: React.PropTypes.func,
+  copyTrain: React.PropTypes.func
 };
 
 export default SetParams;
