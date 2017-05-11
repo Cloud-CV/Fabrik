@@ -1,2 +1,5 @@
 [flake8]
 max-line-length = 100
+exclude = 
+	./tensorflow_app/caffe-tensorflow
+	
