@@ -1,31 +1,34 @@
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
-import yaml
 import os
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
 
+
 @csrf_exempt
 def importPrototxt(request):
     if request.method == 'POST':
-        if ('file' in request.FILES) and (request.FILES['file'].content_type=='application/octet-stream') :
+        if ('file' in request.FILES) and \
+           (request.FILES['file'].content_type == 'application/octet-stream'):
             try:
                 prototxt = request.FILES['file']
             except Exception:
-                return JsonResponse({'result': 'error', 'error': 'No Prototxt model file found'})
+                return JsonResponse({'result': 'error',
+                                     'error': 'No Prototxt model file found'})
         elif 'proto_id' in request.POST:
             try:
-                prototxt = open(os.path.join(settings.BASE_DIR,'media',request.POST['proto_id']+'.prototxt'), 'r')
+                prototxt = open(os.path.join(settings.BASE_DIR,
+                                             'media', request.POST['proto_id'] + '.prototxt'), 'r')
             except Exception:
-                return JsonResponse({'result': 'error', 'error': 'No Prototxt model file found'})
+                return JsonResponse({'result': 'error',
+                                     'error': 'No Prototxt model file found'})
         caffe_net = caffe_pb2.NetParameter()
         try:
             text_format.Merge(prototxt.read(), caffe_net)
         except Exception:
             return JsonResponse({'result': 'error', 'error': 'Invalid Prototxt'})
-            
+
         net = {}
         i = 0
         blobMap = {}
@@ -55,28 +58,40 @@ def importPrototxt(request):
 
             elif(layer.type == 'Convolution'):
                 if len(layer.convolution_param.kernel_size):
-                    params['kernel_h'] = layer.convolution_param.kernel_h or layer.convolution_param.kernel_size[0]
-                    params['kernel_w'] = layer.convolution_param.kernel_w or layer.convolution_param.kernel_size[0]
+                    params['kernel_h'] = layer.convolution_param.kernel_h \
+                        or layer.convolution_param.kernel_size[0]
+                    params['kernel_w'] = layer.convolution_param.kernel_w \
+                        or layer.convolution_param.kernel_size[0]
                 if len(layer.convolution_param.pad):
-                    params['pad_h'] = layer.convolution_param.pad_h or layer.convolution_param.pad[0]
-                    params['pad_w'] = layer.convolution_param.pad_w or layer.convolution_param.pad[0]
+                    params['pad_h'] = layer.convolution_param.pad_h \
+                        or layer.convolution_param.pad[0]
+                    params['pad_w'] = layer.convolution_param.pad_w \
+                        or layer.convolution_param.pad[0]
                 if len(layer.convolution_param.stride):
-                    params['stride_h'] = layer.convolution_param.stride_h or layer.convolution_param.stride[0]
-                    params['stride_w'] = layer.convolution_param.stride_w or layer.convolution_param.stride[0]
+                    params['stride_h'] = layer.convolution_param.stride_h \
+                        or layer.convolution_param.stride[0]
+                    params['stride_w'] = layer.convolution_param.stride_w \
+                        or layer.convolution_param.stride[0]
                 params['weight_filler'] = layer.convolution_param.weight_filler.type
                 params['bias_filler'] = layer.convolution_param.bias_filler.type
                 params['num_output'] = layer.convolution_param.num_output
 
             elif(layer.type == 'Deconvolution'):
                 if len(layer.convolution_param.kernel_size):
-                    params['kernel_h'] = layer.convolution_param.kernel_h or layer.convolution_param.kernel_size[0]
-                    params['kernel_w'] = layer.convolution_param.kernel_w or layer.convolution_param.kernel_size[0]
+                    params['kernel_h'] = layer.convolution_param.kernel_h \
+                        or layer.convolution_param.kernel_size[0]
+                    params['kernel_w'] = layer.convolution_param.kernel_w \
+                        or layer.convolution_param.kernel_size[0]
                 if len(layer.convolution_param.pad):
-                    params['pad_h'] = layer.convolution_param.pad_h or layer.convolution_param.pad[0]
-                    params['pad_w'] = layer.convolution_param.pad_w or layer.convolution_param.pad[0]
+                    params['pad_h'] = layer.convolution_param.pad_h \
+                        or layer.convolution_param.pad[0]
+                    params['pad_w'] = layer.convolution_param.pad_w \
+                        or layer.convolution_param.pad[0]
                 if len(layer.convolution_param.stride):
-                    params['stride_h'] = layer.convolution_param.stride_h or layer.convolution_param.stride[0]
-                    params['stride_w'] = layer.convolution_param.stride_w or layer.convolution_param.stride[0]
+                    params['stride_h'] = layer.convolution_param.stride_h \
+                        or layer.convolution_param.stride[0]
+                    params['stride_w'] = layer.convolution_param.stride_w \
+                        or layer.convolution_param.stride[0]
                 params['weight_filler'] = layer.convolution_param.weight_filler.type
                 params['bias_filler'] = layer.convolution_param.bias_filler.type
                 params['num_output'] = layer.convolution_param.num_output
@@ -107,25 +122,28 @@ def importPrototxt(request):
 
             elif(layer.type == 'SoftmaxWithLoss'):
                 pass
+
             elif(layer.type == 'Accuracy'):
                 pass
+
             elif(layer.type == 'Input'):
-                params['dim'] = str(map(int,layer.input_param.shape[0].dim))[1:-1]
+                params['dim'] = str(map(int, layer.input_param.shape[0].dim))[1:-1]
                 # string '64,1,28,28'
+
             elif(layer.type == 'LSTM'):
                 params['num_output'] = layer.recurrent_param.num_output
                 params['weight_filler'] = layer.recurrent_param.weight_filler.type
                 params['bias_filler'] = layer.recurrent_param.bias_filler.type
-            
+
             elif(layer.type == 'Embed'):
                 params['bias_term'] = layer.embed_param.bias_term
                 params['input_dim'] = layer.embed_param.input_dim
                 params['num_output'] = layer.embed_param.num_output
                 params['weight_filler'] = layer.embed_param.weight_filler.type
-            
+
             elif(layer.type == 'Reshape'):
-                params['dim'] = str(map(int,layer.reshape_param.shape.dim))[1:-1]
-            
+                params['dim'] = str(map(int, layer.reshape_param.shape.dim))[1:-1]
+
             elif(layer.type == 'HDF5Data'):
                 params['source'] = layer.hdf5_data_param.source
                 params['batch_size'] = layer.hdf5_data_param.batch_size
@@ -148,7 +166,7 @@ def importPrototxt(request):
                 'params': params
             }
 
-            # this logic was written for a general scenerio(where train and test layers are mixed up)
+            # this logic was written for a scenerio where train and test layers are mixed up
             # But as we know, the only differences between the train and test phase are:
             # 1) input layer with different source in test
             # 2) some accuracy layers in test
@@ -161,7 +179,8 @@ def importPrototxt(request):
                     if jsonLayer['info']['phase'] is not None:
                         phase = jsonLayer['info']['phase']
                         for bottomLayerId in blobMap[bottom_blob]:
-                            if (net[bottomLayerId]['info']['phase'] == phase) or (net[bottomLayerId]['info']['phase'] is None):
+                            if (net[bottomLayerId]['info']['phase'] == phase) or\
+                                 (net[bottomLayerId]['info']['phase'] is None):
                                 input.append(bottomLayerId)
                                 net[bottomLayerId]['connection']['output'].append(id)
                     else:
@@ -193,4 +212,4 @@ def importPrototxt(request):
             net[id] = jsonLayer
             i = i + 1
 
-        return JsonResponse({'result': 'success', 'net': net, 'net_name':net_name })
+        return JsonResponse({'result': 'success', 'net': net, 'net_name': net_name})

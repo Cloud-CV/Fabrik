@@ -3,7 +3,8 @@ import caffe
 from caffe import layers as L
 import re
 
-def jsonToPrototxt(net,net_name):
+
+def jsonToPrototxt(net, net_name):
     # assumption: a layer can accept only one input blob
     # the data layer produces two blobs: data and label
     # the loss layer requires two blobs: <someData> and label
@@ -11,7 +12,7 @@ def jsonToPrototxt(net,net_name):
     # layers name have to be unique
 
     # custom DFS of the network
-    input_dim = None;
+    input_dim = None
 
     def get_iterable(x):
         if isinstance(x, collections.Iterable):
@@ -40,8 +41,8 @@ def jsonToPrototxt(net,net_name):
 
     # finding the data layer
     for layerId in net:
-        if(net[layerId]['info']['type'] == 'Data' or net[layerId]['info']['type'] == 'Input' 
-            or net[layerId]['info']['type'] == 'HDF5Data'):
+        if(net[layerId]['info']['type'] == 'Data' or net[layerId]['info']['type'] == 'Input'
+                or net[layerId]['info']['type'] == 'HDF5Data'):
             stack.append(layerId)
 
     def changeTopBlobName(layerId, newName):
@@ -59,7 +60,8 @@ def jsonToPrototxt(net,net_name):
 
         inputs = net[layerId]['connection']['input']
         if len(inputs) > 0:
-            if len(inputs) == 2 and (net[inputs[0]]['info']['phase'] is not None) and (net[inputs[1]]['info']['phase']):
+            if len(inputs) == 2 and (net[inputs[0]]['info']['phase'] is not None) \
+                    and (net[inputs[1]]['info']['phase']):
                 commonBlobName = blobNames[inputs[0]]['top']
                 changeTopBlobName(inputs[1], commonBlobName)
                 blobNames[layerId]['bottom'] = commonBlobName
@@ -79,7 +81,6 @@ def jsonToPrototxt(net,net_name):
         layersProcessed[layerId] = True
         processOrder.append(layerId)
 
-
     ns_train = caffe.NetSpec()
     ns_test = caffe.NetSpec()
 
@@ -89,7 +90,6 @@ def jsonToPrototxt(net,net_name):
         layerParams = layer['params']
         layerType = layer['info']['type']
         layerPhase = layer['info']['phase']
-        topBlob = blobNames[layerId]['top']
 
         if (layerType == 'Data' or layerType == 'Input'):
 
@@ -152,46 +152,44 @@ def jsonToPrototxt(net,net_name):
 
             if layerPhase is not None:
                 caffeLayer = get_iterable(L.Input(
-                    input_param={'shape':{'dim':map(int,layerParams['dim'].split(','))}},
+                    input_param={'shape': {'dim': map(int, layerParams['dim'].split(','))}},
                     include={
                         'phase': int(layerPhase)
                     }))
                 if int(layerPhase) == 0:
-                    #for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
+                    # for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
                     for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                         ns_train[key] = value
                 elif int(layerPhase) == 1:
-                    #for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
+                    # for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
                     for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                         ns_test[key] = value
             else:
-                for ns in (ns_train,ns_test):
+                for ns in (ns_train, ns_test):
                     caffeLayer = get_iterable(L.Input(
-                        input_param={'shape':{'dim':map(int,layerParams['dim'].split(','))}}))
-                    #for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
+                        input_param={'shape': {'dim': map(int, layerParams['dim'].split(','))}}))
+                    # for key, value in zip(blobNames[layerId]['top'] + ['label'], caffeLayer):
                     for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                         ns[key] = value
 
         elif (layerType == 'Crop'):
-            crop_param={}
+            crop_param = {}
 
             if layerParams['axis'] != '':
                 crop_param['axis'] = int(float(layerParams['axis']))
             if layerParams['offset'] != '':
                 crop_param['offset'] = int(float(layerParams['offset']))
 
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Crop(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     crop_param=crop_param))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
 
-
-
         elif (layerType == 'Convolution'):
 
-            convolution_param={}
+            convolution_param = {}
             if layerParams['kernel_h'] != '':
                 convolution_param['kernel_h'] = int(float(layerParams['kernel_h']))
             if layerParams['kernel_w'] != '':
@@ -207,13 +205,13 @@ def jsonToPrototxt(net,net_name):
             if layerParams['pad_w'] != '':
                 convolution_param['pad_w'] = int(float(layerParams['pad_w']))
             if layerParams['weight_filler'] != '':
-                convolution_param['weight_filler']={}
+                convolution_param['weight_filler'] = {}
                 convolution_param['weight_filler']['type'] = layerParams['weight_filler']
             if layerParams['bias_filler'] != '':
-                convolution_param['bias_filler']={}
+                convolution_param['bias_filler'] = {}
                 convolution_param['bias_filler']['type'] = layerParams['bias_filler']
 
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Convolution(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     convolution_param=convolution_param,
@@ -230,7 +228,7 @@ def jsonToPrototxt(net,net_name):
 
         elif (layerType == 'Deconvolution'):
 
-            convolution_param={}
+            convolution_param = {}
             if layerParams['kernel_h'] != '':
                 convolution_param['kernel_h'] = int(float(layerParams['kernel_h']))
             if layerParams['kernel_w'] != '':
@@ -246,13 +244,13 @@ def jsonToPrototxt(net,net_name):
             if layerParams['pad_w'] != '':
                 convolution_param['pad_w'] = int(float(layerParams['pad_w']))
             if layerParams['weight_filler'] != '':
-                convolution_param['weight_filler']={}
+                convolution_param['weight_filler'] = {}
                 convolution_param['weight_filler']['type'] = layerParams['weight_filler']
             if layerParams['bias_filler'] != '':
-                convolution_param['bias_filler']={}
+                convolution_param['bias_filler'] = {}
                 convolution_param['bias_filler']['type'] = layerParams['bias_filler']
 
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Deconvolution(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     convolution_param=convolution_param,
@@ -269,7 +267,7 @@ def jsonToPrototxt(net,net_name):
 
         elif (layerType == 'ReLU'):
             inplace = layerParams['inplace']
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.ReLU(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     in_place=inplace))
@@ -278,7 +276,7 @@ def jsonToPrototxt(net,net_name):
 
         elif (layerType == 'Pooling'):
 
-            pooling_param={}
+            pooling_param = {}
             if layerParams['kernel_h'] != '':
                 pooling_param['kernel_h'] = int(float(layerParams['kernel_h']))
             if layerParams['kernel_w'] != '':
@@ -301,7 +299,7 @@ def jsonToPrototxt(net,net_name):
                     pool = 2
                 pooling_param['pool'] = pool
 
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Pooling(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     pooling_param=pooling_param))
@@ -310,17 +308,17 @@ def jsonToPrototxt(net,net_name):
 
         elif (layerType == 'InnerProduct'):
 
-            inner_product_param={}
+            inner_product_param = {}
             if layerParams['num_output'] != '':
                 inner_product_param['num_output'] = int(float(layerParams['num_output']))
             if layerParams['weight_filler'] != '':
-                inner_product_param['weight_filler']={}
+                inner_product_param['weight_filler'] = {}
                 inner_product_param['weight_filler']['type'] = layerParams['weight_filler']
             if layerParams['bias_filler'] != '':
-                inner_product_param['bias_filler']={}
+                inner_product_param['bias_filler'] = {}
                 inner_product_param['bias_filler']['type'] = layerParams['bias_filler']
 
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.InnerProduct(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     inner_product_param=inner_product_param,
@@ -335,13 +333,12 @@ def jsonToPrototxt(net,net_name):
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
 
-
         elif (layerType == 'SoftmaxWithLoss'):
             pass
-            for ns in (ns_train,ns_test):
-                caffeLayer = get_iterable(L.SoftmaxWithLoss(# try L['SoftmaxWithLoss']
+            for ns in (ns_train, ns_test):
+                caffeLayer = get_iterable(L.SoftmaxWithLoss(  # try L['SoftmaxWithLoss']
                     *([ns[x] for x in blobNames[layerId]['bottom']])))
-                    #*([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
+                # *([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
 
@@ -351,7 +348,7 @@ def jsonToPrototxt(net,net_name):
             if layerPhase is not None:
                 caffeLayer = get_iterable(L.Accuracy(
                     *([ns[x] for x in blobNames[layerId]['bottom']]),
-                    #*([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label]),
+                    # *([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label]),
                     include={
                         'phase': int(layerPhase)
                     }))
@@ -362,17 +359,16 @@ def jsonToPrototxt(net,net_name):
                     for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                         ns_test[key] = value
             else:
-                for ns in (ns_train,ns_test):
+                for ns in (ns_train, ns_test):
                     caffeLayer = get_iterable(L.Accuracy(
                         *([ns[x] for x in blobNames[layerId]['bottom']])))
-                        #*([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
+                    # *([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
                     for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                         ns[key] = value
 
-
         elif (layerType == 'Dropout'):
             # inplace dropout? caffe-tensorflow do not work
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 if 'inplace' in layerParams.keys():
                     inplace = layerParams['inplace']
                 else:
@@ -384,14 +380,14 @@ def jsonToPrototxt(net,net_name):
                     ns[key] = value
 
         elif (layerType == 'LRN'):
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.LRN(
                     *[ns[x] for x in blobNames[layerId]['bottom']]))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
 
         elif (layerType == 'Concat'):
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Concat(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     ntop=len(blobNames[layerId]['top'])))
@@ -399,7 +395,7 @@ def jsonToPrototxt(net,net_name):
                     ns[key] = value
 
         elif (layerType == 'Eltwise'):
-            eltwise_param={}
+            eltwise_param = {}
             if layerParams['operation'] != '':
                 elt = layerParams['operation']
                 if(elt == 'PROD'):
@@ -409,9 +405,9 @@ def jsonToPrototxt(net,net_name):
                 elif(elt == 'MAX'):
                     elt = 2
             else:
-                elt = 1 #Default is sum
+                elt = 1  # Default is sum
             eltwise_param['operation'] = elt
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Eltwise(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     eltwise_param=eltwise_param))
@@ -419,19 +415,19 @@ def jsonToPrototxt(net,net_name):
                     ns[key] = value
 
         elif (layerType == 'Softmax'):
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Softmax(
                     *([ns[x] for x in blobNames[layerId]['bottom']])))
-                    #*([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
+                # *([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
-        
+
         elif (layerType == 'Embed'):
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 print ns.tops
                 caffeLayer = get_iterable(L.Embed(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
-                        param=[
+                    param=[
                             {
                                 'lr_mult': 1,
                                 'decay_mult': 1
@@ -441,7 +437,7 @@ def jsonToPrototxt(net,net_name):
                                 'decay_mult': 0
                             }
                         ]))
-                    #*([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
+                # *([ns[x] for x in blobNames[layerId]['bottom']] + [ns.label])))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
 
@@ -457,22 +453,22 @@ def jsonToPrototxt(net,net_name):
                 recurrent_param['bias_filler'] = {
                     'type': layerParams['bias_filler']
                 }
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.LSTM(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
-                        recurrent_param=recurrent_param))
+                    recurrent_param=recurrent_param))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
 
         elif (layerType == 'Reshape'):
-            reshape_param={'shape':{'dim':map(int,layerParams['dim'].split(','))}}
-            for ns in (ns_train,ns_test):
+            reshape_param = {'shape': {'dim': map(int, layerParams['dim'].split(','))}}
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Reshape(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
-                        reshape_param=reshape_param))
+                    reshape_param=reshape_param))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
-        
+
         elif (layerType == 'HDF5Data'):
             layerPhase = layer['info']['phase']
             hdf5_data_param = {}
@@ -480,27 +476,26 @@ def jsonToPrototxt(net,net_name):
                 hdf5_data_param['source'] = layerParams['source']
             if layerParams['batch_size'] != '':
                 hdf5_data_param['batch_size'] = layerParams['batch_size']
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 if layerPhase is not None:
                     caffeLayer = get_iterable(L.HDF5Data(
                         *[ns[x] for x in blobNames[layerId]['bottom']],
-                            hdf5_data_param=hdf5_data_param,
-                            include={
+                        hdf5_data_param=hdf5_data_param,
+                        include={
                                 'phase': int(layerPhase)
-                            }))
+                        }))
                 else:
                     caffeLayer = get_iterable(L.HDF5Data(
                         *[ns[x] for x in blobNames[layerId]['bottom']],
-                            hdf5_data_param=hdf5_data_param))
+                        hdf5_data_param=hdf5_data_param))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
-
 
         elif (layerType == 'BatchNorm'):
             batch_norm_param = {}
             if layerParams['use_global_stats'] != '':
                 batch_norm_param['use_global_stats'] = layerParams['use_global_stats']
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.BatchNorm(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     batch_norm_param=batch_norm_param
@@ -512,7 +507,7 @@ def jsonToPrototxt(net,net_name):
             scale_param = {}
             if layerParams['bias_term'] != '':
                 scale_param['bias_term'] = layerParams['bias_term']
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Scale(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     scale_param=scale_param
@@ -523,7 +518,7 @@ def jsonToPrototxt(net,net_name):
             eltwise_param = {}
             if layerParams['operation'] != '':
                 eltwise_param['operation'] = int(layerParams['operation'])
-            for ns in (ns_train,ns_test):
+            for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Eltwise(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     eltwise_param=eltwise_param
@@ -554,4 +549,4 @@ def jsonToPrototxt(net,net_name):
 
     prototxt = train
 
-    return prototxt,input_dim
+    return prototxt, input_dim

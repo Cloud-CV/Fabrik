@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
-from views import *
+from views import index
 
 urlpatterns = [
     url(r'^$', index),
@@ -10,4 +10,4 @@ urlpatterns = [
     url(r'^tensorflow/', include('tensorflow_app.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
