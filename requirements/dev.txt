@@ -1,0 +1,4 @@
+-r common.txt
+
+pep8==1.7.0
+flake8==3.0.4
