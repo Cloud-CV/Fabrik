@@ -368,11 +368,8 @@ def jsonToPrototxt(net, net_name):
 
         elif (layerType == 'Dropout'):
             # inplace dropout? caffe-tensorflow do not work
+            inplace = layerParams['inplace']
             for ns in (ns_train, ns_test):
-                if 'inplace' in layerParams.keys():
-                    inplace = layerParams['inplace']
-                else:
-                    inplace = False
                 caffeLayer = get_iterable(L.Dropout(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     in_place=inplace))

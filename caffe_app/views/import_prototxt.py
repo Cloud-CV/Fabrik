@@ -100,6 +100,10 @@ def importPrototxt(request):
                 if(layer.top == layer.bottom):
                     params['inplace'] = True
 
+            elif(layer.type == 'Dropout'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+
             elif(layer.type == 'Eltwise'):
                 if layer.eltwise_param.operation:
                     params['operation'] = layer.eltwise_param.operation

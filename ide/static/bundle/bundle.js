@@ -28340,7 +28340,14 @@
 	      src: ['RightMiddle'],
 	      trg: ['LeftMiddle']
 	    },
-	    params: {},
+	    params: {
+	      inplace: {
+	        name: 'Inplace operation',
+	        value: true,
+	        type: 'checkbox',
+	        required: false
+	      }
+	    },
 	    props: {
 	      name: {
 	        name: 'Name',

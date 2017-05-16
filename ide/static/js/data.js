@@ -357,6 +357,12 @@ export default {
       trg: ['LeftMiddle']
     },
     params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
