@@ -29773,7 +29773,7 @@
 	          _react2.default.createElement(
 	            "div",
 	            { className: "col-md-7 topBarHead" },
-	            "CloudCV IDE"
+	            "CloudCV Fabrik"
 	          ),
 	          _react2.default.createElement(
 	            "div",

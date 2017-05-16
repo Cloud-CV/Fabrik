@@ -6,7 +6,7 @@ class TopBar extends React.Component {
       <div className="topBar">
         <div className="row">
           <div className="col-md-7 topBarHead" >
-            CloudCV IDE
+            CloudCV Fabrik
           </div>
           <div className="col-md-5" >
             <div className="form-inline">

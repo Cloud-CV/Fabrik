@@ -1,7 +1,7 @@
 # Generic dependencies
 echo "Installing generic dependencies"
 sudo apt-get install git libatlas-base-dev python-protobuf python-numpy python-scipy python-h5py unzip make libblas-dev liblapack-dev libatlas-base-dev gfortran python-pip python-dev
-sudo pip install numpy scipy scikit-image
+pip install numpy scipy scikit-image
 
 #Caffe specific dependencies
 echo "Installing caffe specific dependencies"
@@ -37,6 +37,6 @@ echo "Installing Tensorflow dependencies"
 sudo apt-get install python-pip python-dev
 
 echo "Installing Tensorflow"
-sudo pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.12.1-cp27-none-linux_x86_64.whl
+pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.12.1-cp27-none-linux_x86_64.whl
 
 echo "#################### Tensorflow Install Complete! ####################"

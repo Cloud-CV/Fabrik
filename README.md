@@ -1,30 +1,57 @@
-# IDE
+# Fabrik
 
 [![Join the chat at https://gitter.im/Cloud-CV/IDE](https://badges.gitter.im/Cloud-CV/IDE.svg)](https://gitter.im/Cloud-CV/IDE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/Cloud-CV/Fabrik.svg?branch=master)](https://travis-ci.org/Cloud-CV/Fabrik)
 
 This is a React+Django webapp with a simple drag and drop interface to build and configure deep neural networks with support for export of model configuration files to caffe and tensorflow. It also supports import from these frameworks to visualize different model architectures. Our motivation is to build an online IDE where researchers can share models and collaborate without having to deal with deep learning code.
 
-![alt text](https://github.com/Cloud-CV/IDE/blob/master/example/snapshot.png "IDE Snapshot")
+### Interface
+GoogLeNet             |  ResNet 
+:-------------------------:|:-------------------------:
+![](https://github.com/utsavgarg/IDE/blob/readme/example/screenshot_1.png)  |  ![](https://github.com/utsavgarg/IDE/blob/readme/example/screenshot_2.png)
+
+Tooltips             |  Edit layer parameters 
+:-------------------------:|:-------------------------:
+![](https://github.com/utsavgarg/IDE/blob/readme/example/screenshot_3.png)  |  ![](https://github.com/utsavgarg/IDE/blob/readme/example/screenshot_4.png)
+
 
 This app is presently under active development and we welcome contributions. Please check out our [issues thread](https://github.com/Cloud-CV/IDE/issues) to find things to work on, or ping us on [Gitter](https://gitter.im/batra-mlp-lab/CloudCV). 
 
-### Requirements
-1. install [caffe](http://caffe.berkeleyvision.org/installation.html)
-2. install [tensorflow](https://www.tensorflow.org/versions/r0.10/get_started/os_setup.html#pip-installation)
-
-### Build instructions
-1. `git clone https://github.com/Cloud-CV/IDE.git`
-2. `git submodule init`
-3. `git submodule update`
-4. `pip install -r requirements.txt`
-5. `npm install`
+### How to setup
+1. First set up a virtualenv
+    ```
+    sudo apt-get install python-pip python-dev python-virtualenv 
+    virtualenv --system-site-packages ~/Fabrik
+    source ~/Fabrik/bin/activate
+    ```
+    
+2. Clone the repository
+    ```
+    git clone --recursive https://github.com/Cloud-CV/Fabrik.git
+    ```
+    
+3. If you have Caffe and Tensorflow already installed on your computer, skip this step
+    ```
+    cd Fabrik/requirements
+    sh caffe_tensoflow_install.sh
+    ```
+4. Install dependencies
+* For developers:
+    ```
+    pip install -r requirements/dev.txt
+    ```
+* Others:
+    ```
+    pip install -r requirements/common.txt
+    ```
+```
+npm install
+```
 
 ### Usage
-`python manage.py runserver`
-
-### Note
-* While installing tensorflow through conda use tensorflow version >= 0.12.0 in requirements.txt
+```
+python manage.py runserver
+```
 
 ### Example
 * Use `example/GoogleNet.pbtxt` for tensorflow import
