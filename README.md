@@ -8,11 +8,11 @@ This is a React+Django webapp with a simple drag and drop interface to build and
 ### Interface
 GoogLeNet             |  ResNet 
 :-------------------------:|:-------------------------:
-![](https://github.com/utsavgarg/IDE/blob/readme/example/screenshot_1.png)  |  ![](https://github.com/utsavgarg/IDE/blob/readme/example/screenshot_2.png)
+![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_1.png)  |  ![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_2.png)
 
 Tooltips             |  Edit layer parameters 
 :-------------------------:|:-------------------------:
-![](https://github.com/utsavgarg/IDE/blob/readme/example/screenshot_3.png)  |  ![](https://github.com/utsavgarg/IDE/blob/readme/example/screenshot_4.png)
+![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_3.png)  |  ![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_4.png)
 
 
 This app is presently under active development and we welcome contributions. Please check out our [issues thread](https://github.com/Cloud-CV/IDE/issues) to find things to work on, or ping us on [Gitter](https://gitter.im/batra-mlp-lab/CloudCV). 
