@@ -81,16 +81,36 @@ class Canvas extends React.Component {
   }
   connectionEvent(connInfo, originalEvent) {
     if (originalEvent != null) { // user manually makes a connection
+      /* Added check for cyclic graphs, the custom BFS finds all parents
+      of the source node and then checks to see if the target matches 
+      any parent*/
+      var parents = [];
+      var stack = [connInfo.connection.sourceId];
+      var targetIsParent = false;
       const srcId = connInfo.connection.sourceId;
       const trgId = connInfo.connection.targetId;
       const layerSrc = this.props.net[srcId];
       const layerTrg = this.props.net[trgId];
+      while (stack.length!=0){
+        for(var i=0; i<this.props.net[stack[0]].connection.input.length; i++){
+          stack.push(this.props.net[stack[0]].connection.input[i]);
+        }
+        parents.push(stack.shift());
+      }
+      for (i=0; i<parents.length; i++)
+        if (parents[i] == trgId){
+          targetIsParent = true;
+          break;
+        }
+      if (targetIsParent == true || srcId==trgId)
+        this.props.addError(`Error: cyclic graphs are not allowed`);
+      else{
+        layerSrc.connection.output.push(trgId);
+        this.props.modifyLayer(layerSrc, srcId);
 
-      layerSrc.connection.output.push(trgId);
-      this.props.modifyLayer(layerSrc, srcId);
-
-      layerTrg.connection.input.push(srcId);
-      this.props.modifyLayer(layerTrg, trgId);
+        layerTrg.connection.input.push(srcId);
+        this.props.modifyLayer(layerTrg, trgId);
+      }
     }
   }
   detachConnectionEvent(connInfo, originalEvent) {
