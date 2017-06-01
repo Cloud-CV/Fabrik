@@ -2,10 +2,11 @@
 import Canvas from './canvas';
 import Pane from './pane';
 import SetParams from './setParams';
+import Tooltip from './tooltip'
 import TopBar from './topBar';
 import Tabs from './tabs';
 import data from './data';
-import netLayout from './netLayout';
+import netLayout from './netLayout_vertical';
 
 class Content extends React.Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class Content extends React.Component {
       net: {},
       net_name: null,
       selectedLayer: null,
+      hoveredLayer: null,
       nextLayerId: 0,
       rebuildNet: false,
       selectedPhase: 0,
@@ -22,6 +24,7 @@ class Content extends React.Component {
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
+    this.changeHoveredLayer = this.changeHoveredLayer.bind(this);
     this.modifyLayer = this.modifyLayer.bind(this);
     this.modifyLayerParams = this.modifyLayerParams.bind(this);
     this.deleteLayer = this.deleteLayer.bind(this);
@@ -52,6 +55,19 @@ class Content extends React.Component {
     }
     this.setState({ net, selectedLayer: layerId });
   }
+  changeHoveredLayer(layerId) {
+    const net = this.state.net;
+    if (this.state.hoveredLayer) {
+      // remove css from previously selected layer
+      net[this.state.hoveredLayer].info.class = '';
+    }
+    if (layerId) {
+      // css when layer is selected
+      net[layerId].info.class = 'hover';
+    }
+    this.setState({ net, hoveredLayer: layerId });
+  }
+
   modifyLayer(layer, layerId = this.state.selectedLayer) {
     const net = this.state.net;
     net[layerId] = layer;
@@ -225,7 +241,9 @@ class Content extends React.Component {
     // so that the new imported layers will all be mounted again
     const tempError = {};
     const error = [];
-    this.setState({ net: {}, selectedLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
+    const height = 0.05*window.innerHeight;
+    const width = 0.45*window.innerWidth;
+    this.setState({ net: {}, selectedLayer: null, hoveredLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
     Object.keys(net).forEach(layerId => {
       const layer = net[layerId];
       const type = layer.info.type;
@@ -251,8 +269,9 @@ class Content extends React.Component {
     Object.keys(positions).forEach(layerId => {
       const layer = net[layerId];
       layer.state = {
-        top: `${250 + 50 * positions[layerId][1]}px`,
-        left: `${20 + 180 * positions[layerId][0]}px`,
+	// Graph does not centre properly on higher resolution screens
+        top: `${height + 65 * positions[layerId][1]}px`,
+        left: `${width + 80 * positions[layerId][0]}px`,
         class: ''
       };
     });
@@ -269,6 +288,7 @@ class Content extends React.Component {
         net,
         net_name,
         selectedLayer: null,
+        hoveredLayer: null,
         nextLayerId: Object.keys(net).length,
         rebuildNet: true,
         selectedPhase: 0,
@@ -370,6 +390,7 @@ class Content extends React.Component {
             addNewLayer={this.addNewLayer}
             nextLayerId={this.state.nextLayerId}
             changeSelectedLayer={this.changeSelectedLayer}
+            changeHoveredLayer={this.changeHoveredLayer}
             modifyLayer={this.modifyLayer}
             changeNetStatus={this.changeNetStatus}
             error={this.state.error}
@@ -385,6 +406,12 @@ class Content extends React.Component {
             copyTrain={this.copyTrain}
             trainOnly={this.trainOnly}
           />
+          <Tooltip
+            id={'tooltip_text'}
+            net={this.state.net}
+            hoveredLayer={this.state.hoveredLayer}
+          />
+
         </div>
       </div>
     );

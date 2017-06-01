@@ -12,8 +12,10 @@ class Canvas extends React.Component {
     this.drop = this.drop.bind(this);
     this.clickCanvas = this.clickCanvas.bind(this);
     this.clickLayerEvent = this.clickLayerEvent.bind(this);
+    this.hoverLayerEvent = this.hoverLayerEvent.bind(this);
     // whether a layer was clicked or dragged
     this.clickOrDraggedLayer = 0;
+    this.hover = 0;
     this.mouseState = null;
   }
   componentDidMount() {
@@ -57,6 +59,14 @@ class Canvas extends React.Component {
       this.props.changeSelectedLayer(layerId); // clicked
     } else if (this.clickOrDraggedLayer === 1) {
       this.clickOrDraggedLayer = 0; // dragged
+    }
+    event.stopPropagation();
+  }
+  hoverLayerEvent(event, layerId) { // happens when layer is hovered
+    if (this.hover === 0) {
+      this.props.changeHoveredLayer(layerId);
+    } else if (this.hover === 1) {
+      this.hover = 0;
     }
     event.stopPropagation();
   }
@@ -185,6 +195,7 @@ class Canvas extends React.Component {
             top={layer.state.top}
             left={layer.state.left}
             click={this.clickLayerEvent}
+            hover={this.hoverLayerEvent}
           />
         );
       }
@@ -230,6 +241,7 @@ Canvas.propTypes = {
   modifyLayer: React.PropTypes.func,
   addNewLayer: React.PropTypes.func,
   changeSelectedLayer: React.PropTypes.func,
+  changeHoveredLayer: React.PropTypes.func,
   rebuildNet: React.PropTypes.bool,
   changeNetStatus: React.PropTypes.func,
   addError: React.PropTypes.func,

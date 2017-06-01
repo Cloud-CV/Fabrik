@@ -4,7 +4,6 @@
 // designed to work with googleNet.
 // will work with all prototxts which follows our assumption
 // but the UI may not be clean.
-
 export default function(net){
 // map[x] = [y1, y2, y3]
 let map = {};
@@ -17,7 +16,7 @@ Object.keys(net).forEach(layerId => {
 function isProcessPossible(layerId){
   let inputs = net[layerId].connection.input;
   let i = 0;
-  for(i = 0; i < inputs.length; i++){
+  for (i = 0; i < inputs.length; i++){
     if (processed[inputs[i]] === false) {
       return false;
     }
@@ -87,7 +86,7 @@ while (stack.length) {
   }
   if (parentId === null) {
     position[layerId] = [0,0];
-  } else if(inputLength === 1 && outputLength === 1){
+  } else if (inputLength === 1 && outputLength === 1){
     allocatePosition(layerId, [position[parentId][0] + 1, position[parentId][1]]);
   } else if (inputLength > 1){
     // x position = max of inputs + 1

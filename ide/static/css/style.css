@@ -43,7 +43,7 @@ html,body,#app,.app{
   flex: 1 1 auto;
   width: 100%;
   position: relative;
-  overflow: hidden;
+  overflow: scroll;
   border: 1px solid #ddd;
   border-radius: 4px 4px 4px 4px;
 
@@ -73,6 +73,21 @@ html,body,#app,.app{
   padding-right: 40px;
 }
 
+.rhTooltip{
+  padding: 0px;
+}
+
+.customTooltip {
+  padding: 10px;
+  width: 270px;
+  color: white;
+  background-color: rgba(0,0,0,0.9) !important;
+  border-radius: 20px;
+}
+
+.customTooltip br {
+  display: none;
+}
 
 .setparams{
   position: absolute;
@@ -97,12 +112,33 @@ html,body,#app,.app{
     transform: translateX(-100%);
 }
 
+#tooltipData.form-group{
+  padding: 0px;
+  margin: 0px;
+}
+.tooltipField{
+  border: none; 
+  color: white;
+  background: transparent;
+  padding: 0px;
+}
+.tooltipLabel{
+  border: none; 
+  color: white;
+  background: transparent;
+  padding-top: 5px;
+  max-width: 140px;
+  font-weight: bold;
+}
+
 .layer{
   font-size: 22px;
-  padding: 10px 25px 10px 25px;
+  width: 130px;
+  padding: 5px 0px 5px 0px;
   text-align: center;
   position: absolute;
   z-index: 20;
+  border-radius: 10px;
   background: #e15e4f;
   color: white;
   cursor: pointer;
