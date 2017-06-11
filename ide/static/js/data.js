@@ -48,6 +48,7 @@ export default {
     endpoint: {
       src: [],
       trg: ['Top']
+
     },
     params: {
     },
@@ -66,6 +67,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       num_output: {
@@ -140,6 +142,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       num_output: {
@@ -214,6 +217,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       inplace: {
@@ -238,6 +242,7 @@ export default {
     endpoint: {
       src: [],
       trg: ['Top']
+
     },
     params: {
     },
@@ -256,6 +261,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       num_output: {
@@ -294,6 +300,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       pad_h: {
@@ -355,6 +362,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       inplace: {
@@ -379,6 +387,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
     },
@@ -397,6 +406,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       operation: {
@@ -422,6 +432,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       axis: {
@@ -452,6 +463,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
     },
@@ -470,6 +482,7 @@ export default {
     endpoint: {
       src: [],
       trg: ['Top']
+
     },
     params: {
     },
@@ -488,6 +501,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: []
+
     },
     params: {
       dim: {
@@ -512,6 +526,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       num_output: {
@@ -550,6 +565,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       num_output: {
@@ -594,6 +610,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       dim: {
@@ -618,6 +635,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: []
+
     },
     params: {
       source: {
@@ -648,6 +666,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       use_global_stats: {
@@ -673,6 +692,7 @@ export default {
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
+
     },
     params: {
       bias_term: {

@@ -55,7 +55,7 @@ jsPlumb.registerConnectorType(ArrowConnector, "ArrowConnector");
     strokeStyle: 'black'
   };
 
-  const sourceEndpoint = {
+  const sourceEndpointDot = {
     endpoint: 'Dot',
     paintStyle: {
       fillStyle: '#c5c5bf',
@@ -70,7 +70,7 @@ jsPlumb.registerConnectorType(ArrowConnector, "ArrowConnector");
     dragOptions: {}
   };
 
-  const targetEndpoint = {
+  const targetEndpointDot = {
     endpoint: 'Dot',
     paintStyle: {
       fillStyle: '#c5c5bf',
@@ -80,18 +80,18 @@ jsPlumb.registerConnectorType(ArrowConnector, "ArrowConnector");
     isTarget: true
   };
 
-
   instance.addLayerEndpoints = function addLayerEndpoints(toId, sourceAnchors, targetAnchors) {
     let i;
     let sourceUUID;
     let targetUUID;
     for (i = 0; i < sourceAnchors.length; i++) {
       sourceUUID = `${toId}-s${i}`;
-      instance.addEndpoint(toId, sourceEndpoint, { anchor: sourceAnchors[i], uuid: sourceUUID });
+
+      instance.addEndpoint(toId, sourceEndpointDot, { anchor: sourceAnchors[i], uuid: sourceUUID });
     }
     for (i = 0; i < targetAnchors.length; i++) {
       targetUUID = `${toId}-t${i}`;
-      instance.addEndpoint(toId, targetEndpoint, { anchor: targetAnchors[i], uuid: targetUUID });
+      instance.addEndpoint(toId, targetEndpointDot, { anchor: targetAnchors[i], uuid: targetUUID });
     }
   }
 

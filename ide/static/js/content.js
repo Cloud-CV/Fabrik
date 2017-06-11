@@ -263,16 +263,32 @@ class Content extends React.Component {
         tempError[type] = null;
       }
     });
-
     // initialize the position of layers
     let positions = netLayout(net);
+    // Layers which are not used alone
+    let combined_layers = ['ReLU', 'LRN', 'BatchNorm', 'Dropout', 'Scale'];
     Object.keys(positions).forEach(layerId => {
       const layer = net[layerId];
+      // Checking if the layer is one of the combined ones
+      // and deciding vertical spacing accordingly
+      if ($.inArray(layer.info.type, combined_layers) != -1){
+        var y_space = 0;
+      }
+      else {
+        y_space = 40;
+      }
+      var prev_top = 0;
+
+      // Finding the position of the last connected layer
+      if (net[layer.connection.input[0]] != undefined){
+        let top_str = net[layer.connection.input[Math.floor(layer.connection.input.length/2)]].state.top;
+        prev_top = parseInt(top_str.substring(0,top_str.length-2));
+      }
+      // Graph does not centre properly on higher resolution screens
       layer.state = {
-	// Graph does not centre properly on higher resolution screens
-        top: `${height + 65 * positions[layerId][1]}px`,
-        left: `${width + 80 * positions[layerId][0]}px`,
-        class: ''
+          top: `${height + prev_top + y_space + Math.ceil(41-height)}px`,
+          left: `${width + 80 * positions[layerId][0]}px`,
+          class: ''
       };
     });
 
@@ -376,9 +392,9 @@ class Content extends React.Component {
           <div className="pane">
             <ul className="nav nav-pills">
               <Pane />
-              <li style={{paddingTop:'4px'}}>
+              {/* <li style={{paddingTop:'4px'}}>
                 <button><span className="glyphicon glyphicon-cog" style={{fontSize:'24px'}}></span></button>
-              </li>
+              </li> --> */}
               <Tabs selectedPhase={this.state.selectedPhase} changeNetPhase={this.changeNetPhase} />
             </ul>
           </div>

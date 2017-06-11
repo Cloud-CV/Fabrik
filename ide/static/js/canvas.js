@@ -3,7 +3,8 @@ import data from './data';
 import jsPlumbReady from './jsplumb';
 import Layer from './layer';
 import Error from './error';
-import panZoom from './panZoom'
+import panZoom from './panZoom';
+import $ from 'jquery'
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -33,6 +34,7 @@ class Canvas extends React.Component {
     );
     if (this.props.rebuildNet) {
       const net = this.props.net;
+      let combined_layers = ['ReLU', 'LRN', 'BatchNorm', 'Dropout', 'Scale'];
       Object.keys(net).forEach(inputId => {
         const layer = net[inputId];
         if ((layer.info.phase === this.props.selectedPhase) || (layer.info.phase === null)) {
@@ -43,6 +45,21 @@ class Canvas extends React.Component {
                 uuids: [`${inputId}-s0`, `${outputId}-t0`],
                 editable: true
               });
+              /* The following code is to identify layers that are part of a group
+              and modify their border radius */
+              if ($.inArray(net[outputId].info.type, combined_layers) != -1){
+                if ($.inArray(net[inputId].info.type, combined_layers) == -1){
+                  $('#'+inputId).css('border-radius', '10px 10px 0px 0px') 
+                }
+                else {
+                  $('#'+inputId).css('border-radius', '0px 0px 0px 0px') 
+                }
+              }
+              else {
+                if ($.inArray(net[inputId].info.type, combined_layers) != -1){
+                  $('#'+inputId).css('border-radius', '0px 0px 10px 10px') 
+                }
+              }
             }
           });
         }
