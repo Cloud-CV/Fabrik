@@ -66,10 +66,10 @@ function allocatePosition(layerId, preferredPosition){
 let stack = [];
 let parentMap = {};
 let i = null, layerId = null, parentId =  null, inputLength = null, outputLength = null;
-
+const dataLayers = ['ImageData', 'Data', 'HDF5Data', 'Input', 'WindowData', 'MemoryData', 'DummyData'];
 // finding the input layers to start DFS
 Object.keys(net).forEach(layerId => {
-  if (net[layerId].info.type === 'Data' || net[layerId].info.type === 'Input' || net[layerId].info.type === 'HDF5Data') {
+  if (dataLayers.includes(net[layerId].info.type)) {
     stack.push(layerId);
     parentMap[layerId] = null;
   }

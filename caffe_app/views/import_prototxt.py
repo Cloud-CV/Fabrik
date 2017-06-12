@@ -33,6 +33,7 @@ def importPrototxt(request):
         i = 0
         blobMap = {}
         net_name = caffe_net.name
+        hasTransformParam = ['ImageData', 'Data', 'WindowData']
         for layer in caffe_net.layer:
             id = "l" + str(i)
             input = []
@@ -44,18 +45,70 @@ def importPrototxt(request):
                 phase = None
 
             params = {}
-            if(layer.type == 'Data'):
+
+            # ********** Data Layers **********
+            if (layer.type in hasTransformParam):
+                params['scale'] = layer.transform_param.scale
+                params['mirror'] = layer.transform_param.mirror
+                params['crop_size'] = layer.transform_param.crop_size
+                if (layer.transform_param.mean_file != ''):
+                    params['mean_file'] = layer.transform_param.mean_file
+                elif (layer.transform_param.mean_value):
+                    params['mean_value'] = str(map(int, layer.transform_param.mean_value))[1:-1]
+                params['force_color'] = layer.transform_param.force_color
+                params['force_gray'] = layer.transform_param.force_gray
+
+            if(layer.type == 'ImageData'):
+                params['source'] = layer.image_data_param.source
+                params['batch_size'] = layer.image_data_param.batch_size
+                params['rand_skip'] = layer.image_data_param.rand_skip
+                params['shuffle'] = layer.image_data_param.shuffle
+                params['new_height'] = layer.image_data_param.new_height
+                params['new_width'] = layer.image_data_param.new_width
+                params['is_color'] = layer.image_data_param.is_color
+                params['root_folder'] = layer.image_data_param.root_folder
+                print params
+
+            elif(layer.type == 'Data'):
                 params['source'] = layer.data_param.source
                 params['batch_size'] = layer.data_param.batch_size
                 params['backend'] = layer.data_param.backend
-                params['scale'] = layer.transform_param.scale
+                params['rand_skip'] = layer.data_param.rand_skip
+                params['prefetch'] = layer.data_param.prefetch
 
-            elif(layer.type == 'Crop'):
-                if layer.crop_param.axis:
-                    params['axis'] = layer.crop_param.axis
-                if len(layer.crop_param.offset):
-                    params['offset'] = layer.crop_param.offset[0]
+            elif(layer.type == 'HDF5Data'):
+                params['source'] = layer.hdf5_data_param.source
+                params['batch_size'] = layer.hdf5_data_param.batch_size
+                params['shuffle'] = layer.hdf5_data_param.shuffle
 
+            elif(layer.type == 'HDF5Output'):
+                params['file_name'] = layer.hdf5_output_param.file_name
+
+            elif(layer.type == 'Input'):
+                params['dim'] = str(map(int, layer.input_param.shape[0].dim))[1:-1]
+
+            elif(layer.type == 'WindowData'):
+                params['source'] = layer.window_data_param.source
+                params['batch_size'] = layer.window_data_param.batch_size
+                params['fg_threshold'] = layer.window_data_param.fg_threshold
+                params['bg_threshold'] = layer.window_data_param.bg_threshold
+                params['fg_fraction'] = layer.window_data_param.fg_fraction
+                params['context_pad'] = layer.window_data_param.context_pad
+                params['crop_mode'] = layer.window_data_param.crop_mode
+                params['cache_images'] = layer.window_data_param.cache_images
+                params['root_folder'] = layer.window_data_param.root_folder
+
+            elif(layer.type == 'MemoryData'):
+                params['batch_size'] = layer.memory_data_param.batch_size
+                params['channels'] = layer.memory_data_param.channels
+                params['height'] = layer.memory_data_param.height
+                params['width'] = layer.memory_data_param.width
+
+            elif(layer.type == 'DummyData'):
+                params['dim'] = str(map(int, layer.dummy_data_param.shape[0].dim))[1:-1]
+                params['type'] = str(layer.dummy_data_param.data_filler[0].type)
+
+            # ********** Vision Layers **********
             elif(layer.type == 'Convolution'):
                 if len(layer.convolution_param.kernel_size):
                     params['kernel_h'] = layer.convolution_param.kernel_size[0]
@@ -79,6 +132,25 @@ def importPrototxt(request):
                 params['weight_filler'] = layer.convolution_param.weight_filler.type
                 params['bias_filler'] = layer.convolution_param.bias_filler.type
                 params['num_output'] = layer.convolution_param.num_output
+
+            elif(layer.type == 'Pooling'):
+                params['pad_h'] = layer.pooling_param.pad_h or layer.pooling_param.pad
+                params['pad_w'] = layer.pooling_param.pad_w or layer.pooling_param.pad
+                params['stride_h'] = layer.pooling_param.stride_h or layer.pooling_param.stride
+                params['stride_w'] = layer.pooling_param.stride_w or layer.pooling_param.stride
+                params['kernel_h'] = layer.pooling_param.kernel_h or layer.pooling_param.kernel_size
+                params['kernel_w'] = layer.pooling_param.kernel_w or layer.pooling_param.kernel_size
+                params['pool'] = layer.pooling_param.pool
+
+            elif(layer.type == 'SPP'):
+                params['pool'] = layer.spp_param.pool
+                params['pyramid_height'] = layer.spp_param.pyramid_height
+
+            elif(layer.type == 'Crop'):
+                if layer.crop_param.axis:
+                    params['axis'] = layer.crop_param.axis
+                if len(layer.crop_param.offset):
+                    params['offset'] = layer.crop_param.offset[0]
 
             elif(layer.type == 'Deconvolution'):
                 if len(layer.convolution_param.kernel_size):
@@ -104,48 +176,24 @@ def importPrototxt(request):
                 params['bias_filler'] = layer.convolution_param.bias_filler.type
                 params['num_output'] = layer.convolution_param.num_output
 
-            elif(layer.type == 'ReLU'):
-                if(layer.top == layer.bottom):
-                    params['inplace'] = True
+            # ********** Recurrent Layers **********
+            elif(layer.type == 'Recurrent' or layer.type == 'RNN' or
+                 layer.type == 'LSTM'):
+                params['num_output'] = layer.recurrent_param.num_output
+                params['weight_filler'] = layer.recurrent_param.weight_filler.type
+                params['bias_filler'] = layer.recurrent_param.bias_filler.type
+                params['debug_info'] = layer.recurrent_param.debug_info
+                params['expose_hidden'] = layer.recurrent_param.expose_hidden
 
-            elif(layer.type == 'Dropout'):
-                if(layer.top == layer.bottom):
-                    params['inplace'] = True
-
-            elif(layer.type == 'Eltwise'):
-                if layer.eltwise_param.operation:
-                    params['operation'] = layer.eltwise_param.operation
-                else:
-                    params['operation'] = 1
-
-            elif(layer.type == 'Pooling'):
-                params['pad_h'] = layer.pooling_param.pad_h or layer.pooling_param.pad
-                params['pad_w'] = layer.pooling_param.pad_w or layer.pooling_param.pad
-                params['stride_h'] = layer.pooling_param.stride_h or layer.pooling_param.stride
-                params['stride_w'] = layer.pooling_param.stride_w or layer.pooling_param.stride
-                params['kernel_h'] = layer.pooling_param.kernel_h or layer.pooling_param.kernel_size
-                params['kernel_w'] = layer.pooling_param.kernel_w or layer.pooling_param.kernel_size
-                params['pool'] = layer.pooling_param.pool
-
+            # ********** Common Layers **********
             elif(layer.type == 'InnerProduct'):
                 params['num_output'] = layer.inner_product_param.num_output
                 params['weight_filler'] = layer.inner_product_param.weight_filler.type
                 params['bias_filler'] = layer.inner_product_param.bias_filler.type
 
-            elif(layer.type == 'SoftmaxWithLoss'):
-                pass
-
-            elif(layer.type == 'Accuracy'):
-                pass
-
-            elif(layer.type == 'Input'):
-                params['dim'] = str(map(int, layer.input_param.shape[0].dim))[1:-1]
-                # string '64,1,28,28'
-
-            elif(layer.type == 'LSTM'):
-                params['num_output'] = layer.recurrent_param.num_output
-                params['weight_filler'] = layer.recurrent_param.weight_filler.type
-                params['bias_filler'] = layer.recurrent_param.bias_filler.type
+            elif(layer.type == 'Dropout'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
 
             elif(layer.type == 'Embed'):
                 params['bias_term'] = layer.embed_param.bias_term
@@ -153,18 +201,152 @@ def importPrototxt(request):
                 params['num_output'] = layer.embed_param.num_output
                 params['weight_filler'] = layer.embed_param.weight_filler.type
 
+            # ********** Normalisation Layers **********
+            elif(layer.type == 'LRN'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['local_size'] = layer.lrn_param.local_size
+                params['alpha'] = layer.lrn_param.alpha
+                params['beta'] = layer.lrn_param.beta
+                params['k'] = layer.lrn_param.k
+                if layer.lrn_param.norm_region:
+                    params['norm_region'] = layer.lrn_param.norm_region
+                else:
+                    params['norm_region'] = 0
+
+            elif(layer.type == 'MVN'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['normalize_variance'] = layer.mvn_param.normalize_variance
+                params['across_channels'] = layer.mvn_param.across_channels
+                params['eps'] = layer.mvn_param.eps
+
+            elif(layer.type == 'BatchNorm'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['use_global_stats'] = layer.batch_norm_param.use_global_stats
+                params['moving_average_fraction'] = layer.batch_norm_param.moving_average_fraction
+                params['eps'] = layer.batch_norm_param.eps
+
+            # ********** Activation/Neuron Layers **********
+            elif(layer.type == 'ReLU'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['negative_slope'] = layer.relu_param.negative_slope
+
+            elif(layer.type == 'PReLU'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['channel_shared'] = layer.prelu_param.channel_shared
+
+            elif(layer.type == 'ELU'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['alpha'] = layer.elu_param.alpha
+
+            elif(layer.type == 'Sigmoid'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+
+            elif(layer.type == 'TanH'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+
+            elif(layer.type == 'AbsVal'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+
+            elif(layer.type == 'Power'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['power'] = layer.power_param.power
+                params['scale'] = layer.power_param.scale
+                params['shift'] = layer.power_param.shift
+
+            elif(layer.type == 'Exp'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['base'] = layer.exp_param.base
+                params['scale'] = layer.exp_param.scale
+                params['shift'] = layer.exp_param.shift
+
+            elif(layer.type == 'Log'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['base'] = layer.log_param.base
+                params['scale'] = layer.log_param.scale
+                params['shift'] = layer.log_param.shift
+
+            elif(layer.type == 'BNLL'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+
+            elif(layer.type == 'Threshold'):
+                if(layer.top == layer.bottom):
+                    params['inplace'] = True
+                params['threshold'] = layer.threshold_param.threshold
+
+            elif(layer.type == 'Bias'):
+                params['axis'] = layer.bias_param.axis
+                params['num_axes'] = layer.bias_param.num_axes
+                params['filler'] = layer.bias_param.filler.type
+
+            elif(layer.type == 'Scale'):
+                params['bias_term'] = layer.scale_param.bias_term
+
+            # ********** Utility Layers **********
+            elif(layer.type == 'Flatten'):
+                params['axis'] = layer.flatten_param.axis
+                params['end_axis'] = layer.flatten_param.end_axis
+
             elif(layer.type == 'Reshape'):
                 params['dim'] = str(map(int, layer.reshape_param.shape.dim))[1:-1]
 
-            elif(layer.type == 'HDF5Data'):
-                params['source'] = layer.hdf5_data_param.source
-                params['batch_size'] = layer.hdf5_data_param.batch_size
-            elif(layer.type == 'BatchNorm'):
-                params['use_global_stats'] = layer.batch_norm_param.use_global_stats
-            elif(layer.type == 'Scale'):
-                params['bias_term'] = layer.scale_param.bias_term
+            elif(layer.type == 'Slice'):
+                params['slice_point'] = str(map(int, layer.slice_param.slice_point))[1:-1]
+                params['axis'] = layer.slice_param.axis
+                params['slice_dim'] = layer.slice_param.slice_dim
+
             elif(layer.type == 'Eltwise'):
-                params['operation'] = layer.eltwise_param.operation
+                if layer.eltwise_param.operation:
+                    params['operation'] = layer.eltwise_param.operation
+                else:
+                    params['operation'] = 1
+
+            elif(layer.type == 'Parameter'):
+                params['shape'] = str(map(int, layer.parameter_param.shape))[1:-1]
+
+            elif(layer.type == 'Reduction'):
+                if layer.reduction_param.operation:
+                    params['operation'] = layer.reduction_param.operation
+                else:
+                    params['operation'] = 1
+                params['axis'] = layer.reduction_param.axis
+                params['coeff'] = layer.reduction_param.coeff
+
+            elif(layer.type == 'ArgMax'):
+                params['out_max_val'] = layer.argmax_param.out_max_val
+                params['top_k'] = layer.argmax_param.top_k
+                params['axis'] = layer.argmax_param.axis
+
+            # ********** Loss Layers **********
+            elif(layer.type == 'InfogainLoss'):
+                params['source'] = layer.infogain_loss_param.source
+                params['axis'] = layer.infogain_loss_param.axis
+
+            elif(layer.type == 'SoftmaxWithLoss'):
+                params['axis'] = layer.softmax_param.axis
+
+            elif(layer.type == 'HingeLoss'):
+                params['norm'] = layer.hinge_loss_param.norm
+
+            elif(layer.type == 'Accuracy'):
+                params['top_k'] = layer.accuracy_param.top_k
+                params['axis'] = layer.accuracy_param.axis
+
+            elif(layer.type == 'ContrastiveLoss'):
+                params['margin'] = layer.contrastive_loss_param.margin
+                params['legacy_version'] = layer.contrastive_loss_param.legacy_version
 
             jsonLayer = {
                 'info': {
