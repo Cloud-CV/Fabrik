@@ -10,7 +10,7 @@ GoogLeNet             |  ResNet
 :-------------------------:|:-------------------------:
 ![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_1.png)  |  ![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_2.png)
 
-Tooltips             |  Edit layer parameters 
+Tooltips             |  Edit layer parameters and Layers Dropdown 
 :-------------------------:|:-------------------------:
 ![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_3.png)  |  ![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_4.png)
 
