@@ -67,7 +67,6 @@ def importPrototxt(request):
                 params['new_width'] = layer.image_data_param.new_width
                 params['is_color'] = layer.image_data_param.is_color
                 params['root_folder'] = layer.image_data_param.root_folder
-                print params
 
             elif(layer.type == 'Data'):
                 params['source'] = layer.data_param.source
@@ -314,7 +313,7 @@ def importPrototxt(request):
                     params['operation'] = 1
 
             elif(layer.type == 'Parameter'):
-                params['shape'] = str(map(int, layer.parameter_param.shape))[1:-1]
+                params['shape'] = str(map(int, layer.parameter_param.shape.dim))[1:-1]
 
             elif(layer.type == 'Reduction'):
                 if layer.reduction_param.operation:
