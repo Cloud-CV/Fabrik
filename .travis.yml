@@ -1,3 +1,4 @@
+dist: trusty
 sudo: required
 
 language: python
@@ -8,6 +9,7 @@ python:
 cache:
   directories:
     - $HOME/.cache/pip
+    - $HOME/caffe
 
   before_cache:
     - rm -f $HOME/.cache/pip/log/debug.log
@@ -15,10 +17,17 @@ cache:
 install:
   - pip install -r requirements/dev.txt
   - . $HOME/.nvm/nvm.sh
+  - sh requirements/caffe_tensorflow_install.sh
   - nvm install stable
   - nvm use stable
   - npm install
 
+before_script:
+  - export PYTHONPATH=$PYTHONPATH:$HOME/caffe/caffe/python
 script:
   - flake8 ./
   - npm run ci
+  - coverage run --source=caffe_app manage.py test
+
+after_success:
+  - coveralls
