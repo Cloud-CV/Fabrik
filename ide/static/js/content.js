@@ -1,4 +1,4 @@
-  import React from 'react';
+import React from 'react';
 import Canvas from './canvas';
 import Pane from './pane';
 import SetParams from './setParams';
@@ -158,6 +158,9 @@ class Content extends React.Component {
       const layer = net[layerId];
       Object.keys(layer.params).forEach(param => {
         const paramData = data[layer.info.type].params[param];
+        if (layer.info.type == 'Python' && param == 'endPoint'){
+          return;
+        }
         if (paramData.required === true && layer.params[param] === '') {
           error.push(`Error: "${paramData.name}" required in "${layer.props.name}" Layer`);
         }
@@ -243,6 +246,8 @@ class Content extends React.Component {
     const error = [];
     const height = 0.05*window.innerHeight;
     const width = 0.45*window.innerWidth;
+    // Initialize Python layer parameters to be empty
+    data['Python']['params'] = {}
     this.setState({ net: {}, selectedLayer: null, hoveredLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
     Object.keys(net).forEach(layerId => {
       const layer = net[layerId];
@@ -311,7 +316,6 @@ class Content extends React.Component {
         error: []
       });
     }
-
   }
   changeNetStatus(bool) {
     this.setState({ rebuildNet: bool });

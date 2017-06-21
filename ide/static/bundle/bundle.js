@@ -27743,6 +27743,9 @@
 	        var layer = net[layerId];
 	        Object.keys(layer.params).forEach(function (param) {
 	          var paramData = _data2.default[layer.info.type].params[param];
+	          if (layer.info.type == 'Python' && param == 'endPoint') {
+	            return;
+	          }
 	          if (paramData.required === true && layer.params[param] === '') {
 	            error.push('Error: "' + paramData.name + '" required in "' + layer.props.name + '" Layer');
 	          }
@@ -27829,6 +27832,8 @@
 	      var error = [];
 	      var height = 0.05 * window.innerHeight;
 	      var width = 0.45 * window.innerWidth;
+	      // Initialize Python layer parameters to be empty
+	      _data2.default['Python']['params'] = {};
 	      this.setState({ net: {}, selectedLayer: null, hoveredLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
 	      Object.keys(net).forEach(function (layerId) {
 	        var layer = net[layerId];
@@ -28315,9 +28320,29 @@
 	      var errors = [];
 	      var net = this.props.net;
 	      var error = this.props.error;
-
 	      Object.keys(net).forEach(function (layerId) {
 	        var layer = net[layerId];
+	        if (layer.info.type == 'Python') {
+	          // Changing endpoints depending on the type of Python layer
+	          if (layer.params.endPoint == '1, 0') {
+	            _data2.default[layer.info.type]['endpoint']['trg'] = [];
+	            _data2.default[layer.info.type]['endpoint']['src'] = ['Bottom'];
+	          } else if (layer.params.endPoint == '0, 1') {
+	            _data2.default[layer.info.type]['endpoint']['trg'] = ['Top'];
+	            _data2.default[layer.info.type]['endpoint']['src'] = [];
+	          } else {
+	            _data2.default[layer.info.type]['endpoint']['trg'] = ['Top'];
+	            _data2.default[layer.info.type]['endpoint']['src'] = ['Bottom'];
+	          }
+	          if (layer.params) {
+	            Object.keys(layer.params).forEach(function (param) {
+	              if (param != 'endPoint') {
+	                _data2.default[layer.info.type]['params'][param] = { 'name': param, 'type': 'text',
+	                  'required': false, 'value': '' };
+	              }
+	            });
+	          }
+	        }
 	        if (layer.info.phase === _this3.props.selectedPhase || layer.info.phase === null) {
 	          layers.push(_react2.default.createElement(_layer2.default, {
 	            id: layerId,
@@ -30446,6 +30471,43 @@
 	        value: 1.0,
 	        type: 'float',
 	        required: false
+	      }
+	    },
+	    props: {
+	      name: {
+	        name: 'Name',
+	        value: '',
+	        type: 'text'
+	      }
+	    },
+	    learn: false
+	  },
+	  /* ********** Python Layer ********** */
+	  Python: {
+	    name: 'python',
+	    color: '#f44336',
+	    endpoint: {
+	      src: ['Bottom'],
+	      trg: ['Top']
+	    },
+	    params: {
+	      layer: {
+	        name: 'Layer',
+	        value: '',
+	        type: 'text',
+	        required: true
+	      },
+	      module: {
+	        name: 'Module',
+	        value: '',
+	        type: 'text',
+	        required: true
+	      },
+	      param_str: {
+	        name: 'param_str',
+	        value: '',
+	        type: 'text',
+	        required: true
 	      }
 	    },
 	    props: {
@@ -40988,6 +41050,15 @@
 	            )
 	          )
 	        )
+	      ),
+	      _react2.default.createElement(
+	        'li',
+	        null,
+	        _react2.default.createElement(
+	          _paneElement2.default,
+	          { id: 'python-dropdown' },
+	          'Python'
+	        )
 	      )
 	    )
 	  );
@@ -43558,6 +43629,13 @@
 	  var dataLayers = ['ImageData', 'Data', 'HDF5Data', 'Input', 'WindowData', 'MemoryData', 'DummyData'];
 	  // finding the input layers to start DFS
 	  Object.keys(net).forEach(function (layerId) {
+	    if (net[layerId].info.type == 'Python') {
+	      // This is to check if the Python layer is a data layer
+	      if (net[layerId].params.endPoint == "1, 0") {
+	        stack.push(layerId);
+	        parentMap[layerId] = null;
+	      }
+	    }
 	    if (dataLayers.includes(net[layerId].info.type)) {
 	      stack.push(layerId);
 	      parentMap[layerId] = null;
@@ -43654,7 +43732,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n#jsplumbContainer {\n  position: absolute;\n  transform-origin: top left;\n}\n\n.topBar{\n\n}\n\nhtml,body,#app,.app{\n  height:100%;\n}\n\n.container-fluid{\n  display: flex;\n  flex-flow: column;\n  height: 100%;\n  padding-bottom: 15px;\n}\n\n.topBarHead{\n  font-size: 30px;\n}\n\n.topBar .btn{\n  margin: 5px;\n  overflow: auto;\n  flex: 0 1 auto;\n}\n\n.content{\n  flex: 1 1 auto;\n  height:100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  position: relative;\n}\n\n.canvas{\n  flex: 1 1 auto;\n  width: 100%;\n  position: relative;\n  overflow: scroll;\n  border: 1px solid #ddd;\n  border-radius: 4px 4px 4px 4px;\n\n  /*background: yellow;*/\n}\n\n.setHead{\n  font-size: 25px;\n  color: green;\n  text-align: center;\n  padding-bottom: 20px;\n  padding-top: 20px;\n}\n\n.dropdown {\n  z-index: 99;\n}\n\n.pane {\n    position: absolute;\n    left:50px;\n    top:25px;\n    z-index: 23;\n}\n\n.setContain{\n  padding-right: 40px;\n}\n\n.rhTooltip{\n  padding: 0px;\n}\n\n.customTooltip {\n  padding: 10px;\n  width: 270px;\n  color: white;\n  background-color: rgba(0,0,0,0.9) !important;\n  border-radius: 20px;\n}\n\n.customTooltip br {\n  display: none;\n}\n\n.setparams{\n  position: absolute;\n  background-color: rgba(0,0,0,0.75);\n  height: 80%;\n  width:26%;\n  min-width:335px;\n  max-width: 400px;\n  padding-left: 25px;\n  color: white;\n  overflow: auto;\n  padding-bottom: 50px;\n  top:10%;\n  left:100%;\n  border-top-left-radius: 2em;\n  border-bottom-left-radius: 2em;\n  transition: transform 0.1s;\n  transform: translateX(0px);\n}\n\n.setparamsActive{\n    transform: translateX(-100%);\n}\n\n#tooltipData.form-group{\n  padding: 0px;\n  margin: 0px;\n}\n.tooltipField{\n  border: none; \n  color: white;\n  background: transparent;\n  padding: 0px;\n}\n.tooltipLabel{\n  border: none; \n  color: white;\n  background: transparent;\n  padding-top: 5px;\n  max-width: 140px;\n  font-weight: bold;\n}\n\n.layer{\n  font-size: 22px;\n  width: 130px;\n  padding: 5px 0px 5px 0px;\n  text-align: center;\n  position: absolute;\n  z-index: 20;\n  border-radius: 10px;\n  background: #e15e4f;\n  color: white;\n  cursor: pointer;\n}\n\n.selected{\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-connector {\n  z-index: 21;\n}\n\n.jsplumb-endpoint, .endpointTargetLabel, .endpointSourceLabel {\n  z-index: 20;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.jsplumb-drag {\n  cursor: move;\n}\n\n[draggable] {\n  -moz-user-select: none;\n  -khtml-user-select: none;\n  -webkit-user-select: none;\n  user-select: none;\n  /* Required to make elements draggable in old WebKit */\n  -khtml-user-drag: element;\n  -webkit-user-drag: element;\n}\n\n.jsplumb-connected {\n  /*border: 1px solid black;\n  box-shadow: 0px 0px 5px #aaa;\n  -o-box-shadow: 0px 0px 5px #aaa;\n  -webkit-box-shadow: 0px 0px 5px #aaa;\n  -moz-box-shadow: 0px 0px 5px #aaa;*/\n}\n\n.layer.jsplumb-drag {\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.error{\n    padding: 3px;\n    width:400px;\n    padding-left: 10px;\n    color: #a94442;\n    background-color: #f2dede;\n    border: 1px solid #ebccd1;\n    z-index: 22;\n    position: absolute;\n    left:500px;\n}\n\n.alert-dismissible .close {\n    position: relative;\n    top: -2px;\n    right: -21px;\n    color: inherit;\n}\nbutton.close {\n    -webkit-appearance: none;\n    padding: 0;\n    cursor: pointer;\n    background: 0 0;\n    border: 0;\n}\n\n.close {\n    float: right;\n    font-size: 21px;\n    font-weight: 700;\n    line-height: 1;\n    color: #000;\n    text-shadow: 0 1px 0 #fff;\n    filter: alpha(opacity=20);\n    opacity: .2;\n}\n\n#pane-dropdown:hover #addLayerDropdown {\n    display: block;\n}\n\n/*.nav-pills .dropdown-menu {*/\n.dropdown-menu {\n    margin-top: 0;\n    max-height: 500px;\n}\n\n.dropdown-menu > li > a{\n  padding: 6px 20px;\n}\n\n.dropdown-submenu{\n  position:relative;\n}\n\n.dropdown-submenu>.dropdown-menu{\n  top:0;\n  left:100%;\n}\n\n.dropdown-submenu:hover>.dropdown-menu{\n  display:block;\n}\n\n.dropdown-submenu>a:after{\n  display:block;\n  content:\" \";\n  float:right;\n  width:0;\n  height:0;\n  border-color:transparent;\n  border-style:solid;\n  border-width:5px 0 5px 5px;\n  border-left-color:#cccccc;\n  margin-top:5px;\n  margin-right:-10px;\n}\n\n.nav-pills>li {\n    margin-right: 30px !important;\n    padding-bottom: 5px;\n}\n\n#addLayerDropdown .btn{\n    border-radius: 0px;\n    border: 1px solid transparent;\n    cursor: move;\n}\n\nbutton\n{\n    border: 0;\n    padding: 0px;\n    margin: 0px;\n    /*font-size: 28px;*/\n    -webkit-appearance: none;\n    outline: none;\n    background: transparent;\n    text-align: center;\n    white-space: nowrap;\n    vertical-align: middle;\n    /*user-select: none;*/\n}\n\ninput[type=\"file\"] {\n    display: none;\n}\n\n.dropdown-menu label{\n    width:100%;\n    font-weight: normal;\n    padding: 0px;\n    margin: 0px;\n}\n\n\n\n/* css loader*/\n.loader:before,\n.loader:after,\n.loader {\n  border-radius: 50%;\n  width: 2.5em;\n  height: 2.5em;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation: load7 1.8s infinite ease-in-out;\n  animation: load7 1.8s infinite ease-in-out;\n}\n.loader {\n  color: #bcbcbc;\n  font-size: 10px;\n  position: absolute;\n  right:65px;\n  top:15px;\n  -webkit-transform: translateZ(0);\n  -ms-transform: translateZ(0);\n  transform: translateZ(0);\n  -webkit-animation-delay: -0.16s;\n  animation-delay: -0.16s;\n  transform:scale(0.5);\n}\n.loader:before {\n  left: -3.5em;\n  -webkit-animation-delay: -0.32s;\n  animation-delay: -0.32s;\n}\n.loader:after {\n  left: 3.5em;\n}\n.loader:before,\n.loader:after {\n  content: '';\n  position: absolute;\n  top: 0;\n}\n@-webkit-keyframes load7 {\n  0%,\n  80%,\n  100% {\n    box-shadow: 0 2.5em 0 -1.3em;\n  }\n  40% {\n    box-shadow: 0 2.5em 0 0;\n  }\n}\n@keyframes load7 {\n  0%,\n  80%,\n  100% {\n    box-shadow: 0 2.5em 0 -1.3em;\n  }\n  40% {\n    box-shadow: 0 2.5em 0 0;\n  }\n}\n", ""]);
+	exports.push([module.id, "\n\n#jsplumbContainer {\n  position: absolute;\n  transform-origin: top left;\n}\n\n.topBar{\n\n}\n\nhtml,body,#app,.app{\n  height:100%;\n}\n\n.container-fluid{\n  display: flex;\n  flex-flow: column;\n  height: 100%;\n  padding-bottom: 15px;\n}\n\n.topBarHead{\n  font-size: 30px;\n}\n\n.topBar .btn{\n  margin: 5px;\n  overflow: auto;\n  flex: 0 1 auto;\n}\n\n.content{\n  flex: 1 1 auto;\n  height:100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  position: relative;\n}\n\n.canvas{\n  flex: 1 1 auto;\n  width: 100%;\n  position: relative;\n  overflow: scroll;\n  border: 1px solid #ddd;\n  border-radius: 4px 4px 4px 4px;\n\n  /*background: yellow;*/\n}\n\n.setHead{\n  font-size: 25px;\n  color: green;\n  text-align: center;\n  padding-bottom: 20px;\n  padding-top: 20px;\n}\n\n.dropdown {\n  z-index: 99;\n}\n\n.pane {\n    position: absolute;\n    left:50px;\n    top:25px;\n    z-index: 23;\n}\n\n.setContain{\n  padding-right: 40px;\n}\n\n.rhTooltip{\n  padding: 0px;\n}\n\n.customTooltip {\n  padding: 10px;\n  width: 270px;\n  color: white;\n  background-color: rgba(0,0,0,0.9) !important;\n  border-radius: 20px;\n}\n\n.customTooltip br {\n  display: none;\n}\n\n.setparams{\n  position: absolute;\n  background-color: rgba(0,0,0,0.75);\n  height: 80%;\n  width:26%;\n  min-width:335px;\n  max-width: 400px;\n  padding-left: 25px;\n  color: white;\n  overflow: auto;\n  padding-bottom: 50px;\n  top:10%;\n  left:100%;\n  border-top-left-radius: 2em;\n  border-bottom-left-radius: 2em;\n  transition: transform 0.1s;\n  transform: translateX(0px);\n}\n\n.setparamsActive{\n    transform: translateX(-100%);\n}\n\n#tooltipData.form-group{\n  padding: 0px;\n  margin: 0px;\n}\n.tooltipField{\n  border: none; \n  color: white;\n  background: transparent;\n  padding: 0px;\n}\n.tooltipLabel{\n  border: none; \n  color: white;\n  background: transparent;\n  padding-top: 5px;\n  max-width: 140px;\n  font-weight: bold;\n}\n\n.layer{\n  font-size: 22px;\n  width: 130px;\n  padding: 5px 0px 5px 0px;\n  text-align: center;\n  position: absolute;\n  z-index: 20;\n  border-radius: 10px;\n  background: #e15e4f;\n  color: white;\n  cursor: pointer;\n}\n\n.selected{\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-connector {\n  z-index: 21;\n}\n\n.jsplumb-endpoint, .endpointTargetLabel, .endpointSourceLabel {\n  z-index: 20;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.jsplumb-drag {\n  cursor: move;\n}\n\n[draggable] {\n  -moz-user-select: none;\n  -khtml-user-select: none;\n  -webkit-user-select: none;\n  user-select: none;\n  /* Required to make elements draggable in old WebKit */\n  -khtml-user-drag: element;\n  -webkit-user-drag: element;\n}\n\n.jsplumb-connected {\n  /*border: 1px solid black;\n  box-shadow: 0px 0px 5px #aaa;\n  -o-box-shadow: 0px 0px 5px #aaa;\n  -webkit-box-shadow: 0px 0px 5px #aaa;\n  -moz-box-shadow: 0px 0px 5px #aaa;*/\n}\n\n.layer.jsplumb-drag {\n  box-shadow: 0px 0px 30px #aaa;\n  -o-box-shadow: 0px 0px 30px #aaa;\n  -webkit-box-shadow: 0px 0px 30px #aaa;\n  -moz-box-shadow: 0px 0px 30px #aaa;\n}\n\n.jsplumb-endpoint {\n  cursor: pointer;\n}\n\n.error{\n    padding: 3px;\n    width:400px;\n    padding-left: 10px;\n    color: #a94442;\n    background-color: #f2dede;\n    border: 1px solid #ebccd1;\n    z-index: 22;\n    position: absolute;\n    left:500px;\n}\n\n.alert-dismissible .close {\n    position: relative;\n    top: -2px;\n    right: -21px;\n    color: inherit;\n}\nbutton.close {\n    -webkit-appearance: none;\n    padding: 0;\n    cursor: pointer;\n    background: 0 0;\n    border: 0;\n}\n\n.close {\n    float: right;\n    font-size: 21px;\n    font-weight: 700;\n    line-height: 1;\n    color: #000;\n    text-shadow: 0 1px 0 #fff;\n    filter: alpha(opacity=20);\n    opacity: .2;\n}\n\n#pane-dropdown:hover #addLayerDropdown {\n    display: block;\n}\n\n/*.nav-pills .dropdown-menu {*/\n.dropdown-menu {\n    margin-top: 0;\n    max-height: 500px;\n}\n\n.dropdown-menu > li > a{\n  padding: 6px 20px;\n}\n\n.dropdown-submenu{\n  position:relative;\n}\n\n.dropdown-submenu>.dropdown-menu{\n  top:0;\n  left:100%;\n}\n\n.dropdown-submenu:hover>.dropdown-menu{\n  display:block;\n}\n\n.dropdown-submenu>a:after{\n  display:block;\n  content:\" \";\n  float:right;\n  width:0;\n  height:0;\n  border-color:transparent;\n  border-style:solid;\n  border-width:5px 0 5px 5px;\n  border-left-color:#cccccc;\n  margin-top:5px;\n  margin-right:-10px;\n}\n\n#python-dropdown {\n  padding: 6px 20px;\n  text-align: left;\n}\n\n.nav-pills>li {\n    margin-right: 30px !important;\n    padding-bottom: 5px;\n}\n\n#addLayerDropdown .btn{\n    border-radius: 0px;\n    border: 1px solid transparent;\n    cursor: move;\n}\n\nbutton\n{\n    border: 0;\n    padding: 0px;\n    margin: 0px;\n    /*font-size: 28px;*/\n    -webkit-appearance: none;\n    outline: none;\n    background: transparent;\n    text-align: center;\n    white-space: nowrap;\n    vertical-align: middle;\n    /*user-select: none;*/\n}\n\ninput[type=\"file\"] {\n    display: none;\n}\n\n.dropdown-menu label{\n    width:100%;\n    font-weight: normal;\n    padding: 0px;\n    margin: 0px;\n}\n\n\n\n/* css loader*/\n.loader:before,\n.loader:after,\n.loader {\n  border-radius: 50%;\n  width: 2.5em;\n  height: 2.5em;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation: load7 1.8s infinite ease-in-out;\n  animation: load7 1.8s infinite ease-in-out;\n}\n.loader {\n  color: #bcbcbc;\n  font-size: 10px;\n  position: absolute;\n  right:65px;\n  top:15px;\n  -webkit-transform: translateZ(0);\n  -ms-transform: translateZ(0);\n  transform: translateZ(0);\n  -webkit-animation-delay: -0.16s;\n  animation-delay: -0.16s;\n  transform:scale(0.5);\n}\n.loader:before {\n  left: -3.5em;\n  -webkit-animation-delay: -0.32s;\n  animation-delay: -0.32s;\n}\n.loader:after {\n  left: 3.5em;\n}\n.loader:before,\n.loader:after {\n  content: '';\n  position: absolute;\n  top: 0;\n}\n@-webkit-keyframes load7 {\n  0%,\n  80%,\n  100% {\n    box-shadow: 0 2.5em 0 -1.3em;\n  }\n  40% {\n    box-shadow: 0 2.5em 0 0;\n  }\n}\n@keyframes load7 {\n  0%,\n  80%,\n  100% {\n    box-shadow: 0 2.5em 0 -1.3em;\n  }\n  40% {\n    box-shadow: 0 2.5em 0 0;\n  }\n}\n", ""]);
 
 	// exports
 

@@ -274,6 +274,11 @@ button.close {
   margin-right:-10px;
 }
 
+#python-dropdown {
+  padding: 6px 20px;
+  text-align: left;
+}
+
 .nav-pills>li {
     margin-right: 30px !important;
     padding-bottom: 5px;

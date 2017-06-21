@@ -103,7 +103,8 @@ function Pane() {
         <li><PaneElement id="Accuracy">Accuracy</PaneElement></li>
         <li><PaneElement id="ContrastiveLoss">Contrastive Loss</PaneElement></li>
       </ul>
-    </li>    
+    </li>
+    <li><PaneElement id="python-dropdown">Python</PaneElement></li>    
   </ul>
 </li>
 

@@ -199,9 +199,32 @@ class Canvas extends React.Component {
     const errors = [];
     const net = this.props.net;
     const error = this.props.error;
-
     Object.keys(net).forEach(layerId => {
       const layer = net[layerId];
+      if (layer.info.type == 'Python'){
+        // Changing endpoints depending on the type of Python layer
+        if (layer.params.endPoint == '1, 0'){
+          data[layer.info.type]['endpoint']['trg'] = [];
+          data[layer.info.type]['endpoint']['src'] = ['Bottom'];
+        }
+        else if (layer.params.endPoint == '0, 1'){
+          data[layer.info.type]['endpoint']['trg'] = ['Top'];
+          data[layer.info.type]['endpoint']['src'] = [];
+        }
+        else{
+          data[layer.info.type]['endpoint']['trg'] = ['Top'];
+          data[layer.info.type]['endpoint']['src'] = ['Bottom'];
+        }
+        if (layer.params){
+          Object.keys(layer.params).forEach(param => {
+            if (param != 'endPoint'){
+            data[layer.info.type]['params'][param] = {'name': param, 'type': 'text', 
+            'required': false, 'value': ''};
+            }
+          });
+        }
+
+      }
       if ((layer.info.phase === this.props.selectedPhase) || (layer.info.phase === null)) {
         layers.push(
           <Layer

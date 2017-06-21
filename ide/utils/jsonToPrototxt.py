@@ -42,6 +42,14 @@ def jsonToPrototxt(net, net_name):
     # finding the data layer
     dataLayers = ['ImageData', 'Data', 'HDF5Data', 'Input', 'WindowData', 'MemoryData', 'DummyData']
     for layerId in net:
+        if (net[layerId]['info']['type'] == 'Python'):
+            if ('endPoint' not in net[layerId]['params'].keys()):
+                net[layerId]['params']['dragDrop'] = True
+                if (not net[layerId]['connection']['input']):
+                    stack.append(layerId)
+            else:
+                if (net[layerId]['params']['endPoint'] == "1, 0"):
+                    stack.append(layerId)
         if(net[layerId]['info']['type'] in dataLayers):
             stack.append(layerId)
 
@@ -955,6 +963,46 @@ def jsonToPrototxt(net, net_name):
                   contrastive_loss_param=contrastive_loss_param))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
+
+        # ********** Python Layer **********
+        elif (layerType == 'Python'):
+            # Parameters not to be included in param_str
+            notParamStr = ['module', 'layer', 'endPoint', 'loss_weight', 'dragDrop', 'param_str']
+            hasParamStr = False
+            python_param = {}
+            python_param['module'] = layerParams['module']
+            python_param['layer'] = layerParams['layer']
+            for param in layerParams:
+                if (param not in notParamStr):
+                    hasParamStr = True
+                    if 'param_str' not in python_param.keys():
+                        python_param['param_str'] = {}
+                    if isinstance(layerParams[param], str):
+                        try:
+                            python_param['param_str'][param] = map(int,
+                                                                   layerParams[param].split(','))
+                        except:
+                            python_param['param_str'][param] = layerParams[param]
+                    else:
+                        python_param['param_str'][param] = layerParams[param]
+            if 'dragDrop' in layerParams.keys():
+                python_param['param_str'] = layerParams['param_str']
+            if (hasParamStr):
+                python_param['param_str'] = str(python_param['param_str'])
+            if 'loss_weight' in layerParams:
+                for ns in (ns_train, ns_test):
+                    caffeLayer = get_iterable(L.Python(
+                      *[ns[x] for x in blobNames[layerId]['bottom']],
+                      python_param=python_param, loss_weight=layerParams['loss_weight']))
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns[key] = value
+            else:
+                for ns in (ns_train, ns_test):
+                    caffeLayer = get_iterable(L.Python(
+                      *[ns[x] for x in blobNames[layerId]['bottom']],
+                      python_param=python_param))
+                    for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+                        ns[key] = value
 
     train = 'name: "' + net_name + '"\n' + str(ns_train.to_proto())
     test = str(ns_test.to_proto())

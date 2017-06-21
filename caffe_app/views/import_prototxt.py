@@ -347,6 +347,29 @@ def importPrototxt(request):
                 params['margin'] = layer.contrastive_loss_param.margin
                 params['legacy_version'] = layer.contrastive_loss_param.legacy_version
 
+            # ********** Python Layer **********
+            elif(layer.type == 'Python'):
+                if (layer.python_param.module):
+                    params['module'] = layer.python_param.module
+                if (layer.python_param.layer):
+                    params['layer'] = layer.python_param.layer
+                if (layer.python_param.param_str):
+                    params.update(eval(layer.python_param.param_str))
+                if (layer.loss_weight):
+                    params['loss_weight'] = layer.loss_weight[0]
+                ''' If its a loss layer ('1,0'), there will be no source endpoint, if
+                its a data layer ('0,1') there will be no target endpoint, otherwise there
+                will be both endpoints ('1,1')'''
+                if (not layer.bottom):
+                    params['endPoint'] = '1, 0'
+                elif ('loss' in layer.name.lower()):
+                    params['endPoint'] = '0, 1'
+                else:
+                    params['endPoint'] = '1, 1'
+                for param in params:
+                    if isinstance(params[param], list):
+                        params[param] = str(params[param])[1:-1]
+
             jsonLayer = {
                 'info': {
                     'type': layer.type,
