@@ -525,7 +525,6 @@ def jsonToPrototxt(net, net_name):
 
         elif (layerType == 'Embed'):
             for ns in (ns_train, ns_test):
-                print ns.tops
                 caffeLayer = get_iterable(L.Embed(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
                     param=[
@@ -580,7 +579,7 @@ def jsonToPrototxt(net, net_name):
             batch_norm_param = {}
             batch_norm_param['use_global_stats'] = layerParams['use_global_stats']
             batch_norm_param['moving_average_fraction'] = layerParams['moving_average_fraction']
-            batch_norm_param['eps'] = layerParams['eps']
+            batch_norm_param['eps'] = float(layerParams['eps'])
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.BatchNorm(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
@@ -822,7 +821,6 @@ def jsonToPrototxt(net, net_name):
             parameter_param['shape'] = map(int, layerParams['shape'].split(','))
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Parameter(
-                    *[ns[x] for x in blobNames[layerId]['bottom']],
                     parameter_param=parameter_param))
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value

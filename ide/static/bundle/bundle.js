@@ -40774,8 +40774,35 @@
 	            null,
 	            _react2.default.createElement(
 	              _paneElement2.default,
+	              { id: 'ImageData' },
+	              'ImageData'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
 	              { id: 'Data' },
 	              'Data'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'HDF5Data' },
+	              'HDF5Data'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'HDF5Output' },
+	              'HDF5Output'
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -40792,8 +40819,26 @@
 	            null,
 	            _react2.default.createElement(
 	              _paneElement2.default,
-	              { id: 'HDF5Data' },
-	              'HDF5Data'
+	              { id: 'WindowData' },
+	              'WindowData'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'MemoryData' },
+	              'MemoryData'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'DummyData' },
+	              'DummyData'
 	            )
 	          )
 	        )
@@ -40823,6 +40868,24 @@
 	            null,
 	            _react2.default.createElement(
 	              _paneElement2.default,
+	              { id: 'Pooling' },
+	              'Pool'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'SPP' },
+	              'SPP'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
 	              { id: 'Crop' },
 	              'Crop'
 	            )
@@ -40834,15 +40897,6 @@
 	              _paneElement2.default,
 	              { id: 'Deconvolution' },
 	              'Deconvolution'
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'li',
-	            null,
-	            _react2.default.createElement(
-	              _paneElement2.default,
-	              { id: 'Pooling' },
-	              'Pool'
 	            )
 	          )
 	        )
@@ -40858,6 +40912,24 @@
 	        _react2.default.createElement(
 	          'ul',
 	          { className: 'dropdown-menu' },
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Recurrent' },
+	              'Recurrent'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'RNN' },
+	              'RNN'
+	            )
+	          ),
 	          _react2.default.createElement(
 	            'li',
 	            null,
@@ -40885,6 +40957,15 @@
 	            null,
 	            _react2.default.createElement(
 	              _paneElement2.default,
+	              { id: 'InnerProduct' },
+	              'Inner Product'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
 	              { id: 'Dropout' },
 	              'Dropout'
 	            )
@@ -40896,15 +40977,6 @@
 	              _paneElement2.default,
 	              { id: 'Embed' },
 	              'Embed'
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'li',
-	            null,
-	            _react2.default.createElement(
-	              _paneElement2.default,
-	              { id: 'InnerProduct' },
-	              'Inner Product'
 	            )
 	          )
 	        )
@@ -40925,8 +40997,8 @@
 	            null,
 	            _react2.default.createElement(
 	              _paneElement2.default,
-	              { id: 'BatchNorm' },
-	              'BatchNorm'
+	              { id: 'LRN' },
+	              'LRN'
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -40934,8 +41006,17 @@
 	            null,
 	            _react2.default.createElement(
 	              _paneElement2.default,
-	              { id: 'LRN' },
-	              'LRN'
+	              { id: 'MVN' },
+	              'MVN'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'BatchNorm' },
+	              'Batch Norm'
 	            )
 	          )
 	        )
@@ -40957,7 +41038,106 @@
 	            _react2.default.createElement(
 	              _paneElement2.default,
 	              { id: 'ReLU' },
-	              'ReLU'
+	              'ReLU/Leaky-ReLU'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'PReLU' },
+	              'PReLU'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'ELU' },
+	              'ELU'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Sigmoid' },
+	              'Sigmoid'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'TanH' },
+	              'TanH'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'AbsVal' },
+	              'Absolute Value'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Power' },
+	              'Power'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Exp' },
+	              'Exp'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Log' },
+	              'Log'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'BNLL' },
+	              'BNLL'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Threshold' },
+	              'Threshold'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Bias' },
+	              'Bias'
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -40987,6 +41167,42 @@
 	            null,
 	            _react2.default.createElement(
 	              _paneElement2.default,
+	              { id: 'Flatten' },
+	              'Flatten'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Reshape' },
+	              'Reshape'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'BatchReindex' },
+	              'Batch Reindex'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Split' },
+	              'Split'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
 	              { id: 'Concat' },
 	              'Concat'
 	            )
@@ -41005,8 +41221,44 @@
 	            null,
 	            _react2.default.createElement(
 	              _paneElement2.default,
-	              { id: 'Reshape' },
-	              'Reshape'
+	              { id: 'Filter' },
+	              'Filter'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Parameter' },
+	              'Parameter'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Reduction' },
+	              'Reduction'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Silence' },
+	              'Silence'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'ArgMax' },
+	              'ArgMax'
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -41036,8 +41288,17 @@
 	            null,
 	            _react2.default.createElement(
 	              _paneElement2.default,
-	              { id: 'Accuracy' },
-	              'Accuracy'
+	              { id: 'MultinomialLogisticLoss' },
+	              'Multinomial Logistic Loss'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'InfogainLoss' },
+	              'Infogain Loss'
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -41047,6 +41308,51 @@
 	              _paneElement2.default,
 	              { id: 'SoftmaxWithLoss' },
 	              'Softmax With Loss'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'EuclideanLoss' },
+	              'Euclidean Loss'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'HingeLoss' },
+	              'Hinge Loss'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'SigmoidCrossEntropyLoss' },
+	              'Sigmoid Cross Entropy Loss'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'Accuracy' },
+	              'Accuracy'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _paneElement2.default,
+	              { id: 'ContrastiveLoss' },
+	              'Contrastive Loss'
 	            )
 	          )
 	        )

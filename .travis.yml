@@ -27,7 +27,7 @@ before_script:
 script:
   - flake8 ./
   - npm run ci
-  - coverage run --source=caffe_app manage.py test
+  - coverage run --source=caffe_app,ide/utils manage.py test
 
 after_success:
   - coveralls

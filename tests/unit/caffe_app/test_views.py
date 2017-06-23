@@ -19,6 +19,25 @@ class ImportPrototxtTest(unittest.TestCase):
         self.assertEqual(response['result'], 'success')
 
 
+class ExportPrototxtTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_caffe_export(self):
+        data = L.Input(shape={'dim': [10, 3, 224, 224]})
+        top = L.Convolution(data, kernel_size=3, pad=1, stride=1, num_output=128,
+                            weight_filler={'type': 'xavier'}, bias_filler={'type': 'constant'})
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        response = self.client.post(reverse('caffe-export'), {'net': json.dumps(response['net']),
+                                                              'net_name': ''})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+
+
 # ********** Data Layers Test **********
 class ImageDataLayerTest(unittest.TestCase):
     def setUp(self):
