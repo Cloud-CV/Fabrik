@@ -36,6 +36,12 @@ class TopBar extends React.Component {
                     </li>
                     <li>
                         <a>
+                        <label htmlFor="inputFilekeras">keras</label>
+                        <input id="inputFilekeras" type="file" onChange={() => this.props.importNet('keras')}/>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
                         <label htmlFor="inputFiletensorflow">tensorflow</label>
                         <input id="inputFiletensorflow" type="file" onChange={() => this.props.importNet('tensorflow')}/>
                         </a>

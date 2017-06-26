@@ -427,5 +427,4 @@ def importPrototxt(request):
             jsonLayer['connection']['input'] = input
             net[id] = jsonLayer
             i = i + 1
-
         return JsonResponse({'result': 'success', 'net': net, 'net_name': net_name})

@@ -23,11 +23,11 @@ if [ ! -d $HOME/caffe/caffe ]; then
 		#Install caffe
 		echo "Installing caffe"
 		cp Makefile.config.example Makefile.config
-		CPU_ONLY=1 USE_OPENCV=0 make all -j4
+		WITH_PYTHON_LAYER=1	CPU_ONLY=1 USE_OPENCV=0 make all -j4
 
 		#Install pycaffe
 		echo "Install PyCaffe"
-		CPU_ONLY=1 USE_OPENCV=0 make pycaffe -j2
+		WITH_PYTHON_LAYER=1	CPU_ONLY=1 USE_OPENCV=0 make pycaffe -j2
 
 		echo "export PYTHONPATH=$(pwd)/python:$PYTHONPATH" > ~/.bash_profile
 		source ~/.bash_profile
@@ -40,5 +40,10 @@ sudo apt-get install python-pip python-dev
 
 echo "Installing Tensorflow"
 pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.12.1-cp27-none-linux_x86_64.whl
+
+echo "#################### Tensorflow Install Complete! ####################"
+
+echo "Installing Keras"
+pip install keras
 
 echo "#################### Tensorflow Install Complete! ####################"

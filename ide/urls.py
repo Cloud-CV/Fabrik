@@ -7,6 +7,7 @@ from views import index
 urlpatterns = [
     url(r'^$', index),
     url(r'^caffe/', include('caffe_app.urls')),
+    url(r'^keras/', include('keras_app.urls')),
     url(r'^tensorflow/', include('tensorflow_app.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),

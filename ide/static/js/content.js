@@ -209,8 +209,12 @@ class Content extends React.Component {
   }
   importNet(framework) {
     this.dismissAllErrors();
-    const url = {'caffe': '/caffe/import', 'tensorflow': '/tensorflow/import', 'url': '/caffe/import'};
+    const url = {'caffe': '/caffe/import', 'keras': '/keras/import', 'tensorflow': '/tensorflow/import', 'url': '/caffe/import'};
     const formData = new FormData();
+    const caffe_fillers = ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'];
+    const keras_fillers = ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
+    'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'];
+
     if (framework == 'url'){
       const id = prompt('Please enter prototxt id ',id);
       formData.append('proto_id', id);
@@ -218,6 +222,26 @@ class Content extends React.Component {
     else
       formData.append('file', $('#inputFile'+framework)[0].files[0]);
     this.setState({ load: true });
+    if (framework == 'keras'){
+      var fillers = keras_fillers;
+    }
+    else{
+      fillers = caffe_fillers;
+    }
+    data['Convolution']['params']['weight_filler']['options'] = fillers;
+    data['Convolution']['params']['bias_filler']['options'] = fillers;
+    data['Deconvolution']['params']['weight_filler']['options'] = fillers;
+    data['Deconvolution']['params']['bias_filler']['options'] = fillers;
+    data['Recurrent']['params']['weight_filler']['options'] = fillers;
+    data['Recurrent']['params']['bias_filler']['options'] = fillers;
+    data['RNN']['params']['weight_filler']['options'] = fillers;
+    data['RNN']['params']['bias_filler']['options'] = fillers;
+    data['LSTM']['params']['weight_filler']['options'] = fillers;
+    data['LSTM']['params']['bias_filler']['options'] = fillers;
+    data['InnerProduct']['params']['weight_filler']['options'] = fillers;
+    data['InnerProduct']['params']['bias_filler']['options'] = fillers;
+    data['Embed']['params']['weight_filler']['options'] = fillers;
+    data['Bias']['params']['filler']['options'] = fillers;
     $.ajax({
       url: url[framework],
       dataType: 'json',

@@ -93,6 +93,25 @@ def jsonToPrototxt(net, net_name):
     ns_test = caffe.NetSpec()
     hasTransformParam = ['ImageData', 'Data', 'WindowData']
 
+    # Weight/Bias filler mapping from Keras to Caffe,
+    # some which are not in Caffe were mapped to Xavier
+    fillerMap = {
+        'Zeros': 'constant',
+        'Ones': 'constant',
+        'Constant': 'constant',
+        'RandomNormal': 'uniform',
+        'RandomUniform': 'gaussian',
+        'TruncatedNormal': 'gaussian',
+        'VarianceScaling': 'gaussian',
+        'Orthogonal': 'xavier',
+        'Identity': 'constant',
+        'lecun_uniform': 'uniform',
+        'glorot_normal': 'xavier',
+        'glorot_uniform': 'xavier',
+        'he_normal': 'msra',
+        'he_uniform': 'msra'
+    }
+
     for layerId in processOrder:
 
         layer = net[layerId]
@@ -334,10 +353,18 @@ def jsonToPrototxt(net, net_name):
                 convolution_param['pad_w'] = int(float(layerParams['pad_w']))
             if layerParams['weight_filler'] != '':
                 convolution_param['weight_filler'] = {}
-                convolution_param['weight_filler']['type'] = layerParams['weight_filler']
+                try:
+                    convolution_param['weight_filler']['type'] = \
+                        fillerMap[layerParams['weight_filler']]
+                except:
+                    convolution_param['weight_filler']['type'] = layerParams['weight_filler']
             if layerParams['bias_filler'] != '':
                 convolution_param['bias_filler'] = {}
-                convolution_param['bias_filler']['type'] = layerParams['bias_filler']
+                try:
+                    convolution_param['bias_filler']['type'] = \
+                        fillerMap[layerParams['bias_filler']]
+                except:
+                    convolution_param['bias_filler']['type'] = layerParams['bias_filler']
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Convolution(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
@@ -425,10 +452,18 @@ def jsonToPrototxt(net, net_name):
                 convolution_param['pad_w'] = int(float(layerParams['pad_w']))
             if layerParams['weight_filler'] != '':
                 convolution_param['weight_filler'] = {}
-                convolution_param['weight_filler']['type'] = layerParams['weight_filler']
+                try:
+                    convolution_param['weight_filler']['type'] = \
+                        fillerMap[layerParams['weight_filler']]
+                except:
+                    convolution_param['weight_filler']['type'] = layerParams['weight_filler']
             if layerParams['bias_filler'] != '':
                 convolution_param['bias_filler'] = {}
-                convolution_param['bias_filler']['type'] = layerParams['bias_filler']
+                try:
+                    convolution_param['bias_filler']['type'] = \
+                        fillerMap[layerParams['bias_filler']]
+                except:
+                    convolution_param['bias_filler']['type'] = layerParams['bias_filler']
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Deconvolution(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
@@ -448,8 +483,20 @@ def jsonToPrototxt(net, net_name):
         elif (layerType == 'Recurrent'):
             recurrent_param = {}
             recurrent_param['num_output'] = int(layerParams['num_output'])
-            recurrent_param['weight_filler'] = {'type': layerParams['weight_filler']}
-            recurrent_param['bias_filler'] = {'type': layerParams['bias_filler']}
+            if layerParams['weight_filler'] != '':
+                recurrent_param['weight_filler'] = {}
+                try:
+                    recurrent_param['weight_filler']['type'] = \
+                        fillerMap[layerParams['weight_filler']]
+                except:
+                    recurrent_param['weight_filler']['type'] = layerParams['weight_filler']
+            if layerParams['bias_filler'] != '':
+                recurrent_param['bias_filler'] = {}
+                try:
+                    recurrent_param['bias_filler']['type'] = \
+                        fillerMap[layerParams['bias_filler']]
+                except:
+                    recurrent_param['bias_filler']['type'] = layerParams['bias_filler']
             recurrent_param['debug_info'] = layerParams['debug_info']
             recurrent_param['expose_hidden'] = layerParams['expose_hidden']
             for ns in (ns_train, ns_test):
@@ -462,8 +509,20 @@ def jsonToPrototxt(net, net_name):
         elif (layerType == 'RNN'):
             recurrent_param = {}
             recurrent_param['num_output'] = int(layerParams['num_output'])
-            recurrent_param['weight_filler'] = {'type': layerParams['weight_filler']}
-            recurrent_param['bias_filler'] = {'type': layerParams['bias_filler']}
+            if layerParams['weight_filler'] != '':
+                recurrent_param['weight_filler'] = {}
+                try:
+                    recurrent_param['weight_filler']['type'] = \
+                        fillerMap[layerParams['weight_filler']]
+                except:
+                    recurrent_param['weight_filler']['type'] = layerParams['weight_filler']
+            if layerParams['bias_filler'] != '':
+                recurrent_param['bias_filler'] = {}
+                try:
+                    recurrent_param['bias_filler']['type'] = \
+                        fillerMap[layerParams['bias_filler']]
+                except:
+                    recurrent_param['bias_filler']['type'] = layerParams['bias_filler']
             recurrent_param['debug_info'] = layerParams['debug_info']
             recurrent_param['expose_hidden'] = layerParams['expose_hidden']
             for ns in (ns_train, ns_test):
@@ -476,8 +535,20 @@ def jsonToPrototxt(net, net_name):
         elif (layerType == 'LSTM'):
             recurrent_param = {}
             recurrent_param['num_output'] = int(layerParams['num_output'])
-            recurrent_param['weight_filler'] = {'type': layerParams['weight_filler']}
-            recurrent_param['bias_filler'] = {'type': layerParams['bias_filler']}
+            if layerParams['weight_filler'] != '':
+                recurrent_param['weight_filler'] = {}
+                try:
+                    recurrent_param['weight_filler']['type'] = \
+                        fillerMap[layerParams['weight_filler']]
+                except:
+                    recurrent_param['weight_filler']['type'] = layerParams['weight_filler']
+            if layerParams['bias_filler'] != '':
+                recurrent_param['bias_filler'] = {}
+                try:
+                    recurrent_param['bias_filler']['type'] = \
+                        fillerMap[layerParams['bias_filler']]
+                except:
+                    recurrent_param['bias_filler']['type'] = layerParams['bias_filler']
             recurrent_param['debug_info'] = layerParams['debug_info']
             recurrent_param['expose_hidden'] = layerParams['expose_hidden']
             for ns in (ns_train, ns_test):
@@ -494,10 +565,18 @@ def jsonToPrototxt(net, net_name):
                 inner_product_param['num_output'] = int(float(layerParams['num_output']))
             if layerParams['weight_filler'] != '':
                 inner_product_param['weight_filler'] = {}
-                inner_product_param['weight_filler']['type'] = layerParams['weight_filler']
+                try:
+                    inner_product_param['weight_filler']['type'] = \
+                        fillerMap[layerParams['weight_filler']]
+                except:
+                    inner_product_param['weight_filler']['type'] = layerParams['weight_filler']
             if layerParams['bias_filler'] != '':
                 inner_product_param['bias_filler'] = {}
-                inner_product_param['bias_filler']['type'] = layerParams['bias_filler']
+                try:
+                    inner_product_param['bias_filler']['type'] = \
+                        fillerMap[layerParams['bias_filler']]
+                except:
+                    inner_product_param['bias_filler']['type'] = layerParams['bias_filler']
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.InnerProduct(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
@@ -711,8 +790,13 @@ def jsonToPrototxt(net, net_name):
             bias_param = {}
             bias_param['axis'] = layerParams['axis']
             bias_param['num_axes'] = layerParams['num_axes']
-            bias_param['filler'] = {}
-            bias_param['filler']['type'] = layerParams['filler']
+            if layerParams['filler'] != '':
+                bias_param['filler'] = {}
+                try:
+                    bias_param['filler']['type'] = \
+                        fillerMap[layerParams['filler']]
+                except:
+                    bias_param['filler']['type'] = layerParams['filler']
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Bias(
                     *[ns[x] for x in blobNames[layerId]['bottom']],

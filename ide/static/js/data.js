@@ -524,16 +524,16 @@ export default {
       },
       weight_filler: {
         name: 'Weight filler',
-        value: 'xavier',
+        value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       bias_filler: {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       }
     },
@@ -720,16 +720,16 @@ export default {
       },
       weight_filler: {
         name: 'Weight filler',
-        value: 'xavier',
+        value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       bias_filler: {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       }
     },
@@ -759,16 +759,16 @@ export default {
       },
       weight_filler: {
         name: 'Weight filler',
-        value: 'xavier',
+        value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       bias_filler: {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       debug_info: {
@@ -809,16 +809,16 @@ export default {
       },
       weight_filler: {
         name: 'Weight filler',
-        value: 'xavier',
+        value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       bias_filler: {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       debug_info: {
@@ -859,16 +859,16 @@ export default {
       },
       weight_filler: {
         name: 'Weight filler',
-        value: 'xavier',
+        value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       bias_filler: {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       debug_info: {
@@ -910,16 +910,16 @@ export default {
       },
       weight_filler: {
         name: 'Weight filler',
-        value: 'xavier',
+        value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       bias_filler: {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       }
     },
@@ -972,9 +972,9 @@ export default {
       },
       weight_filler: {
         name: 'Weight filler',
-        value: 'xavier',
+        value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       },
       bias_term: {
@@ -1506,7 +1506,7 @@ export default {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['xavier', 'constant'],
+        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
         required: false
       }
     },

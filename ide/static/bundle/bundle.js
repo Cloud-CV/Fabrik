@@ -27795,13 +27795,35 @@
 	    key: 'importNet',
 	    value: function importNet(framework) {
 	      this.dismissAllErrors();
-	      var url = { 'caffe': '/caffe/import', 'tensorflow': '/tensorflow/import', 'url': '/caffe/import' };
+	      var url = { 'caffe': '/caffe/import', 'keras': '/keras/import', 'tensorflow': '/tensorflow/import', 'url': '/caffe/import' };
 	      var formData = new FormData();
+	      var caffe_fillers = ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'];
+	      var keras_fillers = ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'];
+
 	      if (framework == 'url') {
 	        var id = prompt('Please enter prototxt id ', id);
 	        formData.append('proto_id', id);
 	      } else formData.append('file', $('#inputFile' + framework)[0].files[0]);
 	      this.setState({ load: true });
+	      if (framework == 'keras') {
+	        var fillers = keras_fillers;
+	      } else {
+	        fillers = caffe_fillers;
+	      }
+	      _data2.default['Convolution']['params']['weight_filler']['options'] = fillers;
+	      _data2.default['Convolution']['params']['bias_filler']['options'] = fillers;
+	      _data2.default['Deconvolution']['params']['weight_filler']['options'] = fillers;
+	      _data2.default['Deconvolution']['params']['bias_filler']['options'] = fillers;
+	      _data2.default['Recurrent']['params']['weight_filler']['options'] = fillers;
+	      _data2.default['Recurrent']['params']['bias_filler']['options'] = fillers;
+	      _data2.default['RNN']['params']['weight_filler']['options'] = fillers;
+	      _data2.default['RNN']['params']['bias_filler']['options'] = fillers;
+	      _data2.default['LSTM']['params']['weight_filler']['options'] = fillers;
+	      _data2.default['LSTM']['params']['bias_filler']['options'] = fillers;
+	      _data2.default['InnerProduct']['params']['weight_filler']['options'] = fillers;
+	      _data2.default['InnerProduct']['params']['bias_filler']['options'] = fillers;
+	      _data2.default['Embed']['params']['weight_filler']['options'] = fillers;
+	      _data2.default['Bias']['params']['filler']['options'] = fillers;
 	      $.ajax({
 	        url: url[framework],
 	        dataType: 'json',
@@ -28945,16 +28967,16 @@
 	      },
 	      weight_filler: {
 	        name: 'Weight filler',
-	        value: 'xavier',
+	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      bias_filler: {
 	        name: 'Bias filler',
 	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      }
 	    },
@@ -29141,16 +29163,16 @@
 	      },
 	      weight_filler: {
 	        name: 'Weight filler',
-	        value: 'xavier',
+	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      bias_filler: {
 	        name: 'Bias filler',
 	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      }
 	    },
@@ -29180,16 +29202,16 @@
 	      },
 	      weight_filler: {
 	        name: 'Weight filler',
-	        value: 'xavier',
+	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      bias_filler: {
 	        name: 'Bias filler',
 	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      debug_info: {
@@ -29230,16 +29252,16 @@
 	      },
 	      weight_filler: {
 	        name: 'Weight filler',
-	        value: 'xavier',
+	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      bias_filler: {
 	        name: 'Bias filler',
 	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      debug_info: {
@@ -29280,16 +29302,16 @@
 	      },
 	      weight_filler: {
 	        name: 'Weight filler',
-	        value: 'xavier',
+	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      bias_filler: {
 	        name: 'Bias filler',
 	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      debug_info: {
@@ -29331,16 +29353,16 @@
 	      },
 	      weight_filler: {
 	        name: 'Weight filler',
-	        value: 'xavier',
+	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      bias_filler: {
 	        name: 'Bias filler',
 	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      }
 	    },
@@ -29393,9 +29415,9 @@
 	      },
 	      weight_filler: {
 	        name: 'Weight filler',
-	        value: 'xavier',
+	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      },
 	      bias_term: {
@@ -29927,7 +29949,7 @@
 	        name: 'Bias filler',
 	        value: 'constant',
 	        type: 'select',
-	        options: ['xavier', 'constant'],
+	        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
 	        required: false
 	      }
 	    },
@@ -43721,6 +43743,22 @@
 	                        ),
 	                        _react2.default.createElement("input", { id: "inputFilecaffe", type: "file", onChange: function onChange() {
 	                            return _this2.props.importNet('caffe');
+	                          } })
+	                      )
+	                    ),
+	                    _react2.default.createElement(
+	                      "li",
+	                      null,
+	                      _react2.default.createElement(
+	                        "a",
+	                        null,
+	                        _react2.default.createElement(
+	                          "label",
+	                          { htmlFor: "inputFilekeras" },
+	                          "keras"
+	                        ),
+	                        _react2.default.createElement("input", { id: "inputFilekeras", type: "file", onChange: function onChange() {
+	                            return _this2.props.importNet('keras');
 	                          } })
 	                      )
 	                    ),
