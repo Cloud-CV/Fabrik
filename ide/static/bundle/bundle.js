@@ -43741,7 +43741,7 @@
 	                          { htmlFor: "inputFilecaffe" },
 	                          "caffe"
 	                        ),
-	                        _react2.default.createElement("input", { id: "inputFilecaffe", type: "file", onChange: function onChange() {
+	                        _react2.default.createElement("input", { id: "inputFilecaffe", type: "file", accept: ".prototxt", onChange: function onChange() {
 	                            return _this2.props.importNet('caffe');
 	                          } })
 	                      )
@@ -43773,7 +43773,7 @@
 	                          { htmlFor: "inputFiletensorflow" },
 	                          "tensorflow"
 	                        ),
-	                        _react2.default.createElement("input", { id: "inputFiletensorflow", type: "file", onChange: function onChange() {
+	                        _react2.default.createElement("input", { id: "inputFiletensorflow", type: "file", accept: ".pbtxt", onChange: function onChange() {
 	                            return _this2.props.importNet('tensorflow');
 	                          } })
 	                      )
