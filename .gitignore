@@ -21,3 +21,5 @@ node_modules/
 *.pyc
 
 */migrations/
+
+ide/static/bundle/bundle.js

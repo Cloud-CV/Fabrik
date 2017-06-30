@@ -46,4 +46,4 @@ echo "#################### Tensorflow Install Complete! ####################"
 echo "Installing Keras"
 pip install keras
 
-echo "#################### Tensorflow Install Complete! ####################"
+echo "#################### Keras Install Complete! ####################"

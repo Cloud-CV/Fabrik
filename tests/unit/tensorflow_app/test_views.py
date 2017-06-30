@@ -12,7 +12,8 @@ class UploadTest(unittest.TestCase):
         self.client = Client()
 
     def test_tf_import(self):
-        sample_file = open(os.path.join(settings.BASE_DIR, 'example', 'GoogleNet.pbtxt'), 'r')
+        sample_file = open(os.path.join(settings.BASE_DIR, 'example/tensorflow', 'GoogleNet.pbtxt'),
+                           'r')
         response = self.client.post(reverse('tf-import'), {'file': sample_file})
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'success')

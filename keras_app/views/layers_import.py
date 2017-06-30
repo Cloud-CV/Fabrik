@@ -12,9 +12,9 @@ def Input(layer):
 # ********** Vision Layers **********
 def Convolution(layer):
     params = {}
-    params['kernel_w'], params['kernel_h'] = layer.kernel_size
-    params['stride_w'], params['stride_h'] = layer.strides
-    params['pad_w'], params['pad_h'] = get_padding(params['kernel_w'], params['kernel_h'],
+    params['kernel_h'], params['kernel_w'] = layer.kernel_size
+    params['stride_h'], params['stride_w'] = layer.strides
+    params['pad_h'], params['pad_w'] = get_padding(params['kernel_w'], params['kernel_h'],
                                                    params['stride_w'], params['stride_h'],
                                                    layer.input_shape, layer.output_shape,
                                                    layer.padding.lower())
@@ -26,9 +26,9 @@ def Convolution(layer):
 
 def Deconvolution(layer):
     params = {}
-    params['kernel_w'], params['kernel_h'] = layer.kernel_size
-    params['stride_w'], params['stride_h'] = layer.strides
-    params['pad_w'], params['pad_h'] = get_padding(params['kernel_w'], params['kernel_h'],
+    params['kernel_h'], params['kernel_w'] = layer.kernel_size
+    params['stride_h'], params['stride_w'] = layer.strides
+    params['pad_h'], params['pad_w'] = get_padding(params['kernel_w'], params['kernel_h'],
                                                    params['stride_w'], params['stride_h'],
                                                    layer.input_shape, layer.output_shape,
                                                    layer.padding.lower())
@@ -48,14 +48,14 @@ def Pooling(layer):
     }
     if (layer.__class__.__name__ in ['GlobalAveragePooling2D', 'GlobalMaxPooling2D']):
         input_shape = layer.input_shape
-        params['kernel_w'] = params['stride_w'] = input_shape[2]
-        params['kernel_h'] = params['stride_h'] = input_shape[1]
+        params['kernel_h'] = params['stride_h'] = input_shape[2]
+        params['kernel_w'] = params['stride_w'] = input_shape[1]
         padding = 'valid'
     else:
         params['kernel_w'], params['kernel_h'] = layer.pool_size
         params['stride_w'], params['stride_h'] = layer.strides
         padding = layer.padding.lower()
-    params['pad_w'], params['pad_h'] = get_padding(params['kernel_w'], params['kernel_h'],
+    params['pad_h'], params['pad_w'] = get_padding(params['kernel_w'], params['kernel_h'],
                                                    params['stride_w'], params['stride_h'],
                                                    layer.input_shape, layer.output_shape,
                                                    padding)
@@ -178,8 +178,8 @@ def get_padding(k_w, k_h, s_w, s_h, input_shape, output_shape, pad_type):
     if (pad_type == 'valid'):
         return [0, 0]
     else:
-        pad_h = ((output_shape[1]-1)*s_h + k_h - input_shape[1])/2
-        pad_w = ((output_shape[2]-1)*s_w + k_w - input_shape[2])/2
+        pad_h = ((output_shape[2]-1)*s_h + k_h - input_shape[2])/2
+        pad_w = ((output_shape[1]-1)*s_w + k_w - input_shape[1])/2
         return (pad_h, pad_w)
 
 

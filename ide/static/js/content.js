@@ -175,7 +175,7 @@ class Content extends React.Component {
         delete netData[layerId].state;
       });
 
-      const url = {'caffe': '/caffe/export', 'tensorflow': '/tensorflow/export', 'url': '/caffe/export'}
+      const url = {'caffe': '/caffe/export', 'keras': '/keras/export', 'tensorflow': '/tensorflow/export', 'url': '/caffe/export'}
       this.setState({ load: true });
       $.ajax({
         url: url[framework],

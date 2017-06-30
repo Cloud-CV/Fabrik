@@ -500,25 +500,25 @@ export default {
       },
       stride_h: {
         name: 'Stride height',
-        value: '',
+        value: 1,
         type: 'number',
         required: false
       },
       stride_w: {
         name: 'Stride width',
-        value: '',
+        value: 1,
         type: 'number',
         required: false
       },
       pad_h: {
         name: 'Padding height',
-        value: '',
+        value: 0,
         type: 'number',
         required: false
       },
       pad_w: {
         name: 'Padding width',
-        value: '',
+        value: 0,
         type: 'number',
         required: false
       },
@@ -556,13 +556,13 @@ export default {
     params: {
       pad_h: {
         name: 'Padding height',
-        value: '',
+        value: 0,
         type: 'number',
         required: false
       },
       pad_w: {
         name: 'Padding width',
-        value: '',
+        value: 0,
         type: 'number',
         required: false
       },
@@ -580,13 +580,13 @@ export default {
       },
       stride_h: {
         name: 'Stride height',
-        value: '',
+        value: 1,
         type: 'number',
         required: false
       },
       stride_w: {
         name: 'Stride width',
-        value: '',
+        value: 1,
         type: 'number',
         required: false
       },
@@ -696,25 +696,25 @@ export default {
       },
       stride_h: {
         name: 'Stride height',
-        value: '',
+        value: 1,
         type: 'number',
         required: false
       },
       stride_w: {
         name: 'Stride width',
-        value: '',
+        value: 1,
         type: 'number',
         required: false
       },
       pad_h: {
         name: 'Padding height',
-        value: '',
+        value: 0,
         type: 'number',
         required: false
       },
       pad_w: {
         name: 'Padding width',
-        value: '',
+        value: 0,
         type: 'number',
         required: false
       },

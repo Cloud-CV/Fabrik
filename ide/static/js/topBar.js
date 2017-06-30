@@ -17,6 +17,7 @@ class TopBar extends React.Component {
                   </button>
                   <ul className="dropdown-menu pull-right">
                     <li><a href="#" onClick={() => this.props.exportNet('caffe')}>caffe</a></li>
+                    <li><a href="#" onClick={() => this.props.exportNet('keras')}>keras</a></li>
                     <li><a href="#" onClick={() => this.props.exportNet('tensorflow')}>tensorflow</a></li>
                     <li><a href="#" onClick={() => this.props.exportNet('url')}>url</a></li>
                   </ul>

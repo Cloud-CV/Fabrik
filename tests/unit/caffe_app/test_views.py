@@ -13,7 +13,8 @@ class ImportPrototxtTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        sample_file = open(os.path.join(settings.BASE_DIR, 'example', 'GoogleNet.prototxt'), 'r')
+        sample_file = open(os.path.join(settings.BASE_DIR, 'example/caffe', 'GoogleNet.prototxt'),
+                           'r')
         response = self.client.post(reverse('caffe-import'), {'file': sample_file})
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'success')

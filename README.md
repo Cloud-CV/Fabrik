@@ -31,10 +31,10 @@ This app is presently under active development and we welcome contributions. Ple
     git clone --recursive https://github.com/Cloud-CV/Fabrik.git
     ```
     
-3. If you have Caffe and Tensorflow already installed on your computer, skip this step
+3. If you have Caffe, Keras and Tensorflow already installed on your computer, skip this step
     ```
     cd Fabrik/requirements
-    sh caffe_tensoflow_install.sh
+    sh caffe_tensorflow_keras_install.sh
     ```
 4. Install dependencies
 * For developers:
@@ -51,12 +51,13 @@ npm install
 
 ### Usage
 ```
-python manage.py runserver
+KERAS_BACKEND=theano python manage.py runserver
 ```
 
 ### Example
-* Use `example/GoogleNet.pbtxt` for tensorflow import
-* Use `example/GoogleNet.prototxt` for caffe import
+* Use `example/tensorflow/GoogleNet.pbtxt` for tensorflow import
+* Use `example/caffe/GoogleNet.prototxt` for caffe import
+* Use `example/keras/vgg16.json` for keras import
 
 ### License
 
