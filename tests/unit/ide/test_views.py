@@ -968,6 +968,24 @@ class ContrastiveLossLayerTest(unittest.TestCase):
         self.assertEqual(net['l1']['info']['type'], 'ContrastiveLoss')
 
 
+# ********** Python Layer Test **********
+class PythonLayerTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_json_to_prototxt(self):
+        tests = open(os.path.join(settings.BASE_DIR, 'tests', 'unit', 'ide',
+                                  'caffe_export_test.json'), 'r')
+        response = json.load(tests)
+        tests.close()
+        net = yaml.safe_load(json.dumps(response['net']))
+        net = {'l0': net['Python']}
+        prototxt, input_dim = jsonToPrototxt(net, response['net_name'])
+        self.assertGreater(len(prototxt), 9)
+        self.assertEqual(net['l0']['info']['type'], 'Python')
+
+
+# ********** Shape Calculation Test **********
 class ShapeCalculationTest(unittest.TestCase):
     def setUp(self):
         self.client = Client()

@@ -953,3 +953,22 @@ class ContrastiveLossLayerTest(unittest.TestCase):
         os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
         self.assertGreaterEqual(len(response['net']['l0']['params']), 2)
         self.assertEqual(response['result'], 'success')
+
+
+# ********** Python Layer Test **********
+class PythonLayerTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_caffe_import(self):
+        top = L.Python(module='pascal_multilabel_datalayers', layer='PascalMultilabelDataLayerSync',
+                       param_str="{\'pascal_root\': \'../data/pascal/VOC2007\', \'im_shape\': [227, 227], \
+                        \'split\': \'train\', \'batch_size\': 128}")
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 6)
+        self.assertEqual(response['result'], 'success')

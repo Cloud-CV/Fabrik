@@ -638,6 +638,25 @@
             "shift": 0.0
         }
     }, 
+    "Python": {
+        "info": {
+            "phase": null, 
+            "type": "Python"
+        }, 
+        "connection": {
+            "input": [], 
+            "output": []
+        }, 
+        "params": {
+            "pascal_root": "../data/pascal/VOC2007", 
+            "layer": "PascalMultilabelDataLayerSync", 
+            "endPoint": "1, 0", 
+            "module": "pascal_multilabel_datalayers", 
+            "im_shape": "227, 227", 
+            "batch_size": 128, 
+            "split": "train"
+        }
+    },
     "RNN": {
         "connection": {
             "input": [
