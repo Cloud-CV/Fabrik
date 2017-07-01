@@ -1,0 +1,430 @@
+{"net": { 
+    "BatchNorm": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "BatchNorm"
+        }, 
+        "params": {
+            "eps": 0.001, 
+            "inplace": true, 
+            "moving_average_fraction": 0.999, 
+            "use_global_stats": true
+        }
+    }, 
+    "Concat": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Concat"
+        }, 
+        "params": {}
+    }, 
+    "Convolution": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Convolution"
+        }, 
+        "params": {
+            "bias_filler": "constant", 
+            "kernel_h": 3, 
+            "kernel_w": 3, 
+            "num_output": 128, 
+            "pad_h": 1, 
+            "pad_w": 1, 
+            "stride_h": 1, 
+            "stride_w": 1, 
+            "weight_filler": "xavier"
+        }, 
+        "shape": {
+            "input": [
+                3, 
+                224, 
+                224
+            ], 
+            "output": [
+                128, 
+                224, 
+                224
+            ]
+        }
+    }, 
+    "Deconvolution": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Deconvolution"
+        }, 
+        "params": {
+            "bias_filler": "constant", 
+            "kernel_h": 3, 
+            "kernel_w": 3, 
+            "num_output": 128, 
+            "pad_h": 1, 
+            "pad_w": 1, 
+            "stride_h": 1, 
+            "stride_w": 1, 
+            "weight_filler": "xavier"
+        }, 
+        "shape": {
+            "input": [
+                3, 
+                224, 
+                224
+            ], 
+            "output": [
+                128, 
+                224, 
+                224
+            ]
+        }
+    }, 
+    "Dropout": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Dropout"
+        }, 
+        "params": {
+            "inplace": true
+        }
+    }, 
+    "ELU": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "ELU"
+        }, 
+        "params": {
+            "alpha": 1.0, 
+            "inplace": true
+        }
+    }, 
+    "Eltwise": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Eltwise"
+        }, 
+        "params": {
+            "operation": 2
+        }
+    }, 
+    "Embed": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Embed"
+        }, 
+        "params": {
+            "bias_term": false, 
+            "input_dim": 2, 
+            "num_output": 128, 
+            "weight_filler": "xavier"
+        }
+    }, 
+    "Flatten": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Flatten"
+        }, 
+        "params": {
+            "axis": 1, 
+            "end_axis": -1
+        }
+    }, 
+    "InnerProduct": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "InnerProduct"
+        }, 
+        "params": {
+            "bias_filler": "constant", 
+            "num_output": 128, 
+            "weight_filler": "xavier"
+        }, 
+        "shape": {
+            "input": [
+                100
+            ], 
+            "output": [
+                128
+            ]
+        }
+    }, 
+    "Input": {
+        "connection": {
+            "input": [], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Input"
+        }, 
+        "params": {
+            "dim": "10, 3, 224, 224"
+        },
+        "shape": {
+            "input": [], 
+            "output": [
+                3, 
+                224, 
+                224
+            ]
+        }
+    },
+    "Input2": {
+        "connection": {
+            "input": [], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Input"
+        }, 
+        "params": {
+            "dim": "1, 10, 10"
+        }, 
+        "shape": {
+            "input": [], 
+            "output": [
+                10, 
+                10
+            ]
+        }
+    },  
+    "Input3": {
+        "connection": {
+            "input": [], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Input"
+        }, 
+        "params": {
+            "dim": "1, 100"
+        }, 
+        "shape": {
+            "input": [], 
+            "output": [
+                100
+            ]
+        }
+
+    }, 
+    "LSTM": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "LSTM"
+        }, 
+        "params": {
+            "bias_filler": "constant", 
+            "debug_info": false, 
+            "expose_hidden": false, 
+            "num_output": 128, 
+            "weight_filler": "xavier"
+        }
+    }, 
+    "PReLU": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "PReLU"
+        }, 
+        "params": {
+            "channel_shared": false, 
+            "inplace": true
+        }
+    }, 
+    "Pooling": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Pooling"
+        }, 
+        "params": {
+            "kernel_h": 2, 
+            "kernel_w": 2, 
+            "pad_h": 0, 
+            "pad_w": 0, 
+            "pool": 1, 
+            "stride_h": 2, 
+            "stride_w": 2
+        }, 
+        "shape": {
+            "input": [
+                3, 
+                224, 
+                224
+            ], 
+            "output": [
+                3, 
+                112, 
+                112
+            ]
+        }
+    }, 
+    "RNN": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "RNN"
+        }, 
+        "params": {
+            "bias_filler": "constant", 
+            "debug_info": false, 
+            "expose_hidden": false, 
+            "num_output": 128, 
+            "weight_filler": "xavier"
+        }
+    }, 
+    "ReLU": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "ReLU"
+        }, 
+        "params": {
+            "inplace": true, 
+            "negative_slope": 0.0
+        }
+    }, 
+    "Reshape": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Reshape"
+        }, 
+        "params": {
+            "dim": "2, -1"
+        }
+    }, 
+    "Sigmoid": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Sigmoid"
+        }, 
+        "params": {
+            "inplace": true
+        }
+    }, 
+    "Softmax": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Softmax"
+        }, 
+        "params": {}
+    }, 
+    "TanH": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "TanH"
+        }, 
+        "params": {
+            "inplace": true
+        }
+    }
+}, "result": "success", "net_name": ""}

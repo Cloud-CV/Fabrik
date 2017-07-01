@@ -109,7 +109,6 @@ def BatchNorm(layer):
 def Activation(layer):
     activationMap = {
         'softmax': 'Softmax',
-        'elu': 'ELU',
         'relu': 'ReLU',
         'tanh': 'TanH',
         'sigmoid': 'Sigmoid'
@@ -129,6 +128,11 @@ def LeakyReLU(layer):
 
 def PReLU(layer):
     return jsonLayer('PReLU', {}, layer)
+
+
+def ELU(layer):
+    params = {'alpha': layer.alpha}
+    return jsonLayer('ELU', params, layer)
 
 
 def Scale(layer):

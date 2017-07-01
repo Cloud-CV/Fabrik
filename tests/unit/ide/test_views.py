@@ -4,8 +4,11 @@ import unittest
 import yaml
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.test import Client
 from ide.utils.jsonToPrototxt import jsonToPrototxt
+from ide.utils.shapes import get_shapes
+from keras.models import model_from_json
 
 
 # ********** Data Layers Test **********
@@ -963,3 +966,19 @@ class ContrastiveLossLayerTest(unittest.TestCase):
         prototxt, input_dim = jsonToPrototxt(net, response['net_name'])
         self.assertGreater(len(prototxt), 9)
         self.assertEqual(net['l1']['info']['type'], 'ContrastiveLoss')
+
+
+class ShapeCalculationTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_shapes(self):
+        with open(os.path.join(settings.BASE_DIR, 'example/keras', 'vgg16.json'), 'r') as f:
+            response = self.client.post(reverse('keras-import'), {'file': f})
+        response = json.loads(response.content)
+        net = get_shapes(response['net'])
+        with open(os.path.join(settings.BASE_DIR, 'example/keras', 'vgg16.json'), 'r') as f:
+            model = model_from_json(json.dumps(json.load(f)))
+        for layer in model.layers:
+            self.assertEqual(list(layer.output_shape[::-1][:-1]),
+                             net[layer.name]['shape']['output'])

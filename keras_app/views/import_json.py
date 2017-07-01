@@ -3,8 +3,8 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from layers_import import Input, Convolution, Deconvolution, Pooling, Dense, Dropout, Embed,\
-    Recurrent, BatchNorm, Activation, LeakyReLU, PReLU, Scale, Flatten, Reshape, Concat, Eltwise,\
-    Padding
+    Recurrent, BatchNorm, Activation, LeakyReLU, PReLU, ELU, Scale, Flatten, Reshape, Concat, \
+    Eltwise, Padding
 from keras.models import model_from_json, Sequential
 
 
@@ -40,7 +40,7 @@ def importJson(request):
         'Activation': Activation,
         'relu': Activation,
         'softmax': Activation,
-        'elu': Activation,
+        'elu': ELU,
         'tanh': Activation,
         'sigmoid': Activation,
         'LeakyReLU': LeakyReLU,

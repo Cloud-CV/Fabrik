@@ -6,7 +6,7 @@ from keras.layers import MaxPooling2D, AveragePooling2D
 from keras.layers import SimpleRNN, LSTM
 from keras.layers import Embedding
 from keras.layers import add, multiply, maximum, concatenate
-from keras.layers.advanced_activations import LeakyReLU, PReLU
+from keras.layers.advanced_activations import LeakyReLU, PReLU, ELU
 from keras.layers import BatchNormalization
 from keras.layers import Input
 
@@ -54,7 +54,6 @@ def convolution(layer, layer_in, layerId):
 
 def deconvolution(layer, layer_in, layerId):
     out = {}
-    print layer_in
     padding = get_padding(layer)
     k_h, k_w = layer['params']['kernel_h'], layer['params']['kernel_w']
     s_h, s_w = layer['params']['stride_h'], layer['params']['stride_w']
@@ -178,18 +177,13 @@ def activation(layer, layer_in, layerId):
     elif (layer['info']['type'] == 'PReLU'):
         out[layerId] = PReLU()(*layer_in)
     elif (layer['info']['type'] == 'ELU'):
-        out[layerId] = Activation(mode='elu', alpha=layer['params']['alpha'])(*layer_in)
+        out[layerId] = ELU(alpha=layer['params']['alpha'])(*layer_in)
     elif (layer['info']['type'] == 'Sigmoid'):
         out[layerId] = Activation('sigmoid')(*layer_in)
     elif (layer['info']['type'] == 'TanH'):
         out[layerId] = Activation('tanh')(*layer_in)
     elif (layer['info']['type'] == 'Softmax'):
         out[layerId] = Activation('softmax')(*layer_in)
-    return out
-
-
-def scale(layer, layer_in, layerId):
-    out = {layerId: None}
     return out
 
 
