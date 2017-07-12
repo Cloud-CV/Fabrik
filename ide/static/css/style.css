@@ -30,6 +30,11 @@ html,body,#app,.app{
   flex: 0 1 auto;
 }
 
+#logo{
+  max-height: 50px;
+  padding: 2px;
+}
+
 .content{
   flex: 1 1 auto;
   height:100%;
