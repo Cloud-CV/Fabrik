@@ -14,6 +14,7 @@ def Convolution(layer):
     params = {}
     params['kernel_h'], params['kernel_w'] = layer.kernel_size
     params['stride_h'], params['stride_w'] = layer.strides
+    params['dilation_h'], params['dilation_w'] = layer.dilation_rate
     params['pad_h'], params['pad_w'] = get_padding(params['kernel_w'], params['kernel_h'],
                                                    params['stride_w'], params['stride_h'],
                                                    layer.input_shape, layer.output_shape,
@@ -21,6 +22,17 @@ def Convolution(layer):
     params['weight_filler'] = layer.kernel_initializer.__class__.__name__
     params['bias_filler'] = layer.bias_initializer.__class__.__name__
     params['num_output'] = layer.filters
+    if (layer.kernel_regularizer):
+        params['kernel_regularizer'] = layer.kernel_regularizer.__class__.__name__
+    if (layer.bias_regularizer):
+        params['bias_regularizer'] = layer.bias_regularizer.__class__.__name__
+    if (layer.activity_regularizer):
+        params['activity_regularizer'] = layer.activity_regularizer.__class__.__name__
+    if (layer.kernel_constraint):
+        params['kernel_constraint'] = layer.kernel_constraint.__class__.__name__
+    if (layer.bias_constraint):
+        params['bias_constraint'] = layer.bias_constraint.__class__.__name__
+    params['use_bias'] = layer.use_bias
     return jsonLayer('Convolution', params, layer)
 
 
@@ -28,6 +40,7 @@ def Deconvolution(layer):
     params = {}
     params['kernel_h'], params['kernel_w'] = layer.kernel_size
     params['stride_h'], params['stride_w'] = layer.strides
+    params['dilation_h'], params['dilation_w'] = layer.dilation_rate
     params['pad_h'], params['pad_w'] = get_padding(params['kernel_w'], params['kernel_h'],
                                                    params['stride_w'], params['stride_h'],
                                                    layer.input_shape, layer.output_shape,
@@ -35,6 +48,17 @@ def Deconvolution(layer):
     params['weight_filler'] = layer.kernel_initializer.__class__.__name__
     params['bias_filler'] = layer.bias_initializer.__class__.__name__
     params['num_output'] = layer.filters
+    if (layer.kernel_regularizer):
+        params['kernel_regularizer'] = layer.kernel_regularizer.__class__.__name__
+    if (layer.bias_regularizer):
+        params['bias_regularizer'] = layer.bias_regularizer.__class__.__name__
+    if (layer.activity_regularizer):
+        params['activity_regularizer'] = layer.activity_regularizer.__class__.__name__
+    if (layer.kernel_constraint):
+        params['kernel_constraint'] = layer.kernel_constraint.__class__.__name__
+    if (layer.bias_constraint):
+        params['bias_constraint'] = layer.bias_constraint.__class__.__name__
+    params['use_bias'] = layer.use_bias
     return jsonLayer('Deconvolution', params, layer)
 
 
@@ -69,6 +93,17 @@ def Dense(layer):
     params['weight_filler'] = layer.kernel_initializer.__class__.__name__
     params['bias_filler'] = layer.bias_initializer.__class__.__name__
     params['num_output'] = layer.units
+    if (layer.kernel_regularizer):
+        params['kernel_regularizer'] = layer.kernel_regularizer.__class__.__name__
+    if (layer.bias_regularizer):
+        params['bias_regularizer'] = layer.bias_regularizer.__class__.__name__
+    if (layer.activity_regularizer):
+        params['activity_regularizer'] = layer.activity_regularizer.__class__.__name__
+    if (layer.kernel_constraint):
+        params['kernel_constraint'] = layer.kernel_constraint.__class__.__name__
+    if (layer.bias_constraint):
+        params['bias_constraint'] = layer.bias_constraint.__class__.__name__
+    params['use_bias'] = layer.use_bias
     return jsonLayer('InnerProduct', params, layer)
 
 
@@ -81,6 +116,13 @@ def Embed(layer):
     params['input_dim'] = layer.input_dim
     params['num_output'] = layer.output_dim
     params['weight_filler'] = layer.embeddings_initializer.__class__.__name__
+    if (layer.embeddings_regularizer):
+        params['embeddings_regularizer'] = layer.embeddings_regularizer.__class__.__name__
+    if (layer.embeddings_constraint):
+        params['embeddings_constraint'] = layer.embeddings_constraint.__class__.__name__
+    if (layer.input_length):
+        params['input_length'] = layer.input_length
+    params['mask_zero'] = layer.mask_zero
     return jsonLayer('Embed', params, layer)
 
 
@@ -93,7 +135,25 @@ def Recurrent(layer):
     params = {}
     params['num_output'] = layer.units
     params['weight_filler'] = layer.kernel_initializer.__class__.__name__
+    params['recurrent_initializer'] = layer.recurrent_initializer.__class__.__name__
     params['bias_filler'] = layer.bias_initializer.__class__.__name__
+    if (layer.kernel_regularizer):
+        params['kernel_regularizer'] = layer.kernel_regularizer.__class__.__name__
+    if (layer.recurrent_regularizer):
+        params['recurrent_regularizer'] = layer.recurrent_regularizer.__class__.__name__
+    if (layer.bias_regularizer):
+        params['bias_regularizer'] = layer.bias_regularizer.__class__.__name__
+    if (layer.activity_regularizer):
+        params['activity_regularizer'] = layer.activity_regularizer.__class__.__name__
+    if (layer.kernel_constraint):
+        params['kernel_constraint'] = layer.kernel_constraint.__class__.__name__
+    if (layer.recurrent_constraint):
+        params['recurrent_constraint'] = layer.recurrent_constraint.__class__.__name__
+    if (layer.bias_constraint):
+        params['bias_constraint'] = layer.bias_constraint.__class__.__name__
+    params['use_bias'] = layer.use_bias
+    params['dropout'] = layer.dropout
+    params['recurrent_dropout'] = layer.recurrent_dropout
     return jsonLayer(recurrentMap[layer.__class__.__name__], params, layer)
 
 
@@ -102,6 +162,8 @@ def BatchNorm(layer):
     params = {}
     params['eps'] = layer.epsilon
     params['moving_average_fraction'] = layer.momentum
+    params['moving_mean_initializer'] = layer.moving_mean_initializer.__class__.__name__
+    params['moving_variance_initializer'] = layer.moving_variance_initializer.__class__.__name__
     return jsonLayer('BatchNorm', params, layer)
 
 
@@ -137,7 +199,21 @@ def ELU(layer):
 
 def Scale(layer):
     tempLayer = {}
+    params = {}
+    params['axis'] = layer.axis
+    params['bias_term'] = layer.center
+    params['scale'] = layer.scale
+    params['filler'] = layer.gamma_initializer.__class__.__name__
+    params['bias_filler'] = layer.beta_initializer.__class__.__name__
     params = {'bias_term': layer.center}
+    if (layer.beta_regularizer):
+        params['beta_regularizer'] = layer.beta_regularizer.__class__.__name__
+    if (layer.gamma_regularizer):
+        params['gamma_regularizer'] = layer.gamma_regularizer.__class__.__name__
+    if (layer.beta_constraint):
+        params['beta_constraint'] = layer.beta_constraint.__class__.__name__
+    if (layer.gamma_constraint):
+        params['gamma_constraint'] = layer.gamma_constraint.__class__.__name__
     tempLayer['inbound_nodes'] = [[[layer.name+layer.__class__.__name__]]]
     return jsonLayer('Scale', params, tempLayer)
 

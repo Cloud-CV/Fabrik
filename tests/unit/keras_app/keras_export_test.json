@@ -4,7 +4,9 @@
             "input": [
                 "l0"
             ], 
-            "output": []
+            "output": [
+                "l2"
+            ]
         }, 
         "info": {
             "phase": null, 
@@ -12,9 +14,10 @@
         }, 
         "params": {
             "eps": 0.001, 
-            "inplace": true, 
             "moving_average_fraction": 0.999, 
-            "use_global_stats": true
+            "use_global_stats": true,
+            "moving_mean_initializer": "Zeros",
+            "moving_variance_initializer": "Ones"
         }
     }, 
     "Concat": {
@@ -44,13 +47,21 @@
         "params": {
             "bias_filler": "constant", 
             "kernel_h": 3, 
-            "kernel_w": 3, 
+            "kernel_w": 3,
+            "dilation_h": 1,
+            "dilation_w": 1, 
             "num_output": 128, 
             "pad_h": 1, 
             "pad_w": 1, 
             "stride_h": 1, 
             "stride_w": 1, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "kernel_constraint": "None", 
+            "activity_regularizer": "None", 
+            "use_bias": true, 
+            "bias_regularizer": "None", 
+            "bias_constraint": "None", 
+            "kernel_regularizer": "None"
         }, 
         "shape": {
             "input": [
@@ -79,13 +90,21 @@
         "params": {
             "bias_filler": "constant", 
             "kernel_h": 3, 
-            "kernel_w": 3, 
+            "kernel_w": 3,
+            "dilation_h": 1,
+            "dilation_w": 1, 
             "num_output": 128, 
             "pad_h": 1, 
             "pad_w": 1, 
             "stride_h": 1, 
             "stride_w": 1, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",            
+            "kernel_constraint": "None", 
+            "activity_regularizer": "None", 
+            "use_bias": true, 
+            "bias_regularizer": "None", 
+            "bias_constraint": "None", 
+            "kernel_regularizer": "None"
         }, 
         "shape": {
             "input": [
@@ -158,10 +177,13 @@
             "type": "Embed"
         }, 
         "params": {
-            "bias_term": false, 
             "input_dim": 2, 
             "num_output": 128, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "embeddings_regularizer": "None", 
+            "embeddings_constraint": "None", 
+            "input_length": null,
+            "mask_zero": false
         }
     }, 
     "Flatten": {
@@ -194,7 +216,13 @@
         "params": {
             "bias_filler": "constant", 
             "num_output": 128, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "use_bias": false,
+            "kernel_constraint": "None", 
+            "activity_regularizer": "None", 
+            "bias_regularizer": "None", 
+            "bias_constraint": "None", 
+            "kernel_regularizer": "None"
         }, 
         "shape": {
             "input": [
@@ -278,11 +306,22 @@
             "type": "LSTM"
         }, 
         "params": {
-            "bias_filler": "constant", 
-            "debug_info": false, 
+            "recurrent_dropout": 0, 
+            "kernel_constraint": "None", 
+            "dropout": 0, 
+            "weight_filler": "VarianceScaling", 
+            "recurrent_initializer": "Orthogonal", 
+            "bias_filler": "Zeros", 
+            "recurrent_regularizer": "None", 
+            "use_bias": true, 
+            "bias_regularizer": "None", 
+            "bias_constraint": "None", 
             "expose_hidden": false, 
             "num_output": 128, 
-            "weight_filler": "xavier"
+            "kernel_regularizer": "None", 
+            "debug_info": false, 
+            "recurrent_constraint": "None", 
+            "activity_regularizer": "None"
         }
     }, 
     "PReLU": {
@@ -346,11 +385,22 @@
             "type": "RNN"
         }, 
         "params": {
-            "bias_filler": "constant", 
-            "debug_info": false, 
+            "recurrent_dropout": 0, 
+            "kernel_constraint": "None", 
+            "dropout": 0, 
+            "weight_filler": "VarianceScaling", 
+            "recurrent_initializer": "Orthogonal", 
+            "bias_filler": "Zeros", 
+            "recurrent_regularizer": "None", 
+            "use_bias": true, 
+            "bias_regularizer": "None", 
+            "bias_constraint": "None", 
             "expose_hidden": false, 
             "num_output": 128, 
-            "weight_filler": "xavier"
+            "kernel_regularizer": "None", 
+            "debug_info": false, 
+            "recurrent_constraint": "None", 
+            "activity_regularizer": "None"
         }
     }, 
     "ReLU": {
@@ -382,6 +432,29 @@
         }, 
         "params": {
             "dim": "2, -1"
+        }
+    },
+    "Scale": {
+        "connection": {
+            "input": [
+                "l1"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Scale"
+        }, 
+        "params": {
+            "axis": 1,
+            "filler": "xavier",
+            "bias_term": true,
+            "scale": true,
+            "bias_filler": "constant",
+            "gamma_regularizer": "None",
+            "beta_regularizer": "None",
+            "gamma_constraint": "None",
+            "beta_constraint": "None"
         }
     }, 
     "Sigmoid": {

@@ -26,7 +26,7 @@ class ExportPrototxtTest(unittest.TestCase):
 
     def test_caffe_export(self):
         data = L.Input(shape={'dim': [10, 3, 224, 224]})
-        top = L.Convolution(data, kernel_size=3, pad=1, stride=1, num_output=128,
+        top = L.Convolution(data, kernel_size=3, pad=1, stride=1, num_output=128, dilation=1,
                             weight_filler={'type': 'xavier'}, bias_filler={'type': 'constant'})
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))

@@ -102,10 +102,13 @@ def exportJson(request):
                     layer_in = [net_out[inputId] for inputId in net[layerId]['connection']['input']]
                 # Need to check if next layer is Scale
                 if (net[layerId]['info']['type'] == 'BatchNorm'):
-                    type = net[net[layerId]['connection']['output'][0]]['info']['type']
                     idNext = net[layerId]['connection']['output'][0]
+                    nextLayer = net[idNext]
+                    # If the BN layer is followed by Scale, then we need to pass both layers
+                    # as in Keras parameters from both go into one single layer
                     net_out.update(layer_map[net[layerId]['info']['type']](net[layerId], layer_in,
-                                                                           layerId, type, idNext))
+                                                                           layerId, idNext,
+                                                                           nextLayer))
                 elif (net[layerId]['info']['type'] == 'Scale'):
                     type = net[net[layerId]['connection']['input'][0]]['info']['type']
                     if (type != 'BatchNorm'):

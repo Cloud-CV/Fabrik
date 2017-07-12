@@ -128,9 +128,13 @@ def importPrototxt(request):
                         or layer.convolution_param.stride[0]
                     params['stride_w'] = layer.convolution_param.stride_w \
                         or layer.convolution_param.stride[0]
+                if len(layer.convolution_param.dilation):
+                    params['dilation_h'] = layer.convolution_param.dilation[0]
+                    params['dilation_w'] = layer.convolution_param.dilation[0]
                 params['weight_filler'] = layer.convolution_param.weight_filler.type
                 params['bias_filler'] = layer.convolution_param.bias_filler.type
                 params['num_output'] = layer.convolution_param.num_output
+                params['use_bias'] = layer.convolution_param.bias_term
 
             elif(layer.type == 'Pooling'):
                 params['pad_h'] = layer.pooling_param.pad_h or layer.pooling_param.pad
@@ -171,9 +175,13 @@ def importPrototxt(request):
                         or layer.convolution_param.stride[0]
                     params['stride_w'] = layer.convolution_param.stride_w \
                         or layer.convolution_param.stride[0]
+                if len(layer.convolution_param.dilation):
+                    params['dilation_h'] = layer.convolution_param.dilation[0]
+                    params['dilation_w'] = layer.convolution_param.dilation[0]
                 params['weight_filler'] = layer.convolution_param.weight_filler.type
                 params['bias_filler'] = layer.convolution_param.bias_filler.type
                 params['num_output'] = layer.convolution_param.num_output
+                params['use_bias'] = layer.convolution_param.bias_term
 
             # ********** Recurrent Layers **********
             elif(layer.type == 'Recurrent' or layer.type == 'RNN' or
@@ -189,6 +197,7 @@ def importPrototxt(request):
                 params['num_output'] = layer.inner_product_param.num_output
                 params['weight_filler'] = layer.inner_product_param.weight_filler.type
                 params['bias_filler'] = layer.inner_product_param.bias_filler.type
+                params['use_bias'] = layer.inner_product_param.bias_term
 
             elif(layer.type == 'Dropout'):
                 if(layer.top == layer.bottom):
@@ -199,6 +208,7 @@ def importPrototxt(request):
                 params['input_dim'] = layer.embed_param.input_dim
                 params['num_output'] = layer.embed_param.num_output
                 params['weight_filler'] = layer.embed_param.weight_filler.type
+                params['bias_filler'] = layer.embed_param.bias_filler.type
 
             # ********** Normalisation Layers **********
             elif(layer.type == 'LRN'):
@@ -291,7 +301,11 @@ def importPrototxt(request):
                 params['filler'] = layer.bias_param.filler.type
 
             elif(layer.type == 'Scale'):
+                params['axis'] = layer.scale_param.axis
+                params['num_axes'] = layer.scale_param.num_axes
+                params['filler'] = layer.scale_param.filler.type
                 params['bias_term'] = layer.scale_param.bias_term
+                params['bias_filler'] = layer.scale_param.bias_filler.type
 
             # ********** Utility Layers **********
             elif(layer.type == 'Flatten'):

@@ -480,7 +480,7 @@ export default {
       trg: ['Top']
     },
     params: {
-      num_output: {
+      num_output: { // Maps to: filters(Keras)
         name: 'No of outputs',
         value: '',
         type: 'number',
@@ -522,18 +522,79 @@ export default {
         type: 'number',
         required: false
       },
-      weight_filler: {
+      dilation_h: {
+        name: 'Dilation height',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      dilation_w: {
+        name: 'Dilation width',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      weight_filler: { // Maps to: kernel_initializer(Keras)
         name: 'Weight filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
-      bias_filler: {
+      bias_filler: { // Maps to: bias_initializer(Keras)
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      kernel_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      bias_regularizer: { // Only Keras
+        name: 'Bias regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      activity_regularizer: { // Only Keras
+        name: 'Activity regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      kernel_constraint: { // Only Keras
+        name: 'Kernel constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      bias_constraint: { // Only Keras
+        name: 'Bias constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      use_bias: { // Maps to: bias_term(Caffe)
+        name: 'Use bias term',
+        value: true,
+        type: 'checkbox',
         required: false
       }
     },
@@ -676,7 +737,7 @@ export default {
       trg: ['Top']
     },
     params: {
-      num_output: {
+      num_output: { // Maps to: filters(Keras)
         name: 'No of outputs',
         value: '',
         type: 'number',
@@ -717,19 +778,79 @@ export default {
         value: 0,
         type: 'number',
         required: false
+      },dilation_h: {
+        name: 'Dilation height',
+        value: 1,
+        type: 'number',
+        required: false
       },
-      weight_filler: {
+      dilation_w: {
+        name: 'Dilation width',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      weight_filler: { // Maps to: kernel_initializer(Keras)
         name: 'Weight filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
-      bias_filler: {
+      bias_filler: { // Maps to: bias_initializer(Keras)
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      kernel_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      bias_regularizer: { // Only Keras
+        name: 'Bias regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      activity_regularizer: { // Only Keras
+        name: 'Activity regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      kernel_constraint: { // Only Keras
+        name: 'Kernel constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      bias_constraint: { // Only Keras
+        name: 'Bias constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      use_bias: { // Maps to: bias_term(Caffe)
+        name: 'Use bias term',
+        value: true,
+        type: 'checkbox',
         required: false
       }
     },
@@ -761,14 +882,22 @@ export default {
         name: 'Weight filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
       bias_filler: {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
       debug_info: {
@@ -801,36 +930,119 @@ export default {
       trg: ['Top']
     },
     params: {
-      num_output: {
+      num_output: { // Maps to: units(Keras)
         name: 'No of outputs',
         value: '',
         type: 'number',
         required: true
       },
-      weight_filler: {
+      weight_filler: { // Maps to: kernel_initializer(Keras)
         name: 'Weight filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
-      bias_filler: {
+      bias_filler: { // Maps to: bias_initializer(Keras)
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
-      debug_info: {
+      debug_info: { // Only Caffe
         name: 'Degug',
         value: false,
         type: 'checkbox',
         required: false
       },
-      expose_hidden: {
+      expose_hidden: { // Only Caffe
         name: 'Expose Hidden',
         value: false,
         type: 'checkbox',
+        required: false
+      },
+      recurrent_initializer: { // Only Keras
+        name: 'Recurrent Initializer',
+        value: 'Orthogonal',
+        type: 'select',
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
+          'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      kernel_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      recurrent_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      bias_regularizer: { // Only Keras
+        name: 'Bias regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      activity_regularizer: { // Only Keras
+        name: 'Activity regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      kernel_constraint: { // Only Keras
+        name: 'Kernel constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      recurrent_constraint: { // Only Keras
+        name: 'Recurrent constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      bias_constraint: { // Only Keras
+        name: 'Bias constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      use_bias: { // Only Keras
+        name: 'Use bias term',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      dropout: { // Only Keras
+        name: 'Dropout',
+        value: 0.0,
+        type: 'number',
+        required: false
+      },
+      recurrent_dropout: { // Only Keras
+        name: 'Recurrent Dropout',
+        value: 0.0,
+        type: 'number',
         required: false
       }
     },
@@ -851,36 +1063,119 @@ export default {
       trg: ['Top']
     },
     params: {
-      num_output: {
+      num_output: { // Maps to: units(Keras)
         name: 'No of outputs',
         value: '',
         type: 'number',
         required: true
       },
-      weight_filler: {
+      weight_filler: { // Maps to: kernel_initializer(Keras)
         name: 'Weight filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
-      bias_filler: {
+      bias_filler: { // Maps to: bias_initializer(Keras)
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
-      debug_info: {
+      debug_info: { // Only Caffe
         name: 'Degug',
         value: false,
         type: 'checkbox',
         required: false
       },
-      expose_hidden: {
+      expose_hidden: { // Only Caffe
         name: 'Expose Hidden',
         value: false,
         type: 'checkbox',
+        required: false
+      },
+      recurrent_initializer: { // Only Keras
+        name: 'Recurrent Initializer',
+        value: 'Orthogonal',
+        type: 'select',
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
+          'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      kernel_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      recurrent_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      bias_regularizer: { // Only Keras
+        name: 'Bias regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      activity_regularizer: { // Only Keras
+        name: 'Activity regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      kernel_constraint: { // Only Keras
+        name: 'Kernel constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      recurrent_constraint: { // Only Keras
+        name: 'Recurrent constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      bias_constraint: { // Only Keras
+        name: 'Bias constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      use_bias: { // Only Keras
+        name: 'Use bias term',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      dropout: { // Only Keras
+        name: 'Dropout',
+        value: 0.0,
+        type: 'number',
+        required: false
+      },
+      recurrent_dropout: { // Only Keras
+        name: 'Recurrent Dropout',
+        value: 0.0,
+        type: 'number',
         required: false
       }
     },
@@ -902,24 +1197,73 @@ export default {
       trg: ['Top']
     },
     params: {
-      num_output: {
+      num_output: { // Maps to: units(Keras)
         name: 'No of outputs',
         value: '',
         type: 'number',
         required: true
       },
-      weight_filler: {
+      weight_filler: { // Maps to: kernel_initializer(Keras)
         name: 'Weight filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       },
-      bias_filler: {
+      bias_filler: { // Maps to: bias_initializer(Keras)
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      kernel_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      bias_regularizer: { // Only Keras
+        name: 'Bias regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      activity_regularizer: { // Only Keras
+        name: 'Activity regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      kernel_constraint: { // Only Keras
+        name: 'Kernel constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      bias_constraint: { // Only Keras
+        name: 'Bias constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      use_bias: { // Maps to: bias_term(Caffe)
+        name: 'Use bias term',
+        value: true,
+        type: 'checkbox',
         required: false
       }
     },
@@ -970,24 +1314,65 @@ export default {
         type: 'number',
         required: true
       },
-      weight_filler: {
-        name: 'Weight filler',
-        value: 'constant',
-        type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
-        required: false
-      },
-      bias_term: {
-        name: 'Bias Term',
-        value: false,
-        type: 'checkbox',
-        required: false
-      },
       input_dim: {
         name: 'Input Dimensions',
         value: '',
         type: 'number',
         required: true
+      },
+      weight_filler: { // Maps to: embeddings_initializer(Keras)
+        name: 'Weight filler',
+        value: 'constant',
+        type: 'select',
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      bias_filler: { // Only Caffe
+        name: 'Bias filler',
+        value: 'constant',
+        type: 'select',
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      bias_term: { // Only Caffe
+        name: 'Bias Term',
+        value: false,
+        type: 'checkbox',
+        required: false
+      },
+      embeddings_regularizer: { // Only Keras
+        name: 'Embeddings regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      embeddings_constraint: { // Only Keras
+        name: 'Embeddings constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      mask_zero: { // Only Keras
+        name: 'Mask Zero',
+        value: false,
+        type: 'checkbox',
+        required: false
+      },
+      input_length: { // Only Keras
+        name: 'Input Length',
+        value: null,
+        type: 'number',
+        required: false
       }
     },
     props: {
@@ -1111,13 +1496,13 @@ export default {
         type: 'checkbox',
         required: false
       },
-      use_global_stats: {
+      use_global_stats: { // Only Caffe
         name: 'Use Global Stats',
         value: false,
         type: 'checkbox',
         required: true
       },
-      moving_average_fraction: {
+      moving_average_fraction: { // Maps to: momentum(Keras)
         name: 'Moving Avg. Fraction',
         value: 0.999,
         type: 'float',
@@ -1127,6 +1512,22 @@ export default {
         name: 'Epsilon',
         value: 1e-5,
         type: 'float',
+        required: false
+      },
+      moving_mean_initializer: { // Only Keras
+        name: 'Moving Mean Initializer',
+        value: 'Zeros',
+        type: 'select',
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity', 
+        'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      moving_variance_initializer: { // Only Keras
+        name: 'Moving Variance Initializer',
+        value: 'Ones',
+        type: 'select',
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+        'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       }
     },
@@ -1506,7 +1907,11 @@ export default {
         name: 'Bias filler',
         value: 'constant',
         type: 'select',
-        options: ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'],
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
       }
     },
@@ -1527,11 +1932,79 @@ export default {
       trg: ['Top']
     },
     params: {
-      bias_term: {
+      axis: {
+        name: 'Axis',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      num_axes: { // Only Caffe
+        name: 'Num Axes',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      filler: { // Maps to: gamma_initializer(Keras)
+        name: 'Filler',
+        value: 'constant',
+        type: 'select',
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      bias_term: { // Maps to: center(Keras)
         name: 'Bias term',
+        value: false,
+        type: 'checkbox',
+        required: false
+      },
+      scale: { // Only Keras
+        name: 'Scale',
         value: true,
         type: 'checkbox',
-        required: true
+        required: false
+      },
+      bias_filler: { // Maps to: beta_initializer(Keras)
+        name: 'Bias Filler',
+        value: 'constant',
+        type: 'select',
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      gamma_regularizer: { // Only Keras
+        name: 'Gamma regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      beta_regularizer: { // Only Keras
+        name: 'Beta regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      gamma_constraint: { // Only Keras
+        name: 'Gamma constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      beta_constraint: { // Only Keras
+        name: 'Beta constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
       }
     },
     props: {

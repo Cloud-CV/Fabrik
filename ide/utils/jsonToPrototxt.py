@@ -365,6 +365,8 @@ def jsonToPrototxt(net, net_name):
                         fillerMap[layerParams['bias_filler']]
                 except:
                     convolution_param['bias_filler']['type'] = layerParams['bias_filler']
+            convolution_param['dilation'] = layerParams['dilation_h']
+            convolution_param['bias_term'] = layerParams['use_bias']
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Convolution(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
@@ -464,6 +466,8 @@ def jsonToPrototxt(net, net_name):
                         fillerMap[layerParams['bias_filler']]
                 except:
                     convolution_param['bias_filler']['type'] = layerParams['bias_filler']
+            convolution_param['dilation'] = layerParams['dilation_h']
+            convolution_param['bias_term'] = layerParams['use_bias']
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Deconvolution(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
@@ -577,6 +581,7 @@ def jsonToPrototxt(net, net_name):
                         fillerMap[layerParams['bias_filler']]
                 except:
                     inner_product_param['bias_filler']['type'] = layerParams['bias_filler']
+            inner_product_param['bias_term'] = layerParams['use_bias']
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.InnerProduct(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
@@ -603,9 +608,30 @@ def jsonToPrototxt(net, net_name):
                     ns[key] = value
 
         elif (layerType == 'Embed'):
+            embed_param = {}
+            if layerParams['num_output'] != '':
+                embed_param['num_output'] = int(float(layerParams['num_output']))
+            if layerParams['input_dim'] != '':
+                embed_param['input_dim'] = int(float(layerParams['input_dim']))
+            if layerParams['weight_filler'] != '':
+                embed_param['weight_filler'] = {}
+                try:
+                    embed_param['weight_filler']['type'] = \
+                        fillerMap[layerParams['weight_filler']]
+                except:
+                    embed_param['weight_filler']['type'] = layerParams['weight_filler']
+            if layerParams['bias_filler'] != '':
+                embed_param['bias_filler'] = {}
+                try:
+                    embed_param['bias_filler']['type'] = \
+                        fillerMap[layerParams['bias_filler']]
+                except:
+                    embed_param['bias_filler']['type'] = layerParams['bias_filler']
+            embed_param['bias_term'] = layerParams['bias_term']
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Embed(
                     *[ns[x] for x in blobNames[layerId]['bottom']],
+                    embed_param=embed_param,
                     param=[
                             {
                                 'lr_mult': 1,
@@ -807,8 +833,23 @@ def jsonToPrototxt(net, net_name):
 
         elif (layerType == 'Scale'):
             scale_param = {}
-            if layerParams['bias_term'] != '':
-                scale_param['bias_term'] = layerParams['bias_term']
+            scale_param['axis'] = layerParams['axis']
+            scale_param['num_axes'] = layerParams['num_axes']
+            if layerParams['filler'] != '':
+                scale_param['filler'] = {}
+                try:
+                    scale_param['filler']['type'] = \
+                        fillerMap[layerParams['filler']]
+                except:
+                    scale_param['filler']['type'] = layerParams['filler']
+            scale_param['bias_term'] = layerParams['bias_term']
+            if layerParams['bias_filler'] != '':
+                scale_param['bias_filler'] = {}
+                try:
+                    scale_param['bias_filler']['type'] = \
+                        fillerMap[layerParams['bias_filler']]
+                except:
+                    scale_param['bias_filler']['type'] = layerParams['bias_filler']
             for ns in (ns_train, ns_test):
                 caffeLayer = get_iterable(L.Scale(
                     *[ns[x] for x in blobNames[layerId]['bottom']],

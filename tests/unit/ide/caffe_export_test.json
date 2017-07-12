@@ -153,13 +153,16 @@
         "params": {
             "bias_filler": "constant", 
             "kernel_h": 3, 
-            "kernel_w": 3, 
+            "kernel_w": 3,
+            "dilation_h": 1,
+            "dilation_w": 1, 
             "num_output": 128, 
             "pad_h": 1, 
             "pad_w": 1, 
             "stride_h": 1, 
             "stride_w": 1, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "use_bias": true
         }
     }, 
     "Crop": {
@@ -215,13 +218,16 @@
         "params": {
             "bias_filler": "constant", 
             "kernel_h": 3, 
-            "kernel_w": 3, 
+            "kernel_w": 3,
+            "dilation_h": 1,
+            "dilation_w": 1, 
             "num_output": 128, 
             "pad_h": 1, 
             "pad_w": 1, 
             "stride_h": 1, 
             "stride_w": 1, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "use_bias": true
         }
     }, 
     "Dropout": {
@@ -299,7 +305,8 @@
             "bias_term": false, 
             "input_dim": 2, 
             "num_output": 128, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "bias_filler": "constant"
         }
     }, 
     "EuclideanLoss": {
@@ -463,7 +470,8 @@
         "params": {
             "bias_filler": "constant", 
             "num_output": 128, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "use_bias": false
         }
     }, 
     "Input": {
@@ -771,7 +779,11 @@
             "type": "Scale"
         }, 
         "params": {
-            "bias_term": false
+            "bias_term": true,
+            "axis": 1,
+            "num_axes": 1,
+            "filler": "xavier",
+            "bias_filler": "constant"
         }
     }, 
     "Sigmoid": {
