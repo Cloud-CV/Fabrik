@@ -346,9 +346,6 @@ class Content extends React.Component {
   }
   changeNetPhase(phase) {
     const net = this.state.net;
-    this.setState({ net: {}, selectedLayer: null });
-    instance.detachEveryConnection();
-    instance.deleteEveryEndpoint();
     this.setState({ net, selectedPhase: phase, rebuildNet: true });
   }
   dismissError(errorIndex) {
