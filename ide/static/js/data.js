@@ -1,6 +1,6 @@
 export default {
   /* ********** Data Layers ********** */
-  ImageData: {
+  ImageData: { // Only Caffe
     name: 'image data',
     color: '#673ab7',
     endpoint: {
@@ -97,6 +97,12 @@ export default {
         value: false,
         type: 'checkbox',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -108,7 +114,7 @@ export default {
     },
     learn: false
   },
-  Data: {
+  Data: { // Only Caffe
     name: 'data',
     color: '#673ab7',
     endpoint: {
@@ -188,6 +194,12 @@ export default {
         value: false,
         type: 'checkbox',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -199,7 +211,7 @@ export default {
     },
     learn: false
   },
-  HDF5Data: {
+  HDF5Data: { // Only Caffe
     name: 'hdf5data',
     color: '#673ab7',
     endpoint: {
@@ -224,6 +236,12 @@ export default {
         value: false,
         type: 'checkbox',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -235,7 +253,7 @@ export default {
     },
     learn: false
   },
-  HDF5Output: {
+  HDF5Output: { // Only Caffe
     name: 'hdf5output',
     color: '#673ab7',
     endpoint: {
@@ -248,6 +266,12 @@ export default {
         value: '',
         type: 'text',
         required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -272,6 +296,12 @@ export default {
         value: '',
         type: 'text',
         required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -283,7 +313,7 @@ export default {
     },
     learn: false
   },
-  WindowData: {
+  WindowData: { // Only Caffe
     name: 'window data',
     color: '#673ab7',
     endpoint: {
@@ -387,6 +417,12 @@ export default {
         value: false,
         type: 'checkbox',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -398,8 +434,7 @@ export default {
     },
     learn: false
   },
-
-  MemoryData: {
+  MemoryData: { // Only Caffe
     name: 'memory data',
     color: '#673ab7',
     endpoint: {
@@ -430,6 +465,12 @@ export default {
         value: '',
         type: 'number',
         required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -441,7 +482,7 @@ export default {
     },
     learn: false
   },
-  DummyData: {
+  DummyData: { // Only Caffe
     name: 'dummy data',
     color: '#673ab7',
     endpoint: {
@@ -460,6 +501,12 @@ export default {
         value: '',
         type: 'text',
         required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -480,35 +527,18 @@ export default {
       trg: ['Top']
     },
     params: {
+      layer_type: { // Only Keras
+        name: 'Type',
+        value: '3D',
+        type: 'select',
+        options: ['1D', '2D', '3D'],
+        required: false
+      },
       num_output: { // Maps to: filters(Keras)
         name: 'No of outputs',
         value: '',
         type: 'number',
         required: true
-      },
-      kernel_h: {
-        name: 'Kernel height',
-        value: '',
-        type: 'number',
-        required: true
-      },
-      kernel_w: {
-        name: 'Kernel width',
-        value: '',
-        type: 'number',
-        required: true
-      },
-      stride_h: {
-        name: 'Stride height',
-        value: 1,
-        type: 'number',
-        required: false
-      },
-      stride_w: {
-        name: 'Stride width',
-        value: 1,
-        type: 'number',
-        required: false
       },
       pad_h: {
         name: 'Padding height',
@@ -522,6 +552,48 @@ export default {
         type: 'number',
         required: false
       },
+      pad_d: {
+        name: 'Padding depth',
+        value: 0,
+        type: 'number',
+        required: false
+      },
+      kernel_h: {
+        name: 'Kernel height',
+        value: '',
+        type: 'number',
+        required: false
+      },
+      kernel_w: {
+        name: 'Kernel width',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      kernel_d: {
+        name: 'Kernel depth',
+        value: '',
+        type: 'number',
+        required: false
+      },
+      stride_h: {
+        name: 'Stride height',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      stride_w: {
+        name: 'Stride width',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      stride_d: {
+        name: 'Stride depth',
+        value: 1,
+        type: 'number',
+        required: false
+      },
       dilation_h: {
         name: 'Dilation height',
         value: 1,
@@ -530,6 +602,12 @@ export default {
       },
       dilation_w: {
         name: 'Dilation width',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      dilation_d: {
+        name: 'Dilation depth',
         value: 1,
         type: 'number',
         required: false
@@ -596,6 +674,12 @@ export default {
         value: true,
         type: 'checkbox',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -615,6 +699,20 @@ export default {
       trg: ['Top']
     },
     params: {
+      layer_type: { // Only Keras
+        name: 'Type',
+        value: '3D',
+        type: 'select',
+        options: ['1D', '2D', '3D'],
+        required: false
+      },
+      pool: {
+        name: 'Pooling method',
+        value: 'MAX',
+        type: 'select',
+        options: ['MAX', 'AVE', 'STOCHASTIC'],
+        required: false
+      },
       pad_h: {
         name: 'Padding height',
         value: 0,
@@ -627,11 +725,139 @@ export default {
         type: 'number',
         required: false
       },
+      pad_d: {
+        name: 'Padding depth',
+        value: 0,
+        type: 'number',
+        required: false
+      },
       kernel_h: {
         name: 'Kernel height',
         value: '',
         type: 'number',
+        required: false
+      },
+      kernel_w: {
+        name: 'Kernel width',
+        value: '',
+        type: 'number',
         required: true
+      },
+      kernel_d: {
+        name: 'Kernel depth',
+        value: '',
+        type: 'number',
+        required: false
+      },
+      stride_h: {
+        name: 'Stride height',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      stride_w: {
+        name: 'Stride width',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      stride_d: {
+        name: 'Stride depth',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  Upsample: { // Only Keras
+    name: 'upsample',
+    color: '#3f51b5',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      layer_type: {
+        name: 'Type',
+        value: '3D',
+        type: 'select',
+        options: ['1D', '2D', '3D'],
+        required: false
+      },
+      size_h: {
+        name: 'Size height',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      size_w: {
+        name: 'Size width',
+        value: 1,
+        type: 'number',
+        required: true
+      },
+      size_d: {
+        name: 'Size depth',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  LocallyConnected: { // Only Keras
+    name: 'locally connected',
+    color: '#3f51b5',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      layer_type: {
+        name: 'Type',
+        value: '2D',
+        type: 'select',
+        options: ['1D', '2D'],
+        required: false
+      },
+      filters: {
+        name: 'No of outputs',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      kernel_h: {
+        name: 'Kernel height',
+        value: '',
+        type: 'number',
+        required: false
       },
       kernel_w: {
         name: 'Kernel width',
@@ -651,11 +877,67 @@ export default {
         type: 'number',
         required: false
       },
-      pool: {
-        name: 'Pooling method',
-        value: 'MAX',
+      kernel_initializer: {
+        name: 'Kernel Initializer',
+        value: 'glorot_uniform',
         type: 'select',
-        options: ['MAX', 'AVE', 'STOCHASTIC'],
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      bias_initializer: {
+        name: 'Bias Initializer',
+        value: 'Zeros',
+        type: 'select',
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      kernel_regularizer: {
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      bias_regularizer: {
+        name: 'Bias regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      activity_regularizer: {
+        name: 'Activity regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      kernel_constraint: {
+        name: 'Kernel constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      bias_constraint: {
+        name: 'Bias constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      use_bias: {
+        name: 'Use bias term',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
         required: false
       }
     },
@@ -666,9 +948,9 @@ export default {
         type: 'text'
       }
     },
-    learn: false
+    learn: true
   },
-  Crop: {
+  Crop: { // Only Caffe
     name: 'crop',
     color: '#3f51b5',
     endpoint: {
@@ -687,6 +969,12 @@ export default {
         value: '0',
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -698,7 +986,7 @@ export default {
     },
     learn: false
   },
-  SPP: {
+  SPP: { // Only Caffe
     name: 'spp',
     color: '#3f51b5',
     endpoint: {
@@ -718,6 +1006,12 @@ export default {
         value: '',
         type: 'number',
         required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -852,6 +1146,163 @@ export default {
         value: true,
         type: 'checkbox',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: true
+  },
+  DepthwiseConv: { // Only Keras
+    name: 'depthwise convolution',
+    color: '#3f51b5',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      filters: {
+        name: 'No of outputs',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      kernel_h: {
+        name: 'Kernel height',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      kernel_w: {
+        name: 'Kernel width',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      stride_h: {
+        name: 'Stride height',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      stride_w: {
+        name: 'Stride width',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      pad_h: {
+        name: 'Padding height',
+        value: 0,
+        type: 'number',
+        required: false
+      },
+      pad_w: {
+        name: 'Padding width',
+        value: 0,
+        type: 'number',
+        required: false
+      },
+      depth_mult: {
+        name: 'Depth multiplier',
+        value: 1,
+        type: 'number',
+        required: false
+      },
+      use_bias: { // Maps to: bias_term(Caffe)
+        name: 'Use bias term',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      depthwise_initializer: {
+        name: 'Depthwise Initializer',
+        value: 'glorot_uniform',
+        type: 'select',
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      pointwise_initializer: {
+        name: 'Pointwise Initializer',
+        value: 'glorot_uniform',
+        type: 'select',
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      bias_initializer: {
+        name: 'Bias Initializer',
+        value: 'Zeros',
+        type: 'select',
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      depthwise_regularizer: {
+        name: 'Depthwise regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      pointwise_regularizer: {
+        name: 'Pointwise regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      bias_regularizer: {
+        name: 'Bias regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      activity_regularizer: {
+        name: 'Activity regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      depthwise_constraint: {
+        name: 'Depthwise constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      pointwise_constraint: {
+        name: 'Pointwise constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      bias_constraint: {
+        name: 'Bias constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -864,7 +1315,7 @@ export default {
     learn: true
   },
   /* ********** Recurrent Layers ********** */
-  Recurrent: {
+  Recurrent: { // Only Caffe
     name: 'recurrent',
     color: '#3f51b5',
     endpoint: {
@@ -909,6 +1360,12 @@ export default {
       expose_hidden: {
         name: 'Expose Hidden',
         value: false,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
         type: 'checkbox',
         required: false
       }
@@ -1044,6 +1501,12 @@ export default {
         value: 0.0,
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1055,8 +1518,8 @@ export default {
     },
     learn: true
   },
-  LSTM: {
-    name: 'lstm',
+  GRU: { // Only Keras
+    name: 'gru',
     color: '#3f51b5',
     endpoint: {
       src: ['Bottom'],
@@ -1068,6 +1531,13 @@ export default {
         value: '',
         type: 'number',
         required: true
+      },
+      recurrent_activation: { // Only Keras
+        name: 'Recurrent activation',
+        value: 'hard_sigmoid',
+        type: 'select',
+        options: ['softmax', 'elu', 'selu', 'softplus', 'softsign', 'relu', 'tanh', 'sigmoid', 'hard_sigmoid', 'linear'],
+        required: false
       },
       weight_filler: { // Maps to: kernel_initializer(Keras)
         name: 'Weight filler',
@@ -1177,6 +1647,164 @@ export default {
         value: 0.0,
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: true
+  },
+  LSTM: {
+    name: 'lstm',
+    color: '#3f51b5',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      num_output: { // Maps to: units(Keras)
+        name: 'No of outputs',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      recurrent_activation: { // Only Keras
+        name: 'Recurrent activation',
+        value: 'hard_sigmoid',
+        type: 'select',
+        options: ['softmax', 'elu', 'selu', 'softplus', 'softsign', 'relu', 'tanh', 'sigmoid', 'hard_sigmoid', 'linear'],
+        required: false
+      },
+      weight_filler: { // Maps to: kernel_initializer(Keras)
+        name: 'Weight filler',
+        value: 'constant',
+        type: 'select',
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      bias_filler: { // Maps to: bias_initializer(Keras)
+        name: 'Bias filler',
+        value: 'constant',
+        type: 'select',
+        options: [//Caffe
+                  'constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear',
+                  //Keras
+                  'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
+                  'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      debug_info: { // Only Caffe
+        name: 'Degug',
+        value: false,
+        type: 'checkbox',
+        required: false
+      },
+      expose_hidden: { // Only Caffe
+        name: 'Expose Hidden',
+        value: false,
+        type: 'checkbox',
+        required: false
+      },
+      recurrent_initializer: { // Only Keras
+        name: 'Recurrent Initializer',
+        value: 'Orthogonal',
+        type: 'select',
+        options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
+          'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
+        required: false
+      },
+      kernel_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      recurrent_regularizer: { // Only Keras
+        name: 'Kernel regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      bias_regularizer: { // Only Keras
+        name: 'Bias regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      activity_regularizer: { // Only Keras
+        name: 'Activity regularizer',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'l1', 'l2', 'l1_l2'],
+        required: false
+      },
+      kernel_constraint: { // Only Keras
+        name: 'Kernel constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      recurrent_constraint: { // Only Keras
+        name: 'Recurrent constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      bias_constraint: { // Only Keras
+        name: 'Bias constraint',
+        value: 'None',
+        type: 'select',
+        options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
+        required: false
+      },
+      use_bias: { // Only Keras
+        name: 'Use bias term',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      unit_forget_bias: { // Only Keras
+        name: 'Use forget bias',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      dropout: { // Only Keras
+        name: 'Dropout',
+        value: 0.0,
+        type: 'number',
+        required: false
+      },
+      recurrent_dropout: { // Only Keras
+        name: 'Recurrent Dropout',
+        value: 0.0,
+        type: 'number',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1265,6 +1893,12 @@ export default {
         value: true,
         type: 'checkbox',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1286,6 +1920,12 @@ export default {
     params: {
       inplace: {
         name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
         value: true,
         type: 'checkbox',
         required: false
@@ -1373,6 +2013,12 @@ export default {
         value: null,
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1385,7 +2031,7 @@ export default {
     learn: true
   },
   /* ********** Normalisation Layers ********** */
-  LRN: {
+  LRN: { // Only Caffe
     name: 'lrn',
     color: '#ffeb3b',
     endpoint: {
@@ -1429,6 +2075,12 @@ export default {
         type: 'select',
         options: ['ACROSS_CHANNELS', 'WITHIN_CHANNEL'],
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1440,7 +2092,7 @@ export default {
     },
     learn: false
   },
-  MVN: {
+  MVN: { // Only Caffe
     name: 'mvn',
     color: '#ffeb3b',
     endpoint: {
@@ -1470,6 +2122,12 @@ export default {
         name: 'Epsilon',
         value: 1e-9,
         type: 'float',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
         required: false
       }
     },
@@ -1529,6 +2187,12 @@ export default {
         options: ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
         'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1539,6 +2203,104 @@ export default {
       }
     },
     learn: true
+  },
+  /* ********** Noise Layers ********** */
+
+  GaussianNoise: { // Only Keras
+    name: 'gaussian noise',
+    color: '#ff9800',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      stddev: {
+        name: 'stddev',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  GaussianDropout: { // Only Keras
+    name: 'gaussian dropout',
+    color: '#ff9800',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      rate: {
+        name: 'rate',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  AlphaDropout: { // Only Keras
+    name: 'alpha dropout',
+    color: '#ff9800',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      rate: {
+        name: 'rate',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      seed: {
+        name: 'seed',
+        value: null,
+        type: 'number',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
   },
   /* ********** Activation/Neuron Layers ********** */
   ReLU: {
@@ -1559,6 +2321,12 @@ export default {
         name: 'Negative slope',
         value: 0,
         type: 'number',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
         required: false
       }
     },
@@ -1588,6 +2356,12 @@ export default {
       channel_shared: {
         name: 'Channel Shared',
         value: false,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
         type: 'checkbox',
         required: false
       }
@@ -1620,6 +2394,48 @@ export default {
         value: 1,
         type: 'float',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  ThresholdedReLU: { 
+    name: 'Thresholded ReLU',
+    color: '#009688',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      theta: {
+        name: 'Theta',
+        value: 1,
+        type: 'float',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1641,6 +2457,12 @@ export default {
     params: {
       inplace: {
         name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
         value: true,
         type: 'checkbox',
         required: false
@@ -1668,27 +2490,9 @@ export default {
         value: true,
         type: 'checkbox',
         required: false
-      }
-    },
-    props: {
-      name: {
-        name: 'Name',
-        value: '',
-        type: 'text'
-      }
-    },
-    learn: false
-  },
-  AbsVal: {
-    name: 'absval',
-    color: '#009688',
-    endpoint: {
-      src: ['Bottom'],
-      trg: ['Top']
-    },
-    params: {
-      inplace: {
-        name: 'Inplace operation',
+      },
+      caffe: {
+        name: 'Available Caffe',
         value: true,
         type: 'checkbox',
         required: false
@@ -1703,7 +2507,157 @@ export default {
     },
     learn: false
   },
-  Power: {
+  SELU: { // Only Keras
+    name: 'selu',
+    color: '#009688',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  Softplus: { // Only Keras
+    name: 'softplus',
+    color: '#009688',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  Softsign: { // Only Keras
+    name: 'softsign',
+    color: '#009688',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  HardSigmoid: { // Only Keras
+    name: 'hard sigmoid',
+    color: '#009688',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  AbsVal: { // Only Caffe
+    name: 'absval',
+    color: '#009688',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  Power: { // Only Caffe
     name: 'power',
     color: '#009688',
     endpoint: {
@@ -1734,6 +2688,12 @@ export default {
         value: 0.0,
         type: 'float',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1745,7 +2705,7 @@ export default {
     },
     learn: false
   },
-  Exp: {
+  Exp: { // Only Caffe
     name: 'exp',
     color: '#009688',
     endpoint: {
@@ -1776,6 +2736,12 @@ export default {
         value: 0.0,
         type: 'float',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1787,7 +2753,7 @@ export default {
     },
     learn: false
   },
-  Log: {
+  Log: { // Only Caffe
     name: 'log',
     color: '#009688',
     endpoint: {
@@ -1818,27 +2784,9 @@ export default {
         value: 0.0,
         type: 'float',
         required: false
-      }
-    },
-    props: {
-      name: {
-        name: 'Name',
-        value: '',
-        type: 'text'
-      }
-    },
-    learn: false
-  },
-  BNLL: {
-    name: 'bnll',
-    color: '#009688',
-    endpoint: {
-      src: ['Bottom'],
-      trg: ['Top']
-    },
-    params: {
-      inplace: {
-        name: 'Inplace operation',
+      },
+      caffe: {
+        name: 'Available Caffe',
         value: true,
         type: 'checkbox',
         required: false
@@ -1853,7 +2801,37 @@ export default {
     },
     learn: false
   },
-  Threshold: {
+  BNLL: { // Only Caffe
+    name: 'bnll',
+    color: '#009688',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  Threshold: { // Only Caffe
     name: 'threshold',
     color: '#009688',
     endpoint: {
@@ -1872,6 +2850,12 @@ export default {
         value: 0,
         type: 'float',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1883,7 +2867,7 @@ export default {
     },
     learn: false
   },
-  Bias: {
+  Bias: { // Only Caffe
     name: 'bias',
     color: '#009688',
     endpoint: {
@@ -1913,6 +2897,12 @@ export default {
                   'Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 'VarianceScaling', 'Orthogonal', 'Identity',
                   'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'],
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -1924,7 +2914,7 @@ export default {
     },
     learn: true
   },
-  Scale: {
+  Scale: { // Only Caffe
     name: 'scale',
     color: '#009688',
     endpoint: {
@@ -2005,6 +2995,12 @@ export default {
         type: 'select',
         options: ['None', 'max_norm', 'non_neg', 'unit_norm'],
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2036,6 +3032,12 @@ export default {
         value: -1,
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2060,6 +3062,12 @@ export default {
         value: '',
         type: 'text',
         required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2071,7 +3079,7 @@ export default {
     },
     learn: false
   },
-  BatchReindex: {
+  BatchReindex: { // Only Caffe
     name: 'Batch Reindex',
     color: '#03a9f4',
     endpoint: {
@@ -2079,6 +3087,12 @@ export default {
       trg: ['Top']
     },
     params: {
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
@@ -2089,7 +3103,7 @@ export default {
     },
     learn: false
   },
-  Split: {
+  Split: { // Only Caffe
     name: 'Split',
     color: '#03a9f4',
     endpoint: {
@@ -2097,6 +3111,12 @@ export default {
       trg: ['Top']
     },
     params: {
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
@@ -2115,6 +3135,12 @@ export default {
       trg: ['Top']
     },
     params: {
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
@@ -2125,7 +3151,7 @@ export default {
     },
     learn: false
   },
-  Slice: {
+  Slice: { // Only Caffe
     name: 'slice',
     color: '#03a9f4',
     endpoint: {
@@ -2150,6 +3176,12 @@ export default {
         value: 1,
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2170,11 +3202,17 @@ export default {
 
     },
     params: {
-      operation: {
+      layer_type: {
         name: 'Eltwise method',
-        value: 'SUM',
+        value: 'Sum',
         type: 'select',
-        options: ['SUM', 'PROD', 'Max'],
+        options: ['Product', 'Sum', 'Maximum', 'Average', 'Dot'],
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
         required: false
       }
     },
@@ -2187,7 +3225,7 @@ export default {
     },
     learn: false
   },
-  Filter: {
+  Filter: { // Only Caffe
     name: 'filter',
     color: '#03a9f4',
     endpoint: {
@@ -2196,6 +3234,12 @@ export default {
 
     },
     params: {
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
@@ -2206,7 +3250,7 @@ export default {
     },
     learn: false
   },
-  Parameter: {
+  Parameter: { // Only Caffe
     name: 'parameter',
     color: '#03a9f4',
     endpoint: {
@@ -2219,6 +3263,12 @@ export default {
         value: '',
         type: 'text',
         required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2230,7 +3280,7 @@ export default {
     },
     learn: true
   },
-  Reduction: {
+  Reduction: { // Only Caffe
     name: 'reduction',
     color: '#03a9f4',
     endpoint: {
@@ -2257,6 +3307,12 @@ export default {
         value: 1.0,
         type: 'float',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2268,7 +3324,7 @@ export default {
     },
     learn: false
   },
-  Silence: {
+  Silence: { // Only Caffe
     name: 'silence',
     color: '#03a9f4',
     endpoint: {
@@ -2277,6 +3333,12 @@ export default {
 
     },
     params: {
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
@@ -2287,7 +3349,7 @@ export default {
     },
     learn: false
   },
-  ArgMax: {
+  ArgMax: { // Only Caffe
     name: 'argmax',
     color: '#03a9f4',
     endpoint: {
@@ -2313,6 +3375,12 @@ export default {
         value: 0,
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2333,6 +3401,138 @@ export default {
 
     },
     params: {
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  Permute: { // Only Keras
+    name: 'permute',
+    color: '#ff9800',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      dim: {
+        name: 'Dim',
+        value: '',
+        type: 'text',
+        required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  RepeatVector: { // Only Keras
+    name: 'repeat vector',
+    color: '#ff9800',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      n: {
+        name: 'Times repeat',
+        value: '',
+        type: 'number',
+        required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  Regularization: { // Only Keras
+    name: 'regularization',
+    color: '#ff9800',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      l1: {
+        name: 'L1',
+        value: 0.0,
+        type: 'float',
+        required: false
+      },
+      l2: {
+        name: 'L2',
+        value: 0.0,
+        type: 'float',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+  Masking: { // Only Keras
+    name: 'masking',
+    color: '#ff9800',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      mask_value: {
+        name: 'Mask value',
+        value: 0.0,
+        type: 'float',
+        required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
@@ -2344,7 +3544,7 @@ export default {
     learn: false
   },
   /* ********** Loss Layers ********** */
-  MultinomialLogisticLoss: {
+  MultinomialLogisticLoss: { // Only Caffe
     name: 'multinomial logistic loss',
     color: '#f44336',
     endpoint: {
@@ -2353,6 +3553,12 @@ export default {
 
     },
     params: {
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
@@ -2363,7 +3569,7 @@ export default {
     },
     learn: false
   },
-  InfogainLoss: {
+  InfogainLoss: { // Only Caffe
     name: 'infogain loss',
     color: '#f44336',
     endpoint: {
@@ -2382,6 +3588,12 @@ export default {
         value: 1,
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2393,7 +3605,7 @@ export default {
     },
     learn: false
   },
-  SoftmaxWithLoss: {
+  SoftmaxWithLoss: { // Only Caffe
     name: 'softmax loss',
     color: '#f44336',
     endpoint: {
@@ -2407,6 +3619,12 @@ export default {
         value: 1,
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2418,7 +3636,7 @@ export default {
     },
     learn: false
   },
-  EuclideanLoss: {
+  EuclideanLoss: { // Only Caffe
     name: 'euclidean loss',
     color: '#f44336',
     endpoint: {
@@ -2427,6 +3645,12 @@ export default {
 
     },
     params: {
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
@@ -2437,7 +3661,7 @@ export default {
     },
     learn: false
   },
-  HingeLoss: {
+  HingeLoss: { // Only Caffe
     name: 'hinge loss',
     color: '#f44336',
     endpoint: {
@@ -2452,6 +3676,12 @@ export default {
         type: 'select',
         options: ['L1', 'L2'],
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2463,7 +3693,7 @@ export default {
     },
     learn: false
   },
-  SigmoidCrossEntropyLoss: {
+  SigmoidCrossEntropyLoss: { // Only Caffe
     name: 'sigmoid cross entropy loss',
     color: '#f44336',
     endpoint: {
@@ -2471,6 +3701,12 @@ export default {
       trg: ['Top']
     },
     params: {
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      }
     },
     props: {
       name: {
@@ -2481,7 +3717,7 @@ export default {
     },
     learn: false
   },
-  Accuracy: {
+  Accuracy: { // Only Caffe
     name: 'acc',
     color: '#f44336',
     endpoint: {
@@ -2501,6 +3737,12 @@ export default {
         value: 1,
         type: 'number',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2512,7 +3754,7 @@ export default {
     },
     learn: false
   },
-  ContrastiveLoss: {
+  ContrastiveLoss: { // Only Caffe
     name: 'contrastive loss',
     color: '#f44336',
     endpoint: {
@@ -2532,6 +3774,12 @@ export default {
         value: 1.0,
         type: 'float',
         required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -2544,7 +3792,7 @@ export default {
     learn: false
   },
   /* ********** Python Layer ********** */
-  Python: {
+  Python: { // Only Caffe
     name: 'python',
     color: '#f44336',
     endpoint: {
@@ -2569,6 +3817,12 @@ export default {
         value: '',
         type: 'text',
         required: true
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {

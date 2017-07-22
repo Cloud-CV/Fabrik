@@ -11,7 +11,8 @@
             "type": "AbsVal"
         }, 
         "params": {
-            "inplace": true
+            "inplace": true,
+            "caffe": true
         }
     }, 
     "Accuracy": {
@@ -27,7 +28,8 @@
         }, 
         "params": {
             "axis": 1, 
-            "top_k": 1
+            "top_k": 1,
+            "caffe": true
         }
     }, 
     "ArgMax": {
@@ -44,7 +46,8 @@
         "params": {
             "axis": 0, 
             "out_max_val": false, 
-            "top_k": 1
+            "top_k": 1,
+            "caffe": true
         }
     }, 
     "BNLL": {
@@ -59,7 +62,8 @@
             "type": "BNLL"
         }, 
         "params": {
-            "inplace": true
+            "inplace": true,
+            "caffe": true
         }
     }, 
     "BatchNorm": {
@@ -77,7 +81,8 @@
             "eps": 1e-05, 
             "inplace": true, 
             "moving_average_fraction": 0.999, 
-            "use_global_stats": true
+            "use_global_stats": true,
+            "caffe": true
         }
     }, 
     "BatchReindex": {
@@ -91,7 +96,9 @@
             "phase": null, 
             "type": "BatchReindex"
         }, 
-        "params": {}
+        "params": {
+            "caffe": true
+        }
     }, 
     "Bias": {
         "connection": {
@@ -107,7 +114,8 @@
         "params": {
             "axis": 1, 
             "filler": "constant", 
-            "num_axes": 1
+            "num_axes": 1,
+            "caffe": true
         }
     }, 
     "Concat": {
@@ -121,7 +129,9 @@
             "phase": null, 
             "type": "Concat"
         }, 
-        "params": {}
+        "params": {
+            "caffe": true
+        }
     }, 
     "ContrastiveLoss": {
         "connection": {
@@ -136,7 +146,8 @@
         }, 
         "params": {
             "legacy_version": false, 
-            "margin": 1.0
+            "margin": 1.0,
+            "caffe": true
         }
     }, 
     "Convolution": {
@@ -162,7 +173,8 @@
             "stride_h": 1, 
             "stride_w": 1, 
             "weight_filler": "xavier",
-            "use_bias": true
+            "use_bias": true,
+            "caffe": true
         }
     }, 
     "Crop": {
@@ -178,7 +190,8 @@
         }, 
         "params": {
             "axis": 2, 
-            "offset": 2
+            "offset": 2,
+            "caffe": true
         }
     }, 
     "Data": {
@@ -201,7 +214,8 @@
             "prefetch": 10, 
             "rand_skip": 0, 
             "scale": 1, 
-            "source": "/dummy/source/"
+            "source": "/dummy/source/",
+            "caffe": true
         }
     }, 
     "Deconvolution": {
@@ -227,7 +241,8 @@
             "stride_h": 1, 
             "stride_w": 1, 
             "weight_filler": "xavier",
-            "use_bias": true
+            "use_bias": true,
+            "caffe": true
         }
     }, 
     "Dropout": {
@@ -242,7 +257,8 @@
             "type": "Dropout"
         }, 
         "params": {
-            "inplace": true
+            "inplace": true,
+            "caffe": true
         }
     }, 
     "DummyData": {
@@ -256,7 +272,8 @@
         }, 
         "params": {
             "dim": "10, 3, 224, 224", 
-            "type": "constant"
+            "type": "constant",
+            "caffe": true
         }
     }, 
     "ELU": {
@@ -272,7 +289,8 @@
         }, 
         "params": {
             "alpha": 1.0, 
-            "inplace": true
+            "inplace": true,
+            "caffe": true
         }
     }, 
     "Eltwise": {
@@ -287,7 +305,8 @@
             "type": "Eltwise"
         }, 
         "params": {
-            "operation": 2
+            "layer_type": 2,
+            "caffe": true
         }
     }, 
     "Embed": {
@@ -306,7 +325,8 @@
             "input_dim": 2, 
             "num_output": 128, 
             "weight_filler": "xavier",
-            "bias_filler": "constant"
+            "bias_filler": "constant",
+            "caffe": true
         }
     }, 
     "EuclideanLoss": {
@@ -320,7 +340,9 @@
             "phase": null, 
             "type": "EuclideanLoss"
         }, 
-        "params": {}
+        "params": {
+            "caffe": true
+        }
     }, 
     "Exp": {
         "connection": {
@@ -337,7 +359,8 @@
             "base": -1.0, 
             "inplace": true, 
             "scale": 1.0, 
-            "shift": 0.0
+            "shift": 0.0,
+            "caffe": true
         }
     }, 
     "Filter": {
@@ -351,7 +374,9 @@
             "phase": null, 
             "type": "Filter"
         }, 
-        "params": {}
+        "params": {
+            "caffe": true
+        }
     }, 
     "Flatten": {
         "connection": {
@@ -366,7 +391,8 @@
         }, 
         "params": {
             "axis": 1, 
-            "end_axis": -1
+            "end_axis": -1,
+            "caffe": true
         }
     }, 
     "HDF5Data": {
@@ -381,7 +407,8 @@
         "params": {
             "batch_size": 32, 
             "shuffle": false, 
-            "source": "/dummy/source/"
+            "source": "/dummy/source/",
+            "caffe": true
         }
     }, 
     "HDF5Output": {
@@ -396,7 +423,8 @@
             "type": "HDF5Output"
         }, 
         "params": {
-            "file_name": "/dummy/filename"
+            "file_name": "/dummy/filename",
+            "caffe": true
         }
     }, 
     "HingeLoss": {
@@ -411,7 +439,8 @@
             "type": "HingeLoss"
         }, 
         "params": {
-            "norm": 2
+            "norm": 2,
+            "caffe": true
         }
     }, 
     "ImageData": {
@@ -437,7 +466,8 @@
             "root_folder": "/dummy/folder/", 
             "scale": 1, 
             "shuffle": false, 
-            "source": "/dummy/source/"
+            "source": "/dummy/source/",
+            "caffe": true
         }
     }, 
     "InfogainLoss": {
@@ -453,7 +483,8 @@
         }, 
         "params": {
             "axis": 1, 
-            "source": "/dummy/source/"
+            "source": "/dummy/source/",
+            "caffe": true
         }
     }, 
     "InnerProduct": {
@@ -471,7 +502,8 @@
             "bias_filler": "constant", 
             "num_output": 128, 
             "weight_filler": "xavier",
-            "use_bias": false
+            "use_bias": false,
+            "caffe": true
         }
     }, 
     "Input": {
@@ -484,7 +516,8 @@
             "type": "Input"
         }, 
         "params": {
-            "dim": "10, 3, 224, 224"
+            "dim": "10, 3, 224, 224",
+            "caffe": true
         }
     }, 
     "LRN": {
@@ -504,7 +537,8 @@
             "inplace": true, 
             "k": 1.0, 
             "local_size": 5, 
-            "norm_region": 1
+            "norm_region": 1,
+            "caffe": true
         }
     }, 
     "LSTM": {
@@ -523,7 +557,8 @@
             "debug_info": false, 
             "expose_hidden": false, 
             "num_output": 128, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "caffe": true
         }
     }, 
     "Log": {
@@ -541,7 +576,8 @@
             "base": -1.0, 
             "inplace": true, 
             "scale": 1.0, 
-            "shift": 0.0
+            "shift": 0.0,
+            "caffe": true
         }
     }, 
     "MVN": {
@@ -559,7 +595,8 @@
             "across_channels": false, 
             "eps": 1e-09, 
             "inplace": true, 
-            "normalize_variance": true
+            "normalize_variance": true,
+            "caffe": true
         }
     }, 
     "MemoryData": {
@@ -575,7 +612,8 @@
             "batch_size": 32, 
             "channels": 3, 
             "height": 224, 
-            "width": 224
+            "width": 224,
+            "caffe": true
         }
     }, 
     "MultinomialLogisticLoss": {
@@ -589,7 +627,9 @@
             "phase": null, 
             "type": "MultinomialLogisticLoss"
         }, 
-        "params": {}
+        "params": {
+            "caffe": true
+        }
     }, 
     "PReLU": {
         "connection": {
@@ -604,7 +644,8 @@
         }, 
         "params": {
             "channel_shared": false, 
-            "inplace": true
+            "inplace": true,
+            "caffe": true
         }
     }, 
     "Pooling": {
@@ -625,7 +666,9 @@
             "pad_w": 0, 
             "pool": 1, 
             "stride_h": 2, 
-            "stride_w": 2
+            "stride_w": 2,
+            "caffe": true,
+            "layer_type": "2D"
         }
     }, 
     "Power": {
@@ -643,7 +686,8 @@
             "inplace": true, 
             "power": 1.0, 
             "scale": 1.0, 
-            "shift": 0.0
+            "shift": 0.0,
+            "caffe": true
         }
     }, 
     "Python": {
@@ -662,7 +706,8 @@
             "module": "pascal_multilabel_datalayers", 
             "im_shape": "227, 227", 
             "batch_size": 128, 
-            "split": "train"
+            "split": "train",
+            "caffe": true
         }
     },
     "RNN": {
@@ -681,7 +726,8 @@
             "debug_info": false, 
             "expose_hidden": false, 
             "num_output": 128, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "caffe": true
         }
     }, 
     "ReLU": {
@@ -697,7 +743,8 @@
         }, 
         "params": {
             "inplace": true, 
-            "negative_slope": 0.0
+            "negative_slope": 0.0,
+            "caffe": true
         }
     }, 
     "Recurrent": {
@@ -716,7 +763,8 @@
             "debug_info": false, 
             "expose_hidden": false, 
             "num_output": 128, 
-            "weight_filler": "xavier"
+            "weight_filler": "xavier",
+            "caffe": true
         }
     }, 
     "Reduction": {
@@ -733,7 +781,8 @@
         "params": {
             "axis": 0, 
             "coeff": 1.0, 
-            "operation": 3
+            "operation": 3,
+            "caffe": true
         }
     }, 
     "Reshape": {
@@ -748,7 +797,8 @@
             "type": "Reshape"
         }, 
         "params": {
-            "dim": "2, -1"
+            "dim": "2, -1",
+            "caffe": true
         }
     }, 
     "SPP": {
@@ -764,7 +814,8 @@
         }, 
         "params": {
             "pool": 1, 
-            "pyramid_height": 2
+            "pyramid_height": 2,
+            "caffe": true
         }
     }, 
     "Scale": {
@@ -783,7 +834,8 @@
             "axis": 1,
             "num_axes": 1,
             "filler": "xavier",
-            "bias_filler": "constant"
+            "bias_filler": "constant",
+            "caffe": true
         }
     }, 
     "Sigmoid": {
@@ -798,7 +850,8 @@
             "type": "Sigmoid"
         }, 
         "params": {
-            "inplace": true
+            "inplace": true,
+            "caffe": true
         }
     }, 
     "SigmoidCrossEntropyLoss": {
@@ -812,7 +865,9 @@
             "phase": null, 
             "type": "SigmoidCrossEntropyLoss"
         }, 
-        "params": {}
+        "params": {
+            "caffe": true
+        }
     }, 
     "Silence": {
         "connection": {
@@ -825,7 +880,9 @@
             "phase": null, 
             "type": "Silence"
         }, 
-        "params": {}
+        "params": {
+            "caffe": true
+        }
     }, 
     "Slice": {
         "connection": {
@@ -841,7 +898,8 @@
         "params": {
             "axis": 1, 
             "slice_dim": 1, 
-            "slice_point": "1, 2"
+            "slice_point": "1, 2",
+            "caffe": true
         }
     }, 
     "Softmax": {
@@ -855,7 +913,9 @@
             "phase": null, 
             "type": "Softmax"
         }, 
-        "params": {}
+        "params": {
+            "caffe": true
+        }
     }, 
     "SoftmaxWithLoss": {
         "connection": {
@@ -869,7 +929,8 @@
             "type": "SoftmaxWithLoss"
         }, 
         "params": {
-            "axis": 1
+            "axis": 1,
+            "caffe": true
         }
     }, 
     "Split": {
@@ -883,7 +944,9 @@
             "phase": null, 
             "type": "Split"
         }, 
-        "params": {}
+        "params": {
+            "caffe": true
+        }
     }, 
     "TanH": {
         "connection": {
@@ -897,7 +960,8 @@
             "type": "TanH"
         }, 
         "params": {
-            "inplace": true
+            "inplace": true,
+            "caffe": true
         }
     }, 
     "Threshold": {
@@ -913,7 +977,8 @@
         }, 
         "params": {
             "inplace": true, 
-            "threshold": 1.0
+            "threshold": 1.0,
+            "caffe": true
         }
     }, 
     "WindowData": {
@@ -940,7 +1005,8 @@
             "mirror": true, 
             "root_folder": "/dummy/folder/", 
             "scale": 1, 
-            "source": "/dummy/source/"
+            "source": "/dummy/source/",
+            "caffe": true
         }
     }
 

@@ -118,6 +118,13 @@ def jsonToPrototxt(net, net_name):
         layerParams = layer['params']
         layerType = layer['info']['type']
         layerPhase = layer['info']['phase']
+        if (not layerParams['caffe']):
+            if ('layer_type' in layerParams):
+                raise Exception('Cannot export layer of type ' + layerType + ' ' + layerParams['layer_type']
+                                + ' to Caffe.')
+            else:
+                raise Exception('Cannot export layer of type ' + layerType + ' to Caffe.')
+
         # ********** Data Layers **********
         if (layerType in hasTransformParam):
             transform_param = {}
@@ -915,13 +922,13 @@ def jsonToPrototxt(net, net_name):
 
         elif (layerType == 'Eltwise'):
             eltwise_param = {}
-            if layerParams['operation'] != '':
-                elt = layerParams['operation']
-                if(elt == 'PROD'):
+            if layerParams['layer_type'] != '':
+                elt = layerParams['layer_type']
+                if(elt == 'Product'):
                     elt = 0
-                elif(elt == 'SUM'):
+                elif(elt == 'Sum'):
                     elt = 1
-                elif(elt == 'MAX'):
+                elif(elt == 'Maximum'):
                     elt = 2
             else:
                 elt = 1  # Default is sum

@@ -135,6 +135,7 @@ def importPrototxt(request):
                 params['bias_filler'] = layer.convolution_param.bias_filler.type
                 params['num_output'] = layer.convolution_param.num_output
                 params['use_bias'] = layer.convolution_param.bias_term
+                params['layer_type'] = '2D'
 
             elif(layer.type == 'Pooling'):
                 params['pad_h'] = layer.pooling_param.pad_h or layer.pooling_param.pad
@@ -144,6 +145,7 @@ def importPrototxt(request):
                 params['kernel_h'] = layer.pooling_param.kernel_h or layer.pooling_param.kernel_size
                 params['kernel_w'] = layer.pooling_param.kernel_w or layer.pooling_param.kernel_size
                 params['pool'] = layer.pooling_param.pool
+                params['layer_type'] = '2D'
 
             elif(layer.type == 'SPP'):
                 params['pool'] = layer.spp_param.pool
@@ -321,10 +323,15 @@ def importPrototxt(request):
                 params['slice_dim'] = layer.slice_param.slice_dim
 
             elif(layer.type == 'Eltwise'):
+                opMap = {
+                    0: 'Product',
+                    1: 'Sum',
+                    2: 'Maximum'
+                }
                 if layer.eltwise_param.operation:
-                    params['operation'] = layer.eltwise_param.operation
+                    params['layer_type'] = opMap[layer.eltwise_param.operation]
                 else:
-                    params['operation'] = 1
+                    params['layer_type'] = 'Sum'
 
             elif(layer.type == 'Parameter'):
                 params['shape'] = str(map(int, layer.parameter_param.shape.dim))[1:-1]

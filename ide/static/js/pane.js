@@ -27,9 +27,12 @@ function Pane() {
       <ul className="dropdown-menu">
         <li><PaneElement id="Convolution">Convolution</PaneElement></li>
         <li><PaneElement id="Pooling">Pool</PaneElement></li>
-        <li><PaneElement id="SPP">SPP</PaneElement></li>
+        <li><PaneElement id="Upsample">Upsample</PaneElement></li>
+        <li><PaneElement id="Locally Connected">LocallyConnected</PaneElement></li>
         <li><PaneElement id="Crop">Crop</PaneElement></li>
+        <li><PaneElement id="SPP">SPP</PaneElement></li>
         <li><PaneElement id="Deconvolution">Deconvolution</PaneElement></li>
+        <li><PaneElement id="DepthwiseConv">Depthwise Conv</PaneElement></li>
       </ul>
     </li>
     <li className="dropdown-submenu">
@@ -37,6 +40,7 @@ function Pane() {
       <ul className="dropdown-menu">
         <li><PaneElement id="Recurrent">Recurrent</PaneElement></li>
         <li><PaneElement id="RNN">RNN</PaneElement></li>
+        <li><PaneElement id="GRU">GRU</PaneElement></li>
         <li><PaneElement id="LSTM">LSTM</PaneElement></li>
       </ul>
     </li>
@@ -57,13 +61,26 @@ function Pane() {
       </ul>
     </li>
     <li className="dropdown-submenu">
+      <a tabIndex="-1" href="#">Noise Layers</a>
+      <ul className="dropdown-menu">
+        <li><PaneElement id="GaussianNoise">Gaussian Noise</PaneElement></li>
+        <li><PaneElement id="GaussianDropout">Gaussian Dropout</PaneElement></li>
+        <li><PaneElement id="AlphaDropout">Alpha Dropout</PaneElement></li>
+      </ul>
+    </li>
+    <li className="dropdown-submenu">
       <a tabIndex="-1" href="#">Activation/Neuron Layers</a>
       <ul className="dropdown-menu">
         <li><PaneElement id="ReLU">ReLU/Leaky-ReLU</PaneElement></li>
         <li><PaneElement id="PReLU">PReLU</PaneElement></li>
         <li><PaneElement id="ELU">ELU</PaneElement></li>
+        <li><PaneElement id="ThresholdedReLU">Thresholded ReLU</PaneElement></li>
+        <li><PaneElement id="SELU">SELU</PaneElement></li>
+        <li><PaneElement id="Softplus">Softplus</PaneElement></li>
+        <li><PaneElement id="Softsign">Softsign</PaneElement></li>
         <li><PaneElement id="Sigmoid">Sigmoid</PaneElement></li>
         <li><PaneElement id="TanH">TanH</PaneElement></li>
+        <li><PaneElement id="HardSigmoid">Hard Sigmoid</PaneElement></li>
         <li><PaneElement id="AbsVal">Absolute Value</PaneElement></li>
         <li><PaneElement id="Power">Power</PaneElement></li>
         <li><PaneElement id="Exp">Exp</PaneElement></li>
@@ -89,6 +106,10 @@ function Pane() {
         <li><PaneElement id="Silence">Silence</PaneElement></li>
         <li><PaneElement id="ArgMax">ArgMax</PaneElement></li>
         <li><PaneElement id="Softmax">Softmax</PaneElement></li>
+        <li><PaneElement id="Permute">Permute</PaneElement></li>
+        <li><PaneElement id="RepeatVector">Repeat Vector</PaneElement></li>
+        <li><PaneElement id="Regularization">Regularization</PaneElement></li>
+        <li><PaneElement id="Masking">Masking</PaneElement></li>
       </ul>
     </li>
     <li className="dropdown-submenu">

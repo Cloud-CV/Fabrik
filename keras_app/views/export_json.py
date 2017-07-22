@@ -10,8 +10,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from ide.utils.shapes import get_shapes
 from keras.models import Model
-from layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
-    recurrent, batchNorm, activation, flatten, reshape, eltwise, concat
+from layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed, depthwiseConv,\
+    recurrent, batchNorm, activation, flatten, reshape, eltwise, concat, upsample, locallyConnected, permute,\
+    repeatVector, regularization, masking, gaussianNoise, gaussianDropout, alphaDropout
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -38,25 +39,41 @@ def exportJson(request):
             'WindowData': data,
             'MemoryData': data,
             'DummyData': data,
-            'Convolution': convolution,
-            'Pooling': pooling,
-            'Deconvolution': deconvolution,
-            'RNN': recurrent,
-            'LSTM': recurrent,
             'InnerProduct': dense,
+            'Softmax': activation,
+            'SELU': activation,
+            'Softplus': activation,
+            'Softsign': activation,
+            'ReLU': activation,
+            'TanH': activation,
+            'Sigmoid': activation,
+            'HardSigmoid': activation,
             'Dropout': dropout,
+            'Flatten': flatten,
+            'Reshape': reshape,
+            'Permute': permute,
+            'RepeatVector': repeatVector,
+            'Regularization': regularization,
+            'Masking': masking,
+            'Convolution': convolution,
+            'DepthwiseConv': depthwiseConv,
+            'Deconvolution': deconvolution,
+            'Upsample': upsample,
+            'Pooling': pooling,
+            'LocallyConnected': locallyConnected,
+            'RNN': recurrent,
+            'GRU': recurrent,
+            'LSTM': recurrent,
             'Embed': embed,
             'Concat': concat,
             'Eltwise': eltwise,
-            'BatchNorm': batchNorm,
-            'ReLU': activation,
             'PReLU': activation,
             'ELU': activation,
-            'Sigmoid': activation,
-            'TanH': activation,
-            'Flatten': flatten,
-            'Reshape': reshape,
-            'Softmax': activation,
+            'ThresholdedReLU': activation,
+            'BatchNorm': batchNorm,
+            'GaussianNoise': gaussianNoise,
+            'GaussianDropout': gaussianDropout,
+            'AlphaDropout': alphaDropout,
             'Scale': ''
         }
 

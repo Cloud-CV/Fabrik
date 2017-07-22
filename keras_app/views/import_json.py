@@ -4,7 +4,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from layers_import import Input, Convolution, Deconvolution, Pooling, Dense, Dropout, Embed,\
     Recurrent, BatchNorm, Activation, LeakyReLU, PReLU, ELU, Scale, Flatten, Reshape, Concat, \
-    Eltwise, Padding
+    Eltwise, Padding, Upsample, LocallyConnected, DepthwiseConv, ThresholdedReLU, Permute, RepeatVector,\
+    ActivityRegularization, Masking, GaussianNoise, GaussianDropout, AlphaDropout
 from keras.models import model_from_json, Sequential
 
 
@@ -25,36 +26,68 @@ def importJson(request):
 
     layer_map = {
         'InputLayer': Input,
-        'Conv2D': Convolution,
-        'Conv2DTranspose': Deconvolution,
-        'MaxPooling2D': Pooling,
-        'GlobalMaxPooling2D': Pooling,
-        'AveragePooling2D': Pooling,
-        'GlobalAveragePooling2D': Pooling,
         'Dense': Dense,
-        'Dropout': Dropout,
-        'Embedding': Embed,
-        'SimpleRNN': Recurrent,
-        'LSTM': Recurrent,
-        'BatchNormalization': BatchNorm,
         'Activation': Activation,
-        'relu': Activation,
         'softmax': Activation,
-        'elu': ELU,
+        'selu': Activation,
+        'softplus': Activation,
+        'softsign': Activation,
+        'relu': Activation,
         'tanh': Activation,
         'sigmoid': Activation,
-        'LeakyReLU': LeakyReLU,
-        'PReLU': PReLU,
+        'hard_sigmoid': Activation,
+        'Dropout': Dropout,
         'Flatten': Flatten,
         'Reshape': Reshape,
-        'Concatenate': Concat,
+        'Permute': Permute,
+        'RepeatVector': RepeatVector,
+        'ActivityRegularization': ActivityRegularization,
+        'Masking': Masking,
+        'Conv1D': Convolution,
+        'Conv2D': Convolution,
+        'SeparableConv2D': DepthwiseConv,
+        'Conv2DTranspose': Deconvolution,
+        'Conv3D': Convolution,
+        'UpSampling1D': Upsample,
+        'UpSampling2D': Upsample,
+        'UpSampling3D': Upsample,
+        'ZeroPadding1D': Padding,
+        'ZeroPadding2D': Padding,
+        'ZeroPadding3D': Padding,
+        'MaxPooling1D': Pooling,
+        'MaxPooling2D': Pooling,
+        'MaxPooling3D': Pooling,
+        'AveragePooling1D': Pooling,
+        'AveragePooling2D': Pooling,
+        'AveragePooling3D': Pooling,
+        'GlobalMaxPooling1D': Pooling,
+        'GlobalAveragePooling1D': Pooling,
+        'GlobalMaxPooling2D': Pooling,
+        'GlobalAveragePooling2D': Pooling,
+        'LocallyConnected1D': LocallyConnected,
+        'LocallyConnected2D': LocallyConnected,
+        'SimpleRNN': Recurrent,
+        'GRU': Recurrent,
+        'LSTM': Recurrent,
+        'Embedding': Embed,
         'Add': Eltwise,
         'Multiply': Eltwise,
+        'Average': Eltwise,
         'Maximum': Eltwise,
-        'ZeroPadding2D': Padding,
+        'Concatenate': Concat,
+        'Dot': Eltwise,
+        'LeakyReLU': LeakyReLU,
+        'PReLU': PReLU,
+        'elu': ELU,
+        'ThresholdedReLU': ThresholdedReLU,
+        'BatchNormalization': BatchNorm,
+        'GaussianNoise': GaussianNoise,
+        'GaussianDropout': GaussianDropout,
+        'AlphaDropout': AlphaDropout
     }
 
-    hasActivation = ['Conv2D', 'Conv2DTranspose', 'Dense']
+    hasActivation = ['Conv1D', 'Conv2D', 'Conv3D', 'Conv2DTranspose', 'Dense', 'LocallyConnected1D',
+                     'LocallyConnected2D', 'SeparableConv2D', 'LSTM', 'SimpleRNN', 'GRU']
 
     net = {}
     # Add dummy input layer if sequential model
@@ -92,16 +125,23 @@ def importJson(request):
     # collect names of all zeroPad layers
     zeroPad = []
     # Transfer parameters and connections from zero pad
+    # The 'pad' param is a list with upto 3 elements
     for node in net:
         if (net[node]['info']['type'] == 'Pad'):
             net[net[node]['connection']['output'][0]]['connection']['input'] = \
                 net[node]['connection']['input']
-            net[net[node]['connection']['output'][0]]['params']['pad_w'] += \
-                net[node]['params']['pad_w']
-            net[net[node]['connection']['output'][0]]['params']['pad_h'] += \
-                net[node]['params']['pad_h']
             net[net[node]['connection']['input'][0]]['connection']['output'] = \
                 net[node]['connection']['output']
+            net[net[node]['connection']['output'][0]]['params']['pad_w'] += \
+                net[node]['params']['pad'][0]
+            if (net[net[node]['connection']['output'][0]]['params']['layer_type'] == '2D'):
+                net[net[node]['connection']['output'][0]]['params']['pad_h'] += \
+                    net[node]['params']['pad'][1]
+            elif (net[net[node]['connection']['output'][0]]['params']['layer_type'] == '3D'):
+                net[net[node]['connection']['output'][0]]['params']['pad_h'] += \
+                    net[node]['params']['pad'][1]
+                net[net[node]['connection']['output'][0]]['params']['pad_d'] += \
+                    net[node]['params']['pad'][2]
             zeroPad.append(node)
         # Switching connection order to handle visualization
         elif (net[node]['info']['type'] == 'Eltwise'):

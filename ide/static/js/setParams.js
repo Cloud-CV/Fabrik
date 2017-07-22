@@ -20,8 +20,8 @@ class SetParams extends React.Component {
     const net = this.props.net;
     let layer = net[this.props.selectedLayer];
     layer = JSON.parse(JSON.stringify(layer));
-    layer.params[para] = value;
-    this.props.modifyLayer(layer);
+    layer.params[para] = [value, false];
+    this.props.modifyLayer(this.props.adjustParameters(layer, para, value));
   }
   trainOnly(e) {
     if (e.target.checked) {
@@ -54,16 +54,19 @@ class SetParams extends React.Component {
       }
 
       Object.keys(data[layer.info.type].params).forEach(param => {
-        params.push(
-          <Field
-            id={param}
-            key={param}
-            data={data[layer.info.type].params[param]}
-            value={layer.params[param]}
-            disabled={(layer.info.phase === null) && (this.props.selectedPhase === 1) && (data[layer.info.type].learn)}
-            changeField={this.changeParams}
-          />
-        );
+        if (param != 'caffe'){
+          params.push(
+            <Field
+              id={param}
+              key={param}
+              data={data[layer.info.type].params[param]}
+              value={layer.params[param][0]}
+              disabled={((layer.info.phase === null) && (this.props.selectedPhase === 1) && (data[layer.info.type].learn)) || 
+                (layer.params[param][1])}
+              changeField={this.changeParams}
+            />
+          );
+        }
       });
 
       Object.keys(data[layer.info.type].props).forEach(prop => {
@@ -143,6 +146,7 @@ SetParams.propTypes = {
   net: React.PropTypes.object,
   deleteLayer: React.PropTypes.func,
   modifyLayer: React.PropTypes.func,
+  adjustParameters: React.PropTypes.func,
   trainOnly: React.PropTypes.func,
   selectedPhase: React.PropTypes.number,
   copyTrain: React.PropTypes.func

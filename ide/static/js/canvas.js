@@ -185,7 +185,7 @@ class Canvas extends React.Component {
       layer.connection = { input: [], output: [] };
       layer.params = {};
       Object.keys(data[type].params).forEach(j => {
-        layer.params[j] = data[type].params[j].value;
+        layer.params[j] = [data[type].params[j].value, false];
       });
       // l.props = JSON.parse(JSON.stringify(data[type].props));
       layer.props = {};

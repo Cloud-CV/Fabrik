@@ -206,8 +206,8 @@ class RecurrentImportTest(unittest.TestCase):
         response = json.loads(response.content)
         layerId = sorted(response['net'].keys())
         self.assertEqual(response['result'], 'success')
-        self.assertGreaterEqual(len(response['net'][layerId[2]]['params']), 3)
         self.assertGreaterEqual(len(response['net'][layerId[3]]['params']), 3)
+        self.assertGreaterEqual(len(response['net'][layerId[5]]['params']), 3)
 
 
 # ********** Normalisation Layers **********
@@ -269,7 +269,7 @@ class EltwiseImportTest(unittest.TestCase):
         response = json.loads(response.content)
         layerId = sorted(response['net'].keys())
         self.assertEqual(response['result'], 'success')
-        self.assertEqual(response['net'][layerId[0]]['params']['operation'], 1)
+        self.assertEqual(response['net'][layerId[0]]['params']['layer_type'], 'Sum')
 
 
 class ConcatImportTest(unittest.TestCase):

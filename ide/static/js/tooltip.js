@@ -20,7 +20,7 @@ class Tooltip extends React.Component {
             id={param}
             key={param}
             data={data[layer.info.type].params[param]}
-            value={layer.params[param]}
+            value={layer.params[param][0]}
             disabled={(layer.info.phase === null) && (this.props.selectedPhase === 1) && (data[layer.info.type].learn)}
             changeField={this.changeParams}
           />

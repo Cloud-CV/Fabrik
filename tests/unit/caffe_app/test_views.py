@@ -33,6 +33,8 @@ class ExportPrototxtTest(unittest.TestCase):
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
         response = self.client.post(reverse('caffe-import'), {'file': sample_file})
         response = json.loads(response.content)
+        response['net']['l0']['params']['caffe'] = True
+        response['net']['l1']['params']['caffe'] = True
         response = self.client.post(reverse('caffe-export'), {'net': json.dumps(response['net']),
                                                               'net_name': ''})
         response = json.loads(response.content)
