@@ -23,6 +23,14 @@ def importPrototxt(request):
             except Exception:
                 return JsonResponse({'result': 'error',
                                      'error': 'No Prototxt model file found'})
+        elif 'sample_id' in request.POST:
+            try:
+                prototxt = open(os.path.join(settings.BASE_DIR,
+                                             'example', 'caffe',
+                                             request.POST['sample_id'] + '.prototxt'), 'r')
+            except Exception:
+                return JsonResponse({'result': 'error',
+                                     'error': 'No Prototxt model file found'})
         caffe_net = caffe_pb2.NetParameter()
         try:
             text_format.Merge(prototxt.read(), caffe_net)

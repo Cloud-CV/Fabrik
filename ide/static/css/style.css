@@ -238,6 +238,10 @@ button.close {
     opacity: .2;
 }
 
+#model-dropdown:hover #addModelDropdown {
+    display: block;
+}
+
 #pane-dropdown:hover #addLayerDropdown {
     display: block;
 }
@@ -293,6 +297,11 @@ button.close {
     border-radius: 0px;
     border: 1px solid transparent;
     cursor: move;
+}
+
+#addModelDropdown .btn{
+    border-radius: 0px;
+    border: 1px solid transparent;
 }
 
 button

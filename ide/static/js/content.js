@@ -1,6 +1,7 @@
 import React from 'react';
 import Canvas from './canvas';
 import Pane from './pane';
+import Models from './models'
 import SetParams from './setParams';
 import Tooltip from './tooltip'
 import TopBar from './topBar';
@@ -210,15 +211,22 @@ class Content extends React.Component {
       });
     }
   }
-  importNet(framework) {
+  importNet(framework, id) {
     this.dismissAllErrors();
     const url = {'caffe': '/caffe/import', 'keras': '/keras/import', 'tensorflow': '/tensorflow/import', 'url': '/caffe/import'};
     const formData = new FormData();
     const caffe_fillers = ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'];
     const keras_fillers = ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
     'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'];
-
-    if (framework == 'url'){
+    if (framework == 'samplecaffe'){
+      framework = 'caffe'
+      formData.append('sample_id', id);
+    }
+    else if (framework == 'samplekeras'){
+      framework = 'keras'
+      formData.append('sample_id', id);
+    }
+    else if (framework == 'url'){
       const id = prompt('Please enter prototxt id ',id);
       formData.append('proto_id', id);
     }
@@ -319,10 +327,16 @@ class Content extends React.Component {
       }
       var prev_top = 0;
 
-      // Finding the position of the last connected layer
+      // Finding the position of the last(deepest) connected layer
       if (net[layer.connection.input[0]] != undefined){
-        let top_str = net[layer.connection.input[Math.floor(layer.connection.input.length/2)]].state.top;
-        prev_top = parseInt(top_str.substring(0,top_str.length-2));
+        prev_top = 0;
+        for (var i=0; i<layer.connection.input.length; i++){
+          var temp = net[layer.connection.input[i]].state.top;
+          temp = parseInt(temp.substring(0,temp.length-2));
+          if (temp > prev_top){
+            prev_top = temp;
+          }
+        }
       }
       // Graph does not centre properly on higher resolution screens
       layer.state = {
@@ -503,6 +517,7 @@ class Content extends React.Component {
                 <button><span className="glyphicon glyphicon-cog" style={{fontSize:'24px'}}></span></button>
               </li> --> */}
               <Tabs selectedPhase={this.state.selectedPhase} changeNetPhase={this.changeNetPhase} />
+              <Models importNet={this.importNet}/>
             </ul>
           </div>
           {loader}
@@ -535,7 +550,6 @@ class Content extends React.Component {
             net={this.state.net}
             hoveredLayer={this.state.hoveredLayer}
           />
-
         </div>
       </div>
     );

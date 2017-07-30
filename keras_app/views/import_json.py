@@ -1,5 +1,7 @@
 import json
+import os
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from layers_import import Input, Convolution, Deconvolution, Pooling, Dense, Dropout, Embed,\
@@ -12,11 +14,19 @@ from keras.models import model_from_json, Sequential
 @csrf_exempt
 def importJson(request):
     if request.method == 'POST':
-        try:
-            f = request.FILES['file']
-        except Exception:
-            return JsonResponse({'result': 'error', 'error': 'No JSON model file found'})
-
+        if ('file' in request.FILES):
+            try:
+                f = request.FILES['file']
+            except Exception:
+                return JsonResponse({'result': 'error', 'error': 'No JSON model file found'})
+        elif 'sample_id' in request.POST:
+                try:
+                    f = open(os.path.join(settings.BASE_DIR,
+                                          'example', 'keras',
+                                          request.POST['sample_id'] + '.json'), 'r')
+                except Exception:
+                    return JsonResponse({'result': 'error',
+                                         'error': 'No JSON model file found'})
         try:
             model = json.load(f)
         except Exception:
