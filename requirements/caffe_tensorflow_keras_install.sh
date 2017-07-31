@@ -5,7 +5,7 @@ pip install numpy scipy scikit-image
 
 #Caffe specific dependencies
 echo "Installing caffe specific dependencies"
-sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev libgflags-dev libgoogle-glog-dev liblmdb-dev protobuf-compiler
+sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev libgflags-dev libgoogle-glog-dev liblmdb-dev protobuf-compiler cmake
 sudo apt-get install --no-install-recommends libboost-all-dev
 
 if [ ! -d $HOME/caffe/caffe ]; then
@@ -22,13 +22,11 @@ if [ ! -d $HOME/caffe/caffe ]; then
 
 		#Install caffe
 		echo "Installing caffe"
-		cp Makefile.config.example Makefile.config
-		WITH_PYTHON_LAYER=1	CPU_ONLY=1 USE_OPENCV=0 make all -j4
-
-		#Install pycaffe
-		echo "Install PyCaffe"
-		WITH_PYTHON_LAYER=1	CPU_ONLY=1 USE_OPENCV=0 make pycaffe -j2
-
+		mkdir build
+		cd build
+		cmake -DCPU_ONLY=1 -DWITH_PYTHON_LAYER=1 ..
+		make -j"$(nproc)"
+		
 		echo "export PYTHONPATH=$(pwd)/python:$PYTHONPATH" > ~/.bash_profile
 		source ~/.bash_profile
 		export PYTHONPATH=$(pwd)/python

@@ -62,7 +62,7 @@ def Flatten(layer):
 def Reshape(layer):
     params = {}
     shape = layer.target_shape
-    params['dim'] = str([1, shape[2], shape[0], shape[1]])[1:-1]
+    params['dim'] = str([1] + list(shape))[1:-1]
     return jsonLayer('Reshape', params, layer)
 
 
@@ -143,6 +143,8 @@ def Convolution(layer):
     return jsonLayer('Convolution', params, layer)
 
 
+# Separable Convolution is currently not supported with Theano backend
+'''
 def DepthwiseConv(layer):
     params = {}
     params['filters'] = layer.filters
@@ -171,7 +173,7 @@ def DepthwiseConv(layer):
         params['pointwise_constraint'] = layer.pointwise_constraint.__class__.__name__
     if (layer.bias_constraint):
         params['bias_constraint'] = layer.bias_constraint.__class__.__name__
-    return jsonLayer('DepthwiseConv', params, layer)
+    return jsonLayer('DepthwiseConv', params, layer)'''
 
 
 def Deconvolution(layer):
@@ -392,7 +394,7 @@ def PReLU(layer):
 
 
 def ELU(layer):
-    params = {'alpha': layer.alpha}
+    params = {'alpha': layer.alpha.tolist()}
     return jsonLayer('ELU', params, layer)
 
 
@@ -441,7 +443,6 @@ def Scale(layer):
     params['scale'] = layer.scale
     params['filler'] = layer.gamma_initializer.__class__.__name__
     params['bias_filler'] = layer.beta_initializer.__class__.__name__
-    params = {'bias_term': layer.center}
     if (layer.beta_regularizer):
         params['beta_regularizer'] = layer.beta_regularizer.__class__.__name__
     if (layer.gamma_regularizer):
@@ -455,7 +456,11 @@ def Scale(layer):
 
 
 def Padding(layer):
-    pad = np.asarray(layer.padding)[:, 0].tolist()
+    pad = np.asarray(layer.padding)
+    if (len(pad.shape) == 1):
+        pad = [pad[0]]
+    else:
+        pad = pad[:, 0].tolist()
     params = {'pad': pad}
     return jsonLayer('Pad', params, layer)
 

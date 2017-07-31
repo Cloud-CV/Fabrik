@@ -2,7 +2,7 @@ import numpy as np
 
 from keras.layers import Dense, Activation, Dropout, Flatten, Reshape, Permute, RepeatVector
 from keras.layers import ActivityRegularization, Masking
-from keras.layers import Conv1D, Conv2D, Conv3D, Conv2DTranspose, SeparableConv2D
+from keras.layers import Conv1D, Conv2D, Conv3D, Conv2DTranspose
 from keras.layers import UpSampling1D, UpSampling2D, UpSampling3D
 from keras.layers import MaxPooling1D, MaxPooling2D, MaxPooling3D
 from keras.layers import AveragePooling1D, AveragePooling2D, AveragePooling3D
@@ -181,7 +181,7 @@ def convolution(layer, layer_in, layerId):
             p_w = layer['params']['pad_w']
             out[layerId + 'Pad'] = ZeroPadding1D(padding=p_w)(*layer_in)
             padding = 'valid'
-            layer_in = out[layerId + 'Pad']
+            layer_in = [out[layerId + 'Pad']]
     elif (layer_type == '2D'):
         strides = (layer['params']['stride_h'], layer['params']['stride_w'])
         kernel = (layer['params']['kernel_h'], layer['params']['kernel_w'])
@@ -190,7 +190,7 @@ def convolution(layer, layer_in, layerId):
             p_h, p_w = layer['params']['pad_h'], layer['params']['pad_w']
             out[layerId + 'Pad'] = ZeroPadding2D(padding=(p_h, p_w))(*layer_in)
             padding = 'valid'
-            layer_in = out[layerId + 'Pad']
+            layer_in = [out[layerId + 'Pad']]
     else:
         strides = (layer['params']['stride_h'], layer['params']['stride_w'],
                    layer['params']['stride_d'])
@@ -203,7 +203,7 @@ def convolution(layer, layer_in, layerId):
                             layer['params']['pad_d']
             out[layerId + 'Pad'] = ZeroPadding3D(padding=(p_h, p_w, p_d))(*layer_in)
             padding = 'valid'
-            layer_in = out[layerId + 'Pad']
+            layer_in = [out[layerId + 'Pad']]
     out[layerId] = convMap[layer_type](filters, kernel, strides=strides, padding=padding,
                                        dilation_rate=dilation_rate,
                                        kernel_initializer=kernel_initializer,
@@ -215,7 +215,8 @@ def convolution(layer, layer_in, layerId):
                                        kernel_constraint=kernel_constraint)(*layer_in)
     return out
 
-
+# Separable Convolution is currently not supported with Theano backend
+'''
 def depthwiseConv(layer, layer_in, layerId):
     out = {}
     padding = get_padding(layer)
@@ -251,7 +252,7 @@ def depthwiseConv(layer, layer_in, layerId):
                                    depthwise_constraint=depthwise_constraint,
                                    pointwise_constraint=pointwise_constraint,
                                    bias_constraint=bias_constraint,)(*layer_in)
-    return out
+    return out'''
 
 
 def deconvolution(layer, layer_in, layerId):
@@ -323,10 +324,6 @@ def pooling(layer, layer_in, layerId):
     out = {}
     layer_type = layer['params']['layer_type']
     pool_type = layer['params']['pool']
-    if (pool_type == 0):
-        pool_type = 'MAX'
-    else:
-        pool_type = 'AVE'
     padding = get_padding(layer)
     if (layer_type == '1D'):
         strides = layer['params']['stride_w']
@@ -335,7 +332,7 @@ def pooling(layer, layer_in, layerId):
             p_w = layer['params']['pad_w']
             out[layerId + 'Pad'] = ZeroPadding1D(padding=p_w)(*layer_in)
             padding = 'valid'
-            layer_in = out[layerId + 'Pad']
+            layer_in = [out[layerId + 'Pad']]
     elif (layer_type == '2D'):
         strides = (layer['params']['stride_h'], layer['params']['stride_w'])
         kernel = (layer['params']['kernel_h'], layer['params']['kernel_w'])
@@ -343,7 +340,7 @@ def pooling(layer, layer_in, layerId):
             p_h, p_w = layer['params']['pad_h'], layer['params']['pad_w']
             out[layerId + 'Pad'] = ZeroPadding2D(padding=(p_h, p_w))(*layer_in)
             padding = 'valid'
-            layer_in = out[layerId + 'Pad']
+            layer_in = [out[layerId + 'Pad']]
     else:
         strides = (layer['params']['stride_h'], layer['params']['stride_w'],
                    layer['params']['stride_d'])
@@ -354,7 +351,7 @@ def pooling(layer, layer_in, layerId):
                             layer['params']['pad_d']
             out[layerId + 'Pad'] = ZeroPadding3D(padding=(p_h, p_w, p_d))(*layer_in)
             padding = 'valid'
-            layer_in = out[layerId + 'Pad']
+            layer_in = [out[layerId + 'Pad']]
     out[layerId] = poolMap[(layer_type, pool_type)](pool_size=kernel, strides=strides, padding=padding)(
                                                     *layer_in)
     return out
@@ -491,7 +488,7 @@ def eltwise(layer, layer_in, layerId):
     elif (layer['params']['layer_type'] == 'Average'):
         out[layerId] = average(layer_in[::-1])
     elif (layer['params']['layer_type'] == 'Dot'):
-        out[layerId] = dot(layer_in[::-1])
+        out[layerId] = dot(layer_in[::-1], -1)
     else:
         out[layerId] = maximum(layer_in[::-1])
     return out
@@ -527,7 +524,7 @@ def batchNorm(layer, layer_in, layerId, idNext, nextLayer,):
     out = {}
     momentum = layer['params']['moving_average_fraction']
     eps = layer['params']['eps']
-    if (eps < 1e-5):
+    if (eps >= 1e-5):
         eps = 0.0001  # In Keras the max epsilon allowed in 1e-5
     moving_mean_initializer = layer['params']['moving_mean_initializer']
     moving_variance_initializer = layer['params']['moving_variance_initializer']
@@ -573,6 +570,7 @@ def get_padding(layer):
         _, o_h, o_w = layer['shape']['input']
         k_h, k_w = layer['params']['kernel_h'], layer['params']['kernel_w']
         s_h, s_w = layer['params']['stride_h'], layer['params']['stride_w']
+        layer['params']['layer_type'] = '2D'
     else:
         if (layer['params']['layer_type'] == '1D'):
             i_w = layer['shape']['input'][0]

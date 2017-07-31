@@ -32,7 +32,6 @@ function Pane() {
         <li><PaneElement id="Crop">Crop</PaneElement></li>
         <li><PaneElement id="SPP">SPP</PaneElement></li>
         <li><PaneElement id="Deconvolution">Deconvolution</PaneElement></li>
-        <li><PaneElement id="DepthwiseConv">Depthwise Conv</PaneElement></li>
       </ul>
     </li>
     <li className="dropdown-submenu">
@@ -101,7 +100,6 @@ function Pane() {
         <li><PaneElement id="Concat">Concat</PaneElement></li>
         <li><PaneElement id="Eltwise">Eltwise</PaneElement></li>
         <li><PaneElement id="Filter">Filter</PaneElement></li>
-        <li><PaneElement id="Parameter">Parameter</PaneElement></li> 
         <li><PaneElement id="Reduction">Reduction</PaneElement></li>
         <li><PaneElement id="Silence">Silence</PaneElement></li>
         <li><PaneElement id="ArgMax">ArgMax</PaneElement></li>

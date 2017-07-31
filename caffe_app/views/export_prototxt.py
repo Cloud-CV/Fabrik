@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import yaml
@@ -13,10 +12,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 def randomword(length):
     return ''.join(random.choice(string.lowercase) for i in range(length))
-
-
-def index(request):
-    return render(request, 'cloudcvIde/index.html')
 
 
 @csrf_exempt

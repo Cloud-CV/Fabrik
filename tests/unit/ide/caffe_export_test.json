@@ -204,7 +204,7 @@
             "type": "Data"
         }, 
         "params": {
-            "backend": 1, 
+            "backend": "LMDB", 
             "batch_size": 32, 
             "crop_size": 227, 
             "force_color": false, 
@@ -305,7 +305,7 @@
             "type": "Eltwise"
         }, 
         "params": {
-            "layer_type": 2,
+            "layer_type": "Product",
             "caffe": true
         }
     }, 
@@ -537,7 +537,7 @@
             "inplace": true, 
             "k": 1.0, 
             "local_size": 5, 
-            "norm_region": 1,
+            "norm_region": "WITHIN_CHANNEL",
             "caffe": true
         }
     }, 
@@ -664,7 +664,7 @@
             "kernel_w": 2, 
             "pad_h": 0, 
             "pad_w": 0, 
-            "pool": 1, 
+            "pool": "MAX", 
             "stride_h": 2, 
             "stride_w": 2,
             "caffe": true,
@@ -690,7 +690,7 @@
             "caffe": true
         }
     }, 
-    "Python": {
+    "PythonData": {
         "info": {
             "phase": null, 
             "type": "Python"
@@ -701,12 +701,31 @@
         }, 
         "params": {
             "pascal_root": "../data/pascal/VOC2007", 
-            "layer": "PascalMultilabelDataLayerSync", 
-            "endPoint": "1, 0", 
+            "layer": "PascalMultilabelDataLayerSync",
+            "param_str": "", 
             "module": "pascal_multilabel_datalayers", 
             "im_shape": "227, 227", 
             "batch_size": 128, 
             "split": "train",
+            "caffe": true
+        }
+    },
+    "PythonLoss": {
+        "info": {
+            "phase": null, 
+            "type": "Python"
+        }, 
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "params": {
+            "layer": "EuclideanLossLayer", 
+            "loss_weight": 1.0, 
+            "endPoint": "0, 1", 
+            "module": "pyloss",
             "caffe": true
         }
     },
@@ -781,7 +800,7 @@
         "params": {
             "axis": 0, 
             "coeff": 1.0, 
-            "operation": 3,
+            "operation": "MEAN",
             "caffe": true
         }
     }, 

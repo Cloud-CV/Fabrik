@@ -1,4 +1,3 @@
-import collections
 import caffe
 from caffe import layers as L
 import re
@@ -15,10 +14,7 @@ def jsonToPrototxt(net, net_name):
     input_dim = None
 
     def get_iterable(x):
-        if isinstance(x, collections.Iterable):
-            return x
-        else:
-            return (x,)
+        return (x,)
 
     stack = []
     layersProcessed = {}
@@ -249,11 +245,7 @@ def jsonToPrototxt(net, net_name):
                         ns[key] = value
 
         elif (layerType == 'Input'):
-            # Adding a default size
-            if 'dim' not in layerParams:
-                layerParams['dim'] = '10,3,224,224'
             input_param = {'shape': {'dim': map(int, layerParams['dim'].split(','))}}
-
             for ns in (ns_train, ns_test):
                     caffeLayer = get_iterable(L.Input(
                         input_param=input_param))
@@ -948,14 +940,15 @@ def jsonToPrototxt(net, net_name):
                 for key, value in zip(blobNames[layerId]['top'], caffeLayer):
                     ns[key] = value
 
-        elif (layerType == 'Parameter'):
-            parameter_param = {}
-            parameter_param['shape'] = map(int, layerParams['shape'].split(','))
-            for ns in (ns_train, ns_test):
-                caffeLayer = get_iterable(L.Parameter(
-                    parameter_param=parameter_param))
-                for key, value in zip(blobNames[layerId]['top'], caffeLayer):
-                    ns[key] = value
+        # This layer is currently not supported as there is no bottom blob
+        # elif (layerType == 'Parameter'):
+        #    parameter_param = {}
+        #    parameter_param['shape'] = map(int, layerParams['shape'].split(','))
+        #    for ns in (ns_train, ns_test):
+        #        caffeLayer = get_iterable(L.Parameter(
+        #            parameter_param=parameter_param))
+        #        for key, value in zip(blobNames[layerId]['top'], caffeLayer):
+        #            ns[key] = value
 
         elif (layerType == 'Reduction'):
             reduction_param = {}

@@ -1,3 +1,4 @@
+import caffe
 import json
 import os
 import unittest
@@ -13,11 +14,26 @@ class ImportPrototxtTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        sample_file = open(os.path.join(settings.BASE_DIR, 'example/caffe', 'GoogleNet.prototxt'),
-                           'r')
+        sample_file = open(os.path.join(settings.BASE_DIR, 'example/caffe', 'GoogleNet.prototxt'), 'r')
+        # Test 1
         response = self.client.post(reverse('caffe-import'), {'file': sample_file})
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'success')
+        # Test 2
+        response = self.client.post(reverse('caffe-import'), {'proto_id': 'alexnet'})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+        # Test 3
+        response = self.client.post(reverse('caffe-import'), {'proto_id': 'dummyProtoId'})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'error')
+        self.assertEqual(response['error'], 'No Prototxt model file found')
+        # Test 4
+        sample_file = open(os.path.join(settings.BASE_DIR, 'example/keras', 'vgg16.json'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'error')
+        self.assertEqual(response['error'], 'Invalid Prototxt')
 
 
 class ExportPrototxtTest(unittest.TestCase):
@@ -41,16 +57,54 @@ class ExportPrototxtTest(unittest.TestCase):
         self.assertEqual(response['result'], 'success')
 
 
+class ExportPrototxtFailTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_caffe_export(self):
+        data = L.Input(shape={'dim': [10, 3, 16, 224, 224]})
+        top = L.Convolution(data, kernel_size=3, pad=1, stride=1, num_output=128, dilation=1,
+                            weight_filler={'type': 'xavier'}, bias_filler={'type': 'constant'})
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        response['net']['l0']['params']['caffe'] = True
+        response['net']['l1']['params']['layer_type'] = '3D'
+        response['net']['l1']['params']['caffe'] = False
+        response = self.client.post(reverse('caffe-export'), {'net': json.dumps(response['net']),
+                                                              'net_name': ''})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'error')
+
+
 # ********** Data Layers Test **********
 class ImageDataLayerTest(unittest.TestCase):
     def setUp(self):
         self.client = Client()
 
     def test_caffe_import(self):
+        # Test 1
         data, label = L.ImageData(source='/dummy/source/', batch_size=32, ntop=2, rand_skip=0,
                                   shuffle=False, new_height=256, new_width=256, is_color=False,
                                   root_folder='/dummy/folder/',
                                   transform_param=dict(crop_size=227, mean_value=[104, 117, 123],
+                                                       mirror=True, force_color=False,
+                                                       force_gray=False))
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(data, label)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 13)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        data, label = L.ImageData(source='/dummy/source/', batch_size=32, ntop=2, rand_skip=0,
+                                  shuffle=False, new_height=256, new_width=256, is_color=False,
+                                  root_folder='/dummy/folder/', include=dict(phase=caffe.TRAIN),
+                                  transform_param=dict(crop_size=227, mean_file='/path/to/file',
                                                        mirror=True, force_color=False,
                                                        force_gray=False))
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
@@ -68,7 +122,22 @@ class DataLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
+        # Test 1
         data, label = L.Data(source='/dummy/source/', backend=P.Data.LMDB, batch_size=32, ntop=2,
+                             rand_skip=0, prefetch=10,
+                             transform_param=dict(crop_size=227, mean_value=[104, 117, 123],
+                                                  mirror=True, force_color=False,
+                                                  force_gray=False))
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(data, label)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 10)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        data, label = L.Data(source='/dummy/source/', backend=P.Data.LEVELDB, batch_size=32, ntop=2,
                              rand_skip=0, prefetch=10,
                              transform_param=dict(crop_size=227, mean_value=[104, 117, 123],
                                                   mirror=True, force_color=False,
@@ -192,7 +261,19 @@ class ConvolutionLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
+        # Test 1
         top = L.Convolution(kernel_size=3, pad=1, stride=1, num_output=128,
+                            weight_filler={'type': 'xavier'}, bias_filler={'type': 'constant'})
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 6)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        top = L.Convolution(kernel_w=3, kernel_h=3, pad_w=1, pad_h=1, stride=1, num_output=128,
                             weight_filler={'type': 'xavier'}, bias_filler={'type': 'constant'})
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
@@ -209,7 +290,18 @@ class PoolingLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
+        # Test 1
         top = L.Pooling(kernel_size=2, pad=0, stride=2, pool=1)
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 4)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        top = L.Pooling(kernel_size=2, pad=0, stride=2, pool=2)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -257,8 +349,21 @@ class DeconvolutionLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
+        # Test 1
         top = L.Deconvolution(convolution_param=dict(kernel_size=3, pad=1, stride=1, num_output=128,
                               weight_filler={'type': 'xavier'}, bias_filler={'type': 'constant'}))
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 6)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        top = L.Deconvolution(convolution_param=dict(kernel_w=3, kernel_h=3, pad_w=1, pad_h=1, stride=1,
+                              num_output=128, dilation=1, weight_filler={'type': 'xavier'},
+                              bias_filler={'type': 'constant'}))
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -380,7 +485,7 @@ class LRNLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.LRN(local_size=5, alpha=1, beta=0.75, k=1, norm_region=1)
+        top = L.LRN(local_size=5, alpha=1, beta=0.75, k=1, norm_region=1, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -396,7 +501,7 @@ class MVNLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.MVN(normalize_variance=True, eps=1e-9, across_channels=False)
+        top = L.MVN(normalize_variance=True, eps=1e-9, across_channels=False, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -412,7 +517,7 @@ class BatchNormLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.BatchNorm(use_global_stats=True, moving_average_fraction=0.999, eps=1e-5)
+        top = L.BatchNorm(use_global_stats=True, moving_average_fraction=0.999, eps=1e-5, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -429,7 +534,7 @@ class ReLULayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.ReLU(negative_slope=0)
+        top = L.ReLU(negative_slope=0, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -445,7 +550,7 @@ class PReLULayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.PReLU(channel_shared=False)
+        top = L.PReLU(channel_shared=False, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -461,7 +566,7 @@ class ELULayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.ELU(alpha=1)
+        top = L.ELU(alpha=1, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -477,7 +582,7 @@ class SigmoidLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.Sigmoid()
+        top = L.Sigmoid(in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -492,7 +597,7 @@ class TanHLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.TanH()
+        top = L.TanH(in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -507,7 +612,7 @@ class AbsValLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.AbsVal()
+        top = L.AbsVal(in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -522,7 +627,7 @@ class PowerLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.Power(power=1.0, scale=1.0, shift=0.0)
+        top = L.Power(power=1.0, scale=1.0, shift=0.0, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -538,7 +643,7 @@ class ExpLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.Exp(base=-1.0, scale=1.0, shift=0.0)
+        top = L.Exp(base=-1.0, scale=1.0, shift=0.0, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -554,7 +659,7 @@ class LogLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.Log(base=-1.0, scale=1.0, shift=0.0)
+        top = L.Log(base=-1.0, scale=1.0, shift=0.0, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -570,7 +675,7 @@ class BNLLLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.BNLL()
+        top = L.BNLL(in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -585,7 +690,7 @@ class ThresholdLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.Threshold(threshold=1.0)
+        top = L.Threshold(threshold=1.0, in_place=True)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -727,6 +832,7 @@ class EltwiseLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
+        # Test 1
         top = L.Eltwise(operation=2)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
@@ -753,7 +859,8 @@ class FilterLayerTest(unittest.TestCase):
         self.assertEqual(response['result'], 'success')
 
 
-class ParameterLayerTest(unittest.TestCase):
+# This layer is currently not supported as there is no bottom blob
+'''class ParameterLayerTest(unittest.TestCase):
     def setUp(self):
         self.client = Client()
 
@@ -767,6 +874,7 @@ class ParameterLayerTest(unittest.TestCase):
         os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
         self.assertGreaterEqual(len(response['net']['l0']['params']), 1)
         self.assertEqual(response['result'], 'success')
+'''
 
 
 class ReductionLayerTest(unittest.TestCase):
@@ -774,7 +882,38 @@ class ReductionLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
+        # Test 1
+        top = L.Reduction(operation=1, axis=0, coeff=1.0)
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 3)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        top = L.Reduction(operation=2, axis=0, coeff=1.0)
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 3)
+        self.assertEqual(response['result'], 'success')
+        # Test 3
         top = L.Reduction(operation=3, axis=0, coeff=1.0)
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 3)
+        self.assertEqual(response['result'], 'success')
+        # Test 4
+        top = L.Reduction(operation=4, axis=0, coeff=1.0)
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
@@ -930,14 +1069,15 @@ class AccuracyLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        top = L.Accuracy(axis=1, top_k=1)
+        data = L.Input(shape={'dim': [10, 100]})
+        top = L.Accuracy(data, axis=1, top_k=1, include=dict(phase=caffe.TEST))
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(top)))
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
         response = self.client.post(reverse('caffe-import'), {'file': sample_file})
         response = json.loads(response.content)
         os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
-        self.assertGreaterEqual(len(response['net']['l0']['params']), 2)
+        self.assertGreaterEqual(len(response['net']['l1']['params']), 2)
         self.assertEqual(response['result'], 'success')
 
 
@@ -963,6 +1103,18 @@ class PythonLayerTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
+        # Test 1
+        data = L.Input(shape={'dim': [10, 3, 224, 224]})
+        top = L.Python(data, module='pyloss', layer='EuclideanLossLayer', loss_weight=1, name='eucLoss')
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l1']['params']), 4)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
         top = L.Python(module='pascal_multilabel_datalayers', layer='PascalMultilabelDataLayerSync',
                        param_str="{\'pascal_root\': \'../data/pascal/VOC2007\', \'im_shape\': [227, 227], \
                         \'split\': \'train\', \'batch_size\': 128}")

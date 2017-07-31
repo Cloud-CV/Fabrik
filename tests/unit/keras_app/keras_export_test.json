@@ -1,4 +1,20 @@
-{"net": { 
+{"net": {
+    "AlphaDropout": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "AlphaDropout"
+        }, 
+        "params": {
+            "rate": 0.5,
+            "seed": 5
+        }
+    }, 
     "BatchNorm": {
         "connection": {
             "input": [
@@ -13,7 +29,7 @@
             "type": "BatchNorm"
         }, 
         "params": {
-            "eps": 0.001, 
+            "eps": 0.00001, 
             "moving_average_fraction": 0.999, 
             "use_global_stats": true,
             "moving_mean_initializer": "Zeros",
@@ -45,25 +61,29 @@
             "type": "Convolution"
         }, 
         "params": {
-            "bias_filler": "constant", 
-            "kernel_h": 3, 
-            "kernel_w": 3,
-            "dilation_h": 1,
-            "dilation_w": 1, 
-            "num_output": 128, 
-            "pad_h": 1, 
-            "pad_w": 1, 
+            "layer_type": "3D", 
+            "stride_d": 1, 
             "stride_h": 1, 
+            "weight_filler": "xavier", 
             "stride_w": 1, 
-            "weight_filler": "xavier",
-            "kernel_constraint": "None", 
-            "activity_regularizer": "None", 
             "use_bias": true, 
-            "bias_regularizer": "None", 
-            "bias_constraint": "None", 
-            "kernel_regularizer": "None",
-            "layer_type": "2D"
-        }, 
+            "bias_regularizer": "L1L2", 
+            "pad_h": 0, 
+            "kernel_constraint": "MaxNorm", 
+            "activity_regularizer": "L1L2", 
+            "pad_d": 0, 
+            "bias_filler": "xavier", 
+            "pad_w": 0, 
+            "kernel_w": 3, 
+            "bias_constraint": "MaxNorm", 
+            "dilation_w": 1, 
+            "num_output": 32, 
+            "kernel_d": 3, 
+            "kernel_regularizer": "L1L2", 
+            "dilation_h": 1, 
+            "dilation_d": 1, 
+            "kernel_h": 3
+        },
         "shape": {
             "input": [
                 3, 
@@ -89,25 +109,24 @@
             "type": "Deconvolution"
         }, 
         "params": {
-            "bias_filler": "constant", 
-            "kernel_h": 3, 
-            "kernel_w": 3,
-            "dilation_h": 1,
+            "kernel_w": 3, 
+            "pad_h": 0, 
+            "bias_regularizer": "L1L2", 
+            "kernel_constraint": "MaxNorm", 
+            "bias_constraint": "MaxNorm", 
             "dilation_w": 1, 
-            "num_output": 128, 
-            "pad_h": 1, 
-            "pad_w": 1, 
-            "stride_h": 1, 
+            "num_output": 32, 
+            "weight_filler": "VarianceScaling", 
             "stride_w": 1, 
-            "weight_filler": "xavier",            
-            "kernel_constraint": "None", 
-            "activity_regularizer": "None", 
+            "kernel_regularizer": "L1L2", 
+            "stride_h": 1, 
+            "bias_filler": "Zeros", 
             "use_bias": true, 
-            "bias_regularizer": "None", 
-            "bias_constraint": "None", 
-            "kernel_regularizer": "None",
-            "layer_type": "2D"
-        }, 
+            "pad_w": 0, 
+            "activity_regularizer": "L1L2", 
+            "kernel_h": 3, 
+            "dilation_h": 1
+        },
         "shape": {
             "input": [
                 3, 
@@ -116,8 +135,8 @@
             ], 
             "output": [
                 128, 
-                224, 
-                224
+                230, 
+                230
             ]
         }
     }, 
@@ -164,7 +183,7 @@
             "type": "Eltwise"
         }, 
         "params": {
-            "layer_type": 2
+            "layer_type": "Multiply"
         }
     }, 
     "Embed": {
@@ -185,7 +204,8 @@
             "embeddings_regularizer": "None", 
             "embeddings_constraint": "None", 
             "input_length": null,
-            "mask_zero": false
+            "mask_zero": false,
+            "input_length": 10
         }
     }, 
     "Flatten": {
@@ -203,7 +223,84 @@
             "axis": 1, 
             "end_axis": -1
         }
-    }, 
+    },
+    "GaussianDropout": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "GaussianDropout"
+        }, 
+        "params": {
+            "rate": 0.5
+        }
+    },
+    "GaussianNoise": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "GaussianNoise"
+        }, 
+        "params": {
+            "stddev": 0.1
+        }
+    },
+    "GRU": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "GRU"
+        }, 
+        "params": {
+            "recurrent_dropout": 0, 
+            "kernel_constraint": "None", 
+            "dropout": 0,
+            "recurrent_activation": "linear",
+            "unit_forget_bias": false,
+            "weight_filler": "xavier", 
+            "recurrent_initializer": "Orthogonal", 
+            "bias_filler": "xavier", 
+            "recurrent_regularizer": "None", 
+            "use_bias": true, 
+            "bias_regularizer": "None", 
+            "bias_constraint": "None", 
+            "expose_hidden": false, 
+            "num_output": 128, 
+            "kernel_regularizer": "None", 
+            "debug_info": false, 
+            "recurrent_constraint": "None", 
+            "activity_regularizer": "None"
+        }
+    },
+    "HardSigmoid": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "HardSigmoid"
+        }, 
+        "params": {
+            "inplace": true
+        }
+    },
     "InnerProduct": {
         "connection": {
             "input": [
@@ -228,7 +325,8 @@
         }, 
         "shape": {
             "input": [
-                100
+                10,
+                10
             ], 
             "output": [
                 128
@@ -294,7 +392,56 @@
                 100
             ]
         }
-
+    },
+    "Input4": {
+        "connection": {
+            "input": [], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Input"
+        }, 
+        "params": {
+            "dim": "1, 3, 224, 224, 16"
+        }, 
+        "shape": {
+            "input": [], 
+            "output": [
+                3,
+                224,
+                224,
+                16
+            ]
+        }
+    },
+    "LocallyConnected": {
+        "info": {
+            "phase": null, 
+            "type": "LocallyConnected"
+        }, 
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "params": {
+            "layer_type": "2D", 
+            "kernel_w": 3, 
+            "kernel_initializer": "VarianceScaling", 
+            "kernel_constraint": "MaxNorm", 
+            "bias_regularizer": "L1L2", 
+            "bias_constraint": "MaxNorm", 
+            "activity_regularizer": "L1L2", 
+            "stride_h": 1, 
+            "stride_w": 1, 
+            "kernel_regularizer": "L1L2", 
+            "filters": 32, 
+            "bias_initializer": "Zeros", 
+            "use_bias": true, 
+            "kernel_h": 3
+        }
     }, 
     "LSTM": {
         "connection": {
@@ -313,9 +460,9 @@
             "dropout": 0,
             "recurrent_activation": "linear",
             "unit_forget_bias": false,
-            "weight_filler": "VarianceScaling", 
+            "weight_filler": "xavier", 
             "recurrent_initializer": "Orthogonal", 
-            "bias_filler": "Zeros", 
+            "bias_filler": "xavier", 
             "recurrent_regularizer": "None", 
             "use_bias": true, 
             "bias_regularizer": "None", 
@@ -327,7 +474,37 @@
             "recurrent_constraint": "None", 
             "activity_regularizer": "None"
         }
-    }, 
+    },
+    "Masking": {
+        "info": {
+            "phase": null, 
+            "type": "Masking"
+        }, 
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "params": {
+            "mask_value": 0.0
+        }
+    },
+    "Permute": {
+        "info": {
+            "phase": null, 
+            "type": "Permute"
+        }, 
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "params": {
+            "dim": "2, 1"
+        }
+    },
     "PReLU": {
         "connection": {
             "input": [
@@ -357,13 +534,16 @@
         }, 
         "params": {
             "kernel_h": 2, 
-            "kernel_w": 2, 
+            "kernel_w": 2,
+            "kernel_d": 2,
             "pad_h": 0, 
-            "pad_w": 0, 
-            "pool": 1, 
-            "stride_h": 2, 
-            "stride_w": 2,
-            "layer_type": "2D"
+            "pad_w": 0,
+            "pad_d": 0, 
+            "pool": "MAX", 
+            "stride_h": 1, 
+            "stride_w": 1,
+            "stride_d": 1,
+            "layer_type": "3D"
         }, 
         "shape": {
             "input": [
@@ -408,6 +588,22 @@
             "activity_regularizer": "None"
         }
     }, 
+    "Regularization": {
+        "info": {
+            "phase": null, 
+            "type": "Regularization"
+        }, 
+        "connection": {
+            "input": [
+                "activity_regularization_1_input"
+            ], 
+            "output": []
+        }, 
+        "params": {
+            "l2": 0.0, 
+            "l1": 2
+        }
+    },
     "ReLU": {
         "connection": {
             "input": [
@@ -423,7 +619,22 @@
             "inplace": true, 
             "negative_slope": 0.0
         }
-    }, 
+    },
+    "RepeatVector": {
+        "info": {
+            "phase": null, 
+            "type": "RepeatVector"
+        }, 
+        "connection": {
+            "input": [
+                "repeat_vector_1_input"
+            ], 
+            "output": []
+        }, 
+        "params": {
+            "n": 3
+        }
+    },
     "Reshape": {
         "connection": {
             "input": [
@@ -462,6 +673,21 @@
             "beta_constraint": "None"
         }
     }, 
+    "SELU": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "SELU"
+        }, 
+        "params": {
+            "inplace": true
+        }
+    }, 
     "Sigmoid": {
         "connection": {
             "input": [
@@ -476,7 +702,37 @@
         "params": {
             "inplace": true
         }
-    }, 
+    },
+    "Softplus": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Softplus"
+        }, 
+        "params": {
+            "inplace": true
+        }
+    },
+    "Softsign": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "Softsign"
+        }, 
+        "params": {
+            "inplace": true
+        }
+    },
     "Softmax": {
         "connection": {
             "input": [
@@ -503,6 +759,40 @@
         }, 
         "params": {
             "inplace": true
+        }
+    },
+    "ThresholdedReLU": {
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "info": {
+            "phase": null, 
+            "type": "ThresholdedReLU"
+        }, 
+        "params": {
+            "theta": 1.0, 
+            "inplace": true
+        }
+    },
+    "Upsample": {
+        "info": {
+            "phase": null, 
+            "type": "Upsample"
+        }, 
+        "connection": {
+            "input": [
+                "l0"
+            ], 
+            "output": []
+        }, 
+        "params": {
+            "size_d": 2, 
+            "layer_type": "3D", 
+            "size_w": 2, 
+            "size_h": 2
         }
     }
 }, "result": "success", "net_name": ""}

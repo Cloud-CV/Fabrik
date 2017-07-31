@@ -1,0 +1,102 @@
+{
+    "class_name": "Sequential", 
+    "keras_version": "2.0.6", 
+    "config": [
+        {
+            "class_name": "Conv1D", 
+            "config": {
+                "kernel_initializer": {
+                    "class_name": "VarianceScaling", 
+                    "config": {
+                        "distribution": "uniform", 
+                        "scale": 1.0, 
+                        "seed": null, 
+                        "mode": "fan_avg"
+                    }
+                }, 
+                "name": "conv1d_1", 
+                "kernel_constraint": null, 
+                "bias_regularizer": null, 
+                "bias_constraint": null, 
+                "dtype": "float32", 
+                "activation": "linear", 
+                "trainable": true, 
+                "padding": "valid", 
+                "strides": [
+                    1
+                ], 
+                "dilation_rate": [
+                    1
+                ], 
+                "kernel_regularizer": null, 
+                "filters": 32, 
+                "bias_initializer": {
+                    "class_name": "Zeros", 
+                    "config": {}
+                }, 
+                "batch_input_shape": [
+                    null, 
+                    28, 
+                    1
+                ], 
+                "use_bias": true, 
+                "activity_regularizer": null, 
+                "kernel_size": [
+                    3
+                ]
+            }
+        }, 
+        {
+            "class_name": "MaxPooling1D", 
+            "config": {
+                "padding": "valid", 
+                "strides": [
+                    2
+                ], 
+                "trainable": true, 
+                "name": "max_pooling1d_1", 
+                "pool_size": [
+                    2
+                ]
+            }
+        }, 
+        {
+            "class_name": "UpSampling1D", 
+            "config": {
+                "trainable": true, 
+                "name": "up_sampling1d_1", 
+                "size": 2
+            }
+        }, 
+        {
+            "class_name": "MaxPooling1D", 
+            "config": {
+                "padding": "valid", 
+                "strides": [
+                    2
+                ], 
+                "trainable": true, 
+                "name": "max_pooling1d_2", 
+                "pool_size": [
+                    2
+                ]
+            }
+        }, 
+        {
+            "class_name": "Flatten", 
+            "config": {
+                "trainable": true, 
+                "name": "flatten_1"
+            }
+        }, 
+        {
+            "class_name": "RepeatVector", 
+            "config": {
+                "trainable": true, 
+                "name": "repeat_vector_1", 
+                "n": 2
+            }
+        }
+    ], 
+    "backend": "theano"
+}

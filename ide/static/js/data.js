@@ -3250,6 +3250,7 @@ export default {
     },
     learn: false
   },
+  // This layer is currently not supported as there is no bottom blob
   Parameter: { // Only Caffe
     name: 'parameter',
     color: '#03a9f4',
