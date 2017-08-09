@@ -250,6 +250,7 @@ button.close {
 .dropdown-menu {
     margin-top: 0;
     max-height: 500px;
+    min-width: 50px;
 }
 
 .dropdown-menu > li > a{

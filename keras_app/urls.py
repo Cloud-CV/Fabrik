@@ -1,8 +1,8 @@
 from django.conf.urls import url
-from views.import_json import importJson
-from views.export_json import exportJson
+from views.import_json import import_json
+from views.export_json import export_json
 
 urlpatterns = [
-    url(r'^import$', importJson, name='keras-import'),
-    url(r'^export$', exportJson, name='keras-export')
+    url(r'^import$', import_json, name='keras-import'),
+    url(r'^export$', export_json, name='keras-export')
 ]

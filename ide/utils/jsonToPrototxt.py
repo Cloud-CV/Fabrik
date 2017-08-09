@@ -3,7 +3,7 @@ from caffe import layers as L
 import re
 
 
-def jsonToPrototxt(net, net_name):
+def json_to_prototxt(net, net_name):
     # assumption: a layer can accept only one input blob
     # the data layer produces two blobs: data and label
     # the loss layer requires two blobs: <someData> and label

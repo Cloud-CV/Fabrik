@@ -20,15 +20,6 @@ class ImportPrototxtTest(unittest.TestCase):
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'success')
         # Test 2
-        response = self.client.post(reverse('caffe-import'), {'proto_id': 'alexnet'})
-        response = json.loads(response.content)
-        self.assertEqual(response['result'], 'success')
-        # Test 3
-        response = self.client.post(reverse('caffe-import'), {'proto_id': 'dummyProtoId'})
-        response = json.loads(response.content)
-        self.assertEqual(response['result'], 'error')
-        self.assertEqual(response['error'], 'No Prototxt model file found')
-        # Test 4
         sample_file = open(os.path.join(settings.BASE_DIR, 'example/keras', 'vgg16.json'), 'r')
         response = self.client.post(reverse('caffe-import'), {'file': sample_file})
         response = json.loads(response.content)

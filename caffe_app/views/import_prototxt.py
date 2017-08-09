@@ -7,19 +7,12 @@ from google.protobuf import text_format
 
 
 @csrf_exempt
-def importPrototxt(request):
+def import_prototxt(request):
     if request.method == 'POST':
         if ('file' in request.FILES) and \
            (request.FILES['file'].content_type == 'application/octet-stream'):
             try:
                 prototxt = request.FILES['file']
-            except Exception:
-                return JsonResponse({'result': 'error',
-                                     'error': 'No Prototxt model file found'})
-        elif 'proto_id' in request.POST:
-            try:
-                prototxt = open(os.path.join(settings.BASE_DIR,
-                                             'media', request.POST['proto_id'] + '.prototxt'), 'r')
             except Exception:
                 return JsonResponse({'result': 'error',
                                      'error': 'No Prototxt model file found'})

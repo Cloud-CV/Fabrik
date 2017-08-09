@@ -6,10 +6,13 @@ language: python
 python:
   - "2.7"
 
+addons:
+  postgresql: "9.4"
+
 cache:
   directories:
     - $HOME/.cache/pip
-    - $HOME/caffe
+    #- $HOME/caffe
 
   before_cache:
     - rm -f $HOME/.cache/pip/log/debug.log
@@ -24,6 +27,13 @@ install:
 
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$HOME/caffe/caffe/python
+  - psql -c "CREATE DATABASE fabrik" -U postgres
+  - psql -c "CREATE USER admin WITH PASSWORD 'fabrik'" -U postgres
+  - psql -c "ALTER ROLE admin SET client_encoding TO 'utf8'" -U postgres
+  - psql -c "ALTER ROLE admin SET default_transaction_isolation TO 'read committed'" -U postgres
+  - psql -c "ALTER ROLE admin SET timezone TO 'UTC'" -U postgres
+  - psql -c "ALTER USER admin CREATEDB" -U postgres
+
 script:
   - flake8 ./
   - npm run ci

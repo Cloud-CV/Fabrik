@@ -1,8 +1,8 @@
 from django.conf.urls import url
-from views.import_graphdef import importGraphDef
-from views.export_graphdef import exportToTensorflow
+from views.import_graphdef import import_graph_def
+from views.export_graphdef import export_to_tensorflow
 
 urlpatterns = [
-    url(r'^export$', exportToTensorflow, name='tf-export'),
-    url(r'^import$', importGraphDef, name='tf-import'),
+    url(r'^export$', export_to_tensorflow, name='tf-export'),
+    url(r'^import$', import_graph_def, name='tf-import'),
 ]

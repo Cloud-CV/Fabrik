@@ -24,9 +24,9 @@ from keras.layers import Input
 from keras import regularizers
 from keras.models import Model, Sequential
 from keras_app.views.layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
-    recurrent, batchNorm, activation, flatten, reshape, eltwise, concat, upsample,\
-    locallyConnected, permute, repeatVector, regularization, masking, gaussianNoise, gaussianDropout,\
-    alphaDropout
+    recurrent, batch_norm, activation, flatten, reshape, eltwise, concat, upsample,\
+    locally_connected, permute, repeat_vector, regularization, masking, gaussian_noise, gaussian_dropout,\
+    alpha_dropout
 
 
 class ImportJsonTest(unittest.TestCase):
@@ -921,7 +921,7 @@ class RepeatVectorExportTest(unittest.TestCase):
         net = {'l0': net['Input3'], 'l1': net['RepeatVector']}
         net['l0']['connection']['output'].append('l1')
         inp = data(net['l0'], '', 'l0')['l0']
-        net = repeatVector(net['l1'], [inp], 'l1')
+        net = repeat_vector(net['l1'], [inp], 'l1')
         model = Model(inp, net['l1'])
         self.assertEqual(model.layers[1].__class__.__name__, 'RepeatVector')
 
@@ -1129,7 +1129,7 @@ class LocallyConnectedExportTest(unittest.TestCase):
         net['l3']['connection']['input'] = ['l1']
         net['l3']['params']['layer_type'] = '1D'
         inp = data(net['l1'], '', 'l1')['l1']
-        temp = locallyConnected(net['l3'], [inp], 'l3')
+        temp = locally_connected(net['l3'], [inp], 'l3')
         model = Model(inp, temp['l3'])
         self.assertEqual(model.layers[1].__class__.__name__, 'LocallyConnected1D')
         # LocallyConnected 2D
@@ -1138,7 +1138,7 @@ class LocallyConnectedExportTest(unittest.TestCase):
         net['l3']['connection']['input'] = ['l0']
         net['l3']['params']['layer_type'] = '2D'
         inp = data(net['l0'], '', 'l0')['l0']
-        temp = locallyConnected(net['l3'], [inp], 'l3')
+        temp = locally_connected(net['l3'], [inp], 'l3')
         model = Model(inp, temp['l3'])
         self.assertEqual(model.layers[1].__class__.__name__, 'LocallyConnected2D')
 
@@ -1302,7 +1302,7 @@ class GaussianNoiseExportTest(unittest.TestCase):
         net = {'l0': net['Input'], 'l1': net['GaussianNoise']}
         net['l0']['connection']['output'].append('l1')
         inp = data(net['l0'], '', 'l0')['l0']
-        net = gaussianNoise(net['l1'], [inp], 'l1')
+        net = gaussian_noise(net['l1'], [inp], 'l1')
         model = Model(inp, net['l1'])
         self.assertEqual(model.layers[1].__class__.__name__, 'GaussianNoise')
 
@@ -1320,7 +1320,7 @@ class GaussianDropoutExportTest(unittest.TestCase):
         net = {'l0': net['Input'], 'l1': net['GaussianDropout']}
         net['l0']['connection']['output'].append('l1')
         inp = data(net['l0'], '', 'l0')['l0']
-        net = gaussianDropout(net['l1'], [inp], 'l1')
+        net = gaussian_dropout(net['l1'], [inp], 'l1')
         model = Model(inp, net['l1'])
         self.assertEqual(model.layers[1].__class__.__name__, 'GaussianDropout')
 
@@ -1338,7 +1338,7 @@ class AlphaDropoutExportTest(unittest.TestCase):
         net = {'l0': net['Input'], 'l1': net['AlphaDropout']}
         net['l0']['connection']['output'].append('l1')
         inp = data(net['l0'], '', 'l0')['l0']
-        net = alphaDropout(net['l1'], [inp], 'l1')
+        net = alpha_dropout(net['l1'], [inp], 'l1')
         model = Model(inp, net['l1'])
         self.assertEqual(model.layers[1].__class__.__name__, 'AlphaDropout')
 
@@ -1358,18 +1358,18 @@ class BatchNormExportTest(unittest.TestCase):
         net['l0']['connection']['output'].append('l1')
         # Test 1
         inp = data(net['l0'], '', 'l0')['l0']
-        temp = batchNorm(net['l1'], [inp], 'l1', 'l2', net['l2'])
+        temp = batch_norm(net['l1'], [inp], 'l1', 'l2', net['l2'])
         model = Model(inp, temp['l2'])
         self.assertEqual(model.layers[1].__class__.__name__, 'BatchNormalization')
         # Test 2
         net['l2']['params']['filler'] = 'VarianceScaling'
         net['l2']['params']['bias_filler'] = 'VarianceScaling'
         inp = data(net['l0'], '', 'l0')['l0']
-        temp = batchNorm(net['l1'], [inp], 'l1', 'l2', net['l2'])
+        temp = batch_norm(net['l1'], [inp], 'l1', 'l2', net['l2'])
         model = Model(inp, temp['l2'])
         self.assertEqual(model.layers[1].__class__.__name__, 'BatchNormalization')
         # Test 3
         inp = data(net['l0'], '', 'l0')['l0']
-        temp = batchNorm(net['l1'], [inp], 'l1', 'l0', net['l0'])
+        temp = batch_norm(net['l1'], [inp], 'l1', 'l0', net['l0'])
         model = Model(inp, temp['l1'])
         self.assertEqual(model.layers[1].__class__.__name__, 'BatchNormalization')

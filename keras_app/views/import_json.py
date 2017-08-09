@@ -12,7 +12,7 @@ from keras.models import model_from_json, Sequential
 
 
 @csrf_exempt
-def importJson(request):
+def import_json(request):
     if request.method == 'POST':
         if ('file' in request.FILES):
             try:

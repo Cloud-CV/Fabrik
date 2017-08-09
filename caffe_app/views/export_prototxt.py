@@ -6,7 +6,7 @@ import random
 import string
 import sys
 import os
-from ide.utils.jsonToPrototxt import jsonToPrototxt
+from ide.utils.jsonToPrototxt import json_to_prototxt
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -15,14 +15,14 @@ def randomword(length):
 
 
 @csrf_exempt
-def exportToCaffe(request):
+def export_to_caffe(request):
     if request.method == 'POST':
         net = yaml.safe_load(request.POST.get('net'))
         net_name = request.POST.get('net_name')
         if net_name == '':
             net_name = 'Net'
         try:
-            prototxt, input_dim = jsonToPrototxt(net, net_name)
+            prototxt, input_dim = json_to_prototxt(net, net_name)
             randomId = datetime.now().strftime('%Y%m%d%H%M%S')+randomword(5)
             with open(BASE_DIR+'/media/'+randomId+'.prototxt', 'w') as f:
                 f.write(prototxt)

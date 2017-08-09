@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount'
+    'allauth.socialaccount',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -83,14 +83,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ide.wsgi.application'
 
+SITE_ID = 1
+
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'fabrik',
+        'USER': 'admin',
+        'PASSWORD': 'fabrik',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 

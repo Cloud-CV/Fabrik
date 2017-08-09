@@ -26,6 +26,7 @@ class Content extends React.Component {
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
     this.changeHoveredLayer = this.changeHoveredLayer.bind(this);
+    this.componentWillMount = this.componentWillMount.bind(this);
     this.modifyLayer = this.modifyLayer.bind(this);
     this.adjustParameters = this.adjustParameters.bind(this);
     this.modifyLayerParams = this.modifyLayerParams.bind(this);
@@ -39,6 +40,8 @@ class Content extends React.Component {
     this.dismissAllErrors = this.dismissAllErrors.bind(this);
     this.copyTrain = this.copyTrain.bind(this);
     this.trainOnly = this.trainOnly.bind(this);
+    this.saveDb = this.saveDb.bind(this);
+    this.loadDb = this.loadDb.bind(this);
   }
   addNewLayer(layer) {
     const net = this.state.net;
@@ -178,7 +181,7 @@ class Content extends React.Component {
         delete netData[layerId].state;
       });
 
-      const url = {'caffe': '/caffe/export', 'keras': '/keras/export', 'tensorflow': '/tensorflow/export', 'url': '/caffe/export'}
+      const url = {'caffe': '/caffe/export', 'keras': '/keras/export', 'tensorflow': '/tensorflow/export'}
       this.setState({ load: true });
       $.ajax({
         url: url[framework],
@@ -190,12 +193,7 @@ class Content extends React.Component {
         },
         success : function (response) {
 
-          if (response.result == 'success' && framework == 'url'){
-            var id = response.url.split('/')[2];
-            id = id.split('.')[0];
-            prompt('Your prototxt ID is ',id);
-          }
-          else if (response.result == 'success') {
+          if (response.result == 'success') {
             const downloadAnchor = document.getElementById('download');
             downloadAnchor.download = response.name;
             downloadAnchor.href = response.url;
@@ -213,7 +211,7 @@ class Content extends React.Component {
   }
   importNet(framework, id) {
     this.dismissAllErrors();
-    const url = {'caffe': '/caffe/import', 'keras': '/keras/import', 'tensorflow': '/tensorflow/import', 'url': '/caffe/import'};
+    const url = {'caffe': '/caffe/import', 'keras': '/keras/import', 'tensorflow': '/tensorflow/import'};
     const formData = new FormData();
     const caffe_fillers = ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'];
     const keras_fillers = ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
@@ -225,10 +223,6 @@ class Content extends React.Component {
     else if (framework == 'samplekeras'){
       framework = 'keras'
       formData.append('sample_id', id);
-    }
-    else if (framework == 'url'){
-      const id = prompt('Please enter prototxt id ',id);
-      formData.append('proto_id', id);
     }
     else
       formData.append('file', $('#inputFile'+framework)[0].files[0]);
@@ -498,6 +492,94 @@ class Content extends React.Component {
     layer.info.phase = 0;
     this.setState({ net });
   }
+  saveDb(){
+    this.dismissAllErrors();
+    const error = [];
+    const net = this.state.net;
+
+    Object.keys(net).forEach(layerId => {
+      const layer = net[layerId];
+      Object.keys(layer.params).forEach(param => {
+        layer.params[param] = layer.params[param][0];
+        const paramData = data[layer.info.type].params[param];
+        if (layer.info.type == 'Python' && param == 'endPoint'){
+          return;
+        }
+        if (paramData.required === true && layer.params[param] === '') {
+          error.push(`Error: "${paramData.name}" required in "${layer.props.name}" Layer`);
+        }
+      });
+    });
+
+    if (error.length) {
+      this.setState({ error });
+    } else {
+      const netData = JSON.parse(JSON.stringify(this.state.net));
+      Object.keys(netData).forEach(layerId => {
+        delete netData[layerId].state;
+      });
+      this.setState({ load: true });
+      $.ajax({
+        url: '/caffe/save',
+        dataType: 'json',
+        type: 'POST',
+        data: {
+          net: JSON.stringify(netData),
+          net_name: this.state.net_name
+        },
+        success : function (response) {
+          if (response.result == 'success'){
+            var url = 'fabrik.cloudcv.org/caffe/load?id='+response.id;
+            prompt('Your model url is ', url);
+          } else if (response.result == 'error') {
+            this.addError(response.error);
+          }
+          this.setState({ load: false });
+        }.bind(this),
+        error() {
+          this.setState({ load: false });
+        }
+      });
+    }
+  }
+  componentWillMount(){
+    var url = window.location.href;
+    var urlParams = {};
+    url = url.split('#')[0];
+    url.replace(
+    new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+    function($0, $1, $2, $3) {
+      urlParams[$1] = $3;
+      }
+    );
+    if ('id' in urlParams){
+      this.loadDb(urlParams['id']);
+    }
+  }
+  loadDb(id) {
+    this.dismissAllErrors();
+    const formData = new FormData();
+    formData.append('proto_id', id);
+    $.ajax({
+      url: '/caffe/load',
+      dataType: 'json',
+      type: 'POST',
+      data: formData,
+      processData: false,  // tell jQuery not to process the data
+      contentType: false,
+      success: function (response) {
+        if (response.result === 'success'){
+          this.initialiseImportedNet(response.net,response.net_name);
+        } else if (response.result === 'error'){
+          this.addError(response.error);
+        }
+        this.setState({ load: false });
+      }.bind(this),
+      error() {
+        this.setState({ load: false });
+      }
+    });
+  }
   render() {
     let loader = null;
     if (this.state.load) {
@@ -508,6 +590,8 @@ class Content extends React.Component {
         <TopBar
           exportNet={this.exportNet}
           importNet={this.importNet}
+          saveDb={this.saveDb}
+          loadDb={this.loadDb}
         />
         <div className="content">
           <div className="pane">

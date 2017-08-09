@@ -11,8 +11,8 @@ from django.http import JsonResponse
 from ide.utils.shapes import get_shapes
 from keras.models import Model
 from layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
-    recurrent, batchNorm, activation, flatten, reshape, eltwise, concat, upsample, locallyConnected, permute,\
-    repeatVector, regularization, masking, gaussianNoise, gaussianDropout, alphaDropout
+    recurrent, batch_norm, activation, flatten, reshape, eltwise, concat, upsample, locally_connected,\
+    permute, repeat_vector, regularization, masking, gaussian_noise, gaussian_dropout, alpha_dropout
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -21,7 +21,7 @@ def randomword(length):
 
 
 @csrf_exempt
-def exportJson(request):
+def export_json(request):
     if request.method == 'POST':
         net = yaml.safe_load(request.POST.get('net'))
         net_name = request.POST.get('net_name')
@@ -52,14 +52,14 @@ def exportJson(request):
             'Flatten': flatten,
             'Reshape': reshape,
             'Permute': permute,
-            'RepeatVector': repeatVector,
+            'RepeatVector': repeat_vector,
             'Regularization': regularization,
             'Masking': masking,
             'Convolution': convolution,
             'Deconvolution': deconvolution,
             'Upsample': upsample,
             'Pooling': pooling,
-            'LocallyConnected': locallyConnected,
+            'LocallyConnected': locally_connected,
             'RNN': recurrent,
             'GRU': recurrent,
             'LSTM': recurrent,
@@ -69,10 +69,10 @@ def exportJson(request):
             'PReLU': activation,
             'ELU': activation,
             'ThresholdedReLU': activation,
-            'BatchNorm': batchNorm,
-            'GaussianNoise': gaussianNoise,
-            'GaussianDropout': gaussianDropout,
-            'AlphaDropout': alphaDropout,
+            'BatchNorm': batch_norm,
+            'GaussianNoise': gaussian_noise,
+            'GaussianDropout': gaussian_dropout,
+            'AlphaDropout': alpha_dropout,
             'Scale': ''
         }
 

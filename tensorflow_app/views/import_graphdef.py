@@ -57,7 +57,7 @@ def get_padding(node, layer):
 
 
 @csrf_exempt
-def importGraphDef(request):
+def import_graph_def(request):
     if request.method == 'POST':
         try:
             f = request.FILES['file']

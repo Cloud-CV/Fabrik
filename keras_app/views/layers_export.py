@@ -131,7 +131,7 @@ def permute(layer, layer_in, layerId):
     return out
 
 
-def repeatVector(layer, layer_in, layerId):
+def repeat_vector(layer, layer_in, layerId):
     out = {layerId: RepeatVector(layer['params']['n'])(*layer_in)}
     return out
 
@@ -358,7 +358,7 @@ def pooling(layer, layer_in, layerId):
 
 
 # ********** Locally-connected Layers **********
-def locallyConnected(layer, layer_in, layerId):
+def locally_connected(layer, layer_in, layerId):
     localMap = {
         '1D': LocallyConnected1D,
         '2D': LocallyConnected2D,
@@ -500,19 +500,19 @@ def concat(layer, layer_in, layerId):
 
 
 # ********** Noise Layers **********
-def gaussianNoise(layer, layer_in, layerId):
+def gaussian_noise(layer, layer_in, layerId):
     stddev = layer['params']['stddev']
     out = {layerId: GaussianNoise(stddev=stddev)(*layer_in)}
     return out
 
 
-def gaussianDropout(layer, layer_in, layerId):
+def gaussian_dropout(layer, layer_in, layerId):
     rate = layer['params']['rate']
     out = {layerId: GaussianDropout(rate=rate)(*layer_in)}
     return out
 
 
-def alphaDropout(layer, layer_in, layerId):
+def alpha_dropout(layer, layer_in, layerId):
     rate = layer['params']['rate']
     seed = layer['params']['seed']
     out = {layerId: AlphaDropout(rate=rate, seed=seed)(*layer_in)}
@@ -520,7 +520,7 @@ def alphaDropout(layer, layer_in, layerId):
 
 
 # ********** Normalisation Layers **********
-def batchNorm(layer, layer_in, layerId, idNext, nextLayer,):
+def batch_norm(layer, layer_in, layerId, idNext, nextLayer,):
     out = {}
     momentum = layer['params']['moving_average_fraction']
     eps = layer['params']['eps']

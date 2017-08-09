@@ -45,9 +45,25 @@ This app is presently under active development and we welcome contributions. Ple
     ```
     pip install -r requirements/common.txt
     ```
+5. [Install postgres](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+* Setup postgres database
+    ```
+      psql -c "CREATE DATABASE fabrik" -U postgres
+      psql -c "CREATE USER admin WITH PASSWORD 'fabrik'" -U postgres
+      psql -c "ALTER ROLE admin SET client_encoding TO 'utf8'" -U postgres
+      psql -c "ALTER ROLE admin SET default_transaction_isolation TO 'read committed'" -U postgres
+      psql -c "ALTER ROLE admin SET timezone TO 'UTC'" -U postgres
+      psql -c "ALTER USER admin CREATEDB" -U postgres
+    ```
+* Migrate
+    ```
+    python manage.py makemigrations caffe_app
+    python manage.py migrate
+    ```
+6. Install node modules
 ```
 npm install
-webpack
+webpack --progress --watch --colors
 ```
 
 ### Usage
