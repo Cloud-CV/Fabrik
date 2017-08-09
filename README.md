@@ -16,7 +16,7 @@ Tooltips             |  Edit layer parameters and Layers Dropdown
 ![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_3.png)  |  ![](https://github.com/Cloud-CV/Fabrik/blob/master/example/screenshot_4.png)
 
 
-This app is presently under active development and we welcome contributions. Please check out our [issues thread](https://github.com/Cloud-CV/IDE/issues) to find things to work on, or ping us on [Gitter](https://gitter.im/batra-mlp-lab/CloudCV). 
+This app is presently under active development and we welcome contributions. Please check out our [issues thread](https://github.com/Cloud-CV/IDE/issues) to find things to work on, or ping us on [Gitter](https://gitter.im/Cloud-CV/IDE). 
 
 ### How to setup
 1. First set up a virtualenv
