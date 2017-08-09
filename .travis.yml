@@ -12,7 +12,7 @@ addons:
 cache:
   directories:
     - $HOME/.cache/pip
-    #- $HOME/caffe
+    - $HOME/caffe
 
   before_cache:
     - rm -f $HOME/.cache/pip/log/debug.log

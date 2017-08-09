@@ -1,13 +1,28 @@
 import React from 'react';
 import Canvas from './canvas';
-import Pane from './pane';
-import Models from './models'
+import Pane from './pane2';
 import SetParams from './setParams';
 import Tooltip from './tooltip'
 import TopBar from './topBar';
 import Tabs from './tabs';
 import data from './data';
 import netLayout from './netLayout_vertical';
+import Modal from 'react-modal';
+
+const infoStyle = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : '60%',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    borderRadius          : '8px'
+  },
+  overlay: {
+    zIndex                : 100
+  }
+};
 
 class Content extends React.Component {
   constructor(props) {
@@ -21,7 +36,8 @@ class Content extends React.Component {
       rebuildNet: false,
       selectedPhase: 0,
       error: [],
-      load: false
+      load: false,
+      modalIsOpen: false
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
@@ -40,8 +56,19 @@ class Content extends React.Component {
     this.dismissAllErrors = this.dismissAllErrors.bind(this);
     this.copyTrain = this.copyTrain.bind(this);
     this.trainOnly = this.trainOnly.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
     this.saveDb = this.saveDb.bind(this);
     this.loadDb = this.loadDb.bind(this);
+    this.infoModal = this.infoModal.bind(this);
+    this.modalContent = null;
+    this.modalHeader = null;
+  }
+  openModal() {
+    this.setState({modalIsOpen: true});
+  }
+  closeModal() {
+    this.setState({modalIsOpen: false});
   }
   addNewLayer(layer) {
     const net = this.state.net;
@@ -274,7 +301,7 @@ class Content extends React.Component {
     const tempError = {};
     const error = [];
     const height = 0.05*window.innerHeight;
-    const width = 0.45*window.innerWidth;
+    const width = 0.35*window.innerWidth;
     // Initialize Python layer parameters to be empty
     data['Python']['params'] = {}
     this.setState({ net: {}, selectedLayer: null, hoveredLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
@@ -530,7 +557,9 @@ class Content extends React.Component {
         success : function (response) {
           if (response.result == 'success'){
             var url = 'fabrik.cloudcv.org/caffe/load?id='+response.id;
-            prompt('Your model url is ', url);
+            this.modalHeader = 'Your model url is:';
+            this.modalContent = (<a href={url}>{url}</a>);
+            this.openModal();
           } else if (response.result == 'error') {
             this.addError(response.error);
           }
@@ -580,30 +609,52 @@ class Content extends React.Component {
       }
     });
   }
+  infoModal() {
+    this.modalHeader = "About"
+    this.modalContent = "This is a React+Django webapp with a simple drag and drop interface to build and configure\
+                         deep neural networks with support for export of model configuration files to caffe and tensorflow. It also supports\
+                         import from these frameworks to visualize different model architectures. Our motivation is to build an online IDE where\
+                         researchers can share models and collaborate without having to deal with deep learning code.";
+    this.openModal();
+  }
   render() {
     let loader = null;
     if (this.state.load) {
       loader = (<div className="loader"></div>);
     }
     return (
-      <div className="container-fluid">
-        <TopBar
-          exportNet={this.exportNet}
-          importNet={this.importNet}
-          saveDb={this.saveDb}
-          loadDb={this.loadDb}
-        />
-        <div className="content">
-          <div className="pane">
-            <ul className="nav nav-pills">
-              <Pane />
-              {/* <li style={{paddingTop:'4px'}}>
-                <button><span className="glyphicon glyphicon-cog" style={{fontSize:'24px'}}></span></button>
-              </li> --> */}
-              <Tabs selectedPhase={this.state.selectedPhase} changeNetPhase={this.changeNetPhase} />
-              <Models importNet={this.importNet}/>
-            </ul>
+        <div id="parent">
+        <div id="sidebar">
+          <div className="col-md-12 text-center">
+              <a href="http://fabrik.cloudcv.org"><img src={'/static/img/fabrik_t.png'} className="img-responsive" alt="logo" id="logo"/></a>
+             <TopBar
+              exportNet={this.exportNet}
+              importNet={this.importNet}
+              saveDb={this.saveDb}
+             />
+             <br/>
+             <Pane />
+             <Tabs selectedPhase={this.state.selectedPhase} changeNetPhase={this.changeNetPhase} />
+             <div className="row footer">
+              <div className="col-md-2">
+                <button id="circleInfo" className="btn btn-default" onClick={this.infoModal}>
+                      <span className="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                </button>
+              </div>
+              <div className="col-md-2"/>
+              <div className="col-md-2">
+                <a href="https://github.com/Cloud-CV/Fabrik" target="_blank">
+                <img src={'/static/img/git.png'} alt="git logo" id="smallLogo"/></a>
+              </div>
+              <div className="col-md-2"/>
+              <div className="col-md-2">
+                <a href="http://cloudcv.org" target="_blank">
+                <img src={'/static/img/cloudcv.png'} alt="cloudcv logo" id="smallLogo"/></a>
+              </div>
+            </div>
           </div>
+        </div>
+        <div id="main">
           {loader}
           <Canvas
             net={this.state.net}
@@ -634,6 +685,14 @@ class Content extends React.Component {
             net={this.state.net}
             hoveredLayer={this.state.hoveredLayer}
           />
+          <Modal
+            isOpen={this.state.modalIsOpen}
+            onRequestClose={this.closeModal}
+            style={infoStyle}>
+            <button type="button" style={{padding: 5+'px'}} className="close" onClick={this.closeModal}>&times;</button>
+            <h4>{ this.modalHeader }</h4>
+            { this.modalContent }
+          </Modal>
         </div>
       </div>
     );

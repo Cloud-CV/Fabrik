@@ -9,8 +9,39 @@
 
 }
 
-html,body,#app,.app{
+html,body,#app,.app,.row-offcanvas{
   height:100%;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 20%;
+    background-color: #2a2a2a;
+    overflow-y: auto;
+}
+
+#parent {
+    margin-left: 20%;
+    background-color: blue;
+}
+
+#main {
+  overflow: hidden;
+  width: 80%;
+  display: flex;
+  flex-flow: column;
+  top: 0px;
+  left: 20%;
+  bottom: 0px;
+  position: absolute;
 }
 
 .container-fluid{
@@ -30,18 +61,111 @@ html,body,#app,.app{
   flex: 0 1 auto;
 }
 
-#logo{
-  max-height: 50px;
-  padding: 2px;
+#circle {
+  width: 40px;
+  height: 40px;
+  padding: 6px 10px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 20px;
 }
+
+#circleInfo {
+  width: 40px;
+  height: 40px;
+  padding: 6px 10px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.panel-group{
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.panel-default{
+  border: none;
+}
+
+.panel-default>.panel-heading {
+  color: white;
+}
+
+.panel-body{
+  padding: 5px;
+}
+
+#dataLayers{
+  background-color: #673ab7;
+}
+
+#visionLayers{
+  background-color: #3f51b5;
+}
+
+#recurrentLayers{
+  background-color: #3f51b5;
+}
+
+#commonLayers{
+  background-color: #ff9800;
+}
+
+#normalizationLayers{
+  background-color: #ffeb3b;
+}
+
+#noiseLayers{
+  background-color: #ff9800;
+}
+
+#activationLayers{
+  background-color: #009688;
+}
+
+#utilityLayers{
+  background-color: #03a9f4;
+}
+
+#lossLayers{
+  background-color: #f44336;
+}
+
+#pythonLayer{
+  background-color: #f44336;
+}
+
+#pythonButton{
+  background-color: transparent;
+  border: none;
+  color: white;
+}
+
+#logo{
+  max-height: 60px;
+  margin: 0 auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  }
+
+#smallLogo{
+  max-height: 40px;
+  margin: 0 auto;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  }
 
 .content{
   flex: 1 1 auto;
-  height:100%;
+  height: 100%;
   display: flex;
   flex-flow: column;
   overflow: hidden;
   position: relative;
+
 }
 
 .canvas{
@@ -236,6 +360,16 @@ button.close {
     text-shadow: 0 1px 0 #fff;
     filter: alpha(opacity=20);
     opacity: .2;
+}
+
+#model-dropdown{
+  z-index: 999;
+}
+
+#placeholder{
+  margin-top: 30%;
+  color: #808080;
+  font-style: italic;
 }
 
 #model-dropdown:hover #addModelDropdown {

@@ -7,12 +7,12 @@ class ModelElement extends React.Component {
   render() {
     if (this.props.children){
       return (
-      <div
-        className="btn btn-default btn-block"
+      <a
+        className="btn"
         onClick={() => this.props.importNet('sample'+this.props.framework, this.props.id)}
         >
         {this.props.children}
-      </div>
+      </a>
     );
     }
     else

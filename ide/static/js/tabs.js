@@ -12,17 +12,19 @@ class Tabs extends React.Component {
     });
   }
   render() {
-    let trainClass = '',
-      testClass = '';
+    let trainClass = 'btn-primary',
+      testClass = 'btn-default';
     if (this.props.selectedPhase === 0) {
-      trainClass = 'focus active';
+      trainClass = 'btn-primary';
+      testClass = 'btn-default';
     } else if (this.props.selectedPhase === 1) {
-      testClass = 'focus active';
+      trainClass = 'btn-default';
+      testClass = 'btn-primary';
     }
     return (
       <li className="btn-group" role="group" id="phaseTabs">
-        <button type="button" id="train" className={"btn btn-default "+trainClass}>Train</button>
-        <button type="button" id="test" className={"btn btn-default "+testClass}>Test</button>
+        <button type="button" id="train" className={"btn "+trainClass}>Train</button>
+        <button type="button" id="test" className={"btn "+testClass}>Test</button>
       </li>
     );
   }

@@ -21,6 +21,7 @@
     "jquery": "^2.2.4",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
+    "react-modal": "^2.2.2",
     "react-router": "^2.4.1",
     "react-tooltip": "^3.2.7"
   },
@@ -43,4 +44,3 @@
     "webpack": "^1.13.1"
   }
 }
-
