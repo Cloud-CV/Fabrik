@@ -1,16 +1,11 @@
-
-
 #jsplumbContainer {
   position: absolute;
   transform-origin: top left;
 }
 
-.topBar{
-
-}
-
 html,body,#app,.app,.row-offcanvas{
   height:100%;
+  font-family: 'ProximaNova-Regular', sans-serif;
 }
 
 body {
@@ -24,8 +19,36 @@ body {
     left: 0px;
     bottom: 0px;
     width: 20%;
-    background-color: #2a2a2a;
+    background-color: #F3F3F3;
     overflow-y: auto;
+}
+
+#sidebar-content{
+  padding: 0 5% 0 5%;
+}
+
+.sidebar-heading{
+  font-family: 'ProximaNova-Bold', sans-serif;
+  color: #9ea2a9;
+  margin: 0px;
+  padding: 10px 0px 10px 0px;
+}
+
+.sidebar-badge{
+  padding: 10px;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.sidebar-dropdown{
+  float: right;
+  color: #9ea2a9;
+}
+
+#menu{
+  padding: 0px;
+  margin: 5px 0px 5px 0px;
+  font-weight: bold;
 }
 
 #parent {
@@ -44,16 +67,6 @@ body {
   position: absolute;
 }
 
-.container-fluid{
-  display: flex;
-  flex-flow: column;
-  height: 100%;
-  padding-bottom: 15px;
-}
-
-.topBarHead{
-  font-size: 30px;
-}
 
 .topBar .btn{
   margin: 5px;
@@ -61,24 +74,55 @@ body {
   flex: 0 1 auto;
 }
 
-#circle {
+#topbar-icon{
   width: 40px;
   height: 40px;
-  padding: 6px 10px;
-  font-size: 18px;
-  line-height: 1.33;
-  border-radius: 20px;
+  border-radius: 5px;
+  background-color: #cdcfd2;
+  box-shadow:none ;
+  border: none;
+  margin: 0px;
 }
 
-#circleInfo {
+.canvas-icon{
+  margin: 0px;
+  position: fixed;
+  bottom: 4%;
+  right: 4%;
+}
+
+.canvas-icon > p{
+  margin: 0px;
+  color: #9ea2a9;
+}
+
+.canvas-icon > button{
   width: 40px;
   height: 40px;
-  padding: 6px 10px;
-  font-size: 18px;
-  line-height: 1.33;
-  border-radius: 20px;
-  margin-top: 30px;
-  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #cdcfd2;
+  box-shadow:none ;
+  border: none;
+}
+
+#icon-plus{
+  right: 8%;
+}
+
+.extra-buttons{
+  padding-left: 0px;
+  font-weight: bold;
+  text-align: left;
+  color: #333;
+}
+
+
+.panel-default > .panel-heading{
+  padding-left: 0px;
+  padding-right: 0px;
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
 }
 
 .panel-group{
@@ -88,14 +132,14 @@ body {
 
 .panel-default{
   border: none;
+  background-color: transparent;
+  box-shadow: none;
 }
 
-.panel-default>.panel-heading {
-  color: white;
-}
-
-.panel-body{
-  padding: 5px;
+.panel-default > .panel-heading + .panel-collapse > .panel-body {
+  border: none;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 #dataLayers{
@@ -144,28 +188,60 @@ body {
   color: white;
 }
 
+#logo_back{
+  width: 100%;
+  margin: 0px;
+  background-color: #455062;
+}
+
 #logo{
-  max-height: 60px;
+  max-height: 50px;
   margin: 0 auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  padding: 7px 0px 7px 0px;
   }
 
-#smallLogo{
-  max-height: 40px;
-  margin: 0 auto;
-  margin-top: 30px;
-  margin-bottom: 10px;
-  }
+.btn-primary{
+  background-color: #455062;
+  border-color: #455062;
+  box-shadow: none;
+  outline: none
+}
 
-.content{
-  flex: 1 1 auto;
-  height: 100%;
-  display: flex;
-  flex-flow: column;
-  overflow: hidden;
-  position: relative;
+.btn-primary:hover {
+  background-color: #455062;
+  border-color: #455062;
+  box-shadow: none;
+  outline: none;
+}
 
+.btn-primary:focus {
+  background-color: #455062;
+  border-color: #455062;
+  outline: none;
+}
+
+.btn-default{
+  background-color: #cdcfd2;
+  border-color: #cdcfd2;
+  box-shadow: none;
+  outline: none
+}
+
+.btn-default:hover {
+  background-color: #cdcfd2;
+  border-color: #cdcfd2;
+  box-shadow: none;
+  outline: none;
+}
+
+.btn-default:focus {
+  background-color: #cdcfd2;
+  border-color: #cdcfd2;
+  outline: none;
+}
+
+.btn:focus{
+  outline: none;
 }
 
 .canvas{
@@ -180,15 +256,78 @@ body {
 }
 
 .setHead{
-  font-size: 25px;
-  color: green;
-  text-align: center;
-  padding-bottom: 20px;
-  padding-top: 20px;
+  color: black;
+  background-color: #F3F3F3;
+  padding: 6%;
+}
+
+.setHead > span{
+  padding: 10%;
+  font-size: 22px;
+  color: #455062;
+  position: fixed;
+  top: 1%;
+  right: 1%;
+}
+
+.setHead > h4{
+  margin: 0px;
+}
+
+.paramsCheckbox label {
+  cursor: pointer;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  left: 0;
+  background: #f26091;
+  border-radius: 3px;
+}
+
+.paramsCheckbox label:after {
+  opacity: 0.2;
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 8px;
+  background: transparent;
+  top: 3px;
+  left: 2px;
+  border: 2px solid white;
+  border-top: none;
+  border-right: none;
+  transform: rotate(-45deg);
+}
+
+.paramsCheckbox input[type=checkbox]:checked + label:after {
+  opacity: 1;
+}
+
+.paramsCheckbox{
+  height: 20px;
+  width: 20px;
+  position: fixed;
+  right: 6%;
+  margin: 7px;
+}
+
+.deleteLayerButton{
+  background: #f26091;
+  color: white;
+  bottom: 5%;
+  width: 100%;
+  padding: 7px;
 }
 
 .dropdown {
   z-index: 99;
+}
+
+.drowpdown-button{
+  text-align: left;
+  color: #848a92;
+  font-weight: bold;
 }
 
 .pane {
@@ -199,65 +338,67 @@ body {
 }
 
 .setContain{
-  padding-right: 40px;
+  padding: 6%;
 }
 
-.rhTooltip{
-  padding: 0px;
-}
 
 .customTooltip {
-  padding: 10px;
-  width: 270px;
-  color: white;
-  background-color: rgba(0,0,0,0.9) !important;
-  border-radius: 20px;
+  padding: 5px !important;
+  min-width: 100px !important;
+  max-width: 200px;
+  color: white !important;
+  background-color: #455062 !important;
+  border-radius: 5px !important;
 }
 
-.customTooltip br {
-  display: none;
+.__react_component_tooltip{
+  padding: 0px;
 }
 
 .setparams{
   position: absolute;
-  background-color: rgba(0,0,0,0.75);
-  height: 80%;
-  width:26%;
-  min-width:335px;
+  background-color: white;
+  height: 100%;
+  width:20%;
+  min-width:250px;
   max-width: 400px;
-  padding-left: 25px;
-  color: white;
+  color: black;
   overflow: auto;
-  padding-bottom: 50px;
-  top:10%;
-  left:100%;
-  border-top-left-radius: 2em;
-  border-bottom-left-radius: 2em;
+  left:101%;
   transition: transform 0.1s;
   transform: translateX(0px);
+  box-shadow: -5px 0px 10px #F3F3F3;
 }
 
 .setparamsActive{
-    transform: translateX(-100%);
+    transform: translateX(-103%);
 }
 
-#tooltipData.form-group{
-  padding: 0px;
-  margin: 0px;
+.closeSign {
+  cursor: pointer;
 }
+
+
 .tooltipField{
   border: none; 
-  color: white;
+  box-shadow: none;
+  margin: 0px;
   background: transparent;
-  padding: 0px;
+  word-wrap: break-word;
 }
+
 .tooltipLabel{
-  border: none; 
-  color: white;
-  background: transparent;
-  padding-top: 5px;
-  max-width: 140px;
-  font-weight: bold;
+  margin-right: 5px;
+  margin-bottom: 0px;
+  font-family: 'ProximaNova-Bold', sans-serif;
+  word-wrap: break-word;
+}
+
+.tooltipData{
+  display: inline-flex;
+  min-width: 100px;
+  word-wrap: break-word;
+  line-height: 20px;
 }
 
 .layer{
@@ -326,15 +467,17 @@ body {
 }
 
 .error{
-    padding: 3px;
-    width:400px;
+    padding: 10px;
+    width:40%;
     padding-left: 10px;
-    color: #a94442;
-    background-color: #f2dede;
-    border: 1px solid #ebccd1;
+    color: white;
+    background-color: #f44336;
+    border: none;
     z-index: 22;
     position: absolute;
-    left:500px;
+    top: 3%;
+    left:30%;
+    border-radius: 5px;
 }
 
 .alert-dismissible .close {
@@ -384,11 +527,14 @@ button.close {
 .dropdown-menu {
     margin-top: 0;
     max-height: 500px;
-    min-width: 50px;
+    min-width: 30px;
+    background-color: #455062;
 }
 
 .dropdown-menu > li > a{
-  padding: 6px 20px;
+  padding: 5px;
+  color: white;
+  text-align: left;
 }
 
 .dropdown-submenu{
@@ -463,6 +609,54 @@ input[type="file"] {
     font-weight: normal;
     padding: 0px;
     margin: 0px;
+}
+
+#sidebar::-webkit-scrollbar-track
+{
+  background-color: #F5F5F5;
+}
+
+#sidebar::-webkit-scrollbar
+{
+  width: 12px;
+  background-color: #F5F5F5;
+}
+
+#sidebar::-webkit-scrollbar-thumb
+{
+  background-color: #455062;
+}
+
+#panZoomContainer::-webkit-scrollbar-track
+{
+  background-color: #F5F5F5;
+}
+
+#panZoomContainer::-webkit-scrollbar
+{
+  width: 12px;
+  background-color: #F5F5F5;
+}
+
+#panZoomContainer::-webkit-scrollbar-thumb
+{
+  background-color: #455062;
+}
+
+.setparamsActive::-webkit-scrollbar-track
+{
+  background-color: #F5F5F5;
+}
+
+.setparamsActive::-webkit-scrollbar
+{
+  width: 12px;
+  background-color: #F5F5F5;
+}
+
+.setparamsActive::-webkit-scrollbar-thumb
+{
+  background-color: #cdcfd2;
 }
 
 

@@ -11,7 +11,7 @@ class PaneElement extends React.Component {
   render() {
     return (
       <div
-        className="btn btn-default btn-block"
+        className="btn btn-block drowpdown-button"
         draggable="true"
         onDragStart={this.drag}
         id={this.props.id}

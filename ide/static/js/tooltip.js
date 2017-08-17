@@ -41,15 +41,10 @@ class Tooltip extends React.Component {
       });
 
       return (
-        <ReactTooltip id='getContent' effect='solid' place='right' class='customTooltip'>
-          <div>
-            <div>
+        <ReactTooltip multiline={true} id='getContent' effect='solid' place='right' className='customTooltip'>
+          <div style={{display: 'inline-grid'}}>
               {props}
-            </div>
-            <br />
-            <div>
               {params}
-            </div>
           </div>
         </ReactTooltip>
     )

@@ -2,7 +2,9 @@ export default function() {
   "use strict";
 
   var panZoom = document.getElementById('panZoomContainer'),
-  canvas = document.getElementById('jsplumbContainer');
+  canvas = document.getElementById('jsplumbContainer'),
+  zoomIn = document.getElementById('icon-plus'),
+  zoomOut = document.getElementById('icon-minus');
 
   if (!canvas) { return; }
 
@@ -22,9 +24,9 @@ export default function() {
 
   panZoom.addEventListener('gestureend', function(e) {
       if (e.scale < 1.0) {
-          onZoom(current.zoom * 1.2 * 1.2, e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
+          onZoom(current.zoom * 1.2);
       } else if (e.scale > 1.0) {
-          onZoom(current.zoom / 1.2 / 1.2, e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
+          onZoom(current.zoom / 1.2);
       }
   }, false);
 
@@ -43,11 +45,6 @@ export default function() {
     dragging = false;
   };
 
-
-  window.onkeypress = function(e) {
-    onZoom((e.key == '[') ? current.zoom * 1.2 * 1.2 : current.zoom, e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
-    onZoom((e.key == ']') ? current.zoom / 1.2 / 1.2 : current.zoom, e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
-  }
 
   panZoom.ondragstart = function(e) {
     e.preventDefault();
@@ -68,18 +65,26 @@ export default function() {
 
   panZoom.ondblclick = function(e) {
     e.preventDefault();
-    onZoom((e.ctrlKey || e.metaKey) ? current.zoom * 1.2 * 1.2 : 
-	current.zoom / 1.2 / 1.2, e.clientX - panZoom.offsetLeft, e.clientY - panZoom.offsetTop);
+    onZoom((e.ctrlKey || e.metaKey) ? current.zoom * 1.2 : current.zoom / 1.2);
   };
 
-  function onZoom(zoom, cx, cy) {
-    var dx = cx - canvas.x;
-    var dy = cy - canvas.y;
-    var newdx = (dx*current.zoom)/zoom;
-    var newdy = (dy*current.zoom)/zoom;
-    canvas.x = cx - newdx;
-    canvas.y = cy - newdy;
+  window.onkeypress = function(e) {   
+   onZoom((e.key == '[') ? current.zoom * 1.2 : current.zoom);    
+   onZoom((e.key == ']') ? current.zoom / 1.2 : current.zoom) ;    
+  }
+
+  zoomOut.onclick = function(){
+    onZoom(current.zoom * 1.2);
+  };
+
+  zoomIn.onclick = function(){
+    onZoom(current.zoom / 1.2);
+  };
+
+  function onZoom(zoom) {
     canvas.scale = 1 / zoom;
+    canvas.x = 0 - 105*(canvas.scale*canvas.scale);
+    canvas.y = 0 - 15*(canvas.scale*canvas.scale);
     canvas.style.transitionDuration = "0.1s";
     canvas.updateContainerPosition();
     canvas.updateContainerScale();

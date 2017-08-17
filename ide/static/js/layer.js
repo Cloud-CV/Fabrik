@@ -25,7 +25,7 @@ class Layer extends React.Component {
         data-type={this.props.type}
         onClick={(event) => this.props.click(event, this.props.id)}
         onMouseEnter={(event) => this.props.hover(event, this.props.id)}
-        data-tip
+        data-tip='tooltip'
         data-for='getContent'
       >
         {data[this.props.type].name}

@@ -1,16 +1,17 @@
 import React from 'react';
-import ModelElement from './modelElement'
+import ModelElement from './modelElement';
+import ReactTooltip from 'react-tooltip';
 
 class TopBar extends React.Component {
   render() {
     return (
       <div className="topBar">
         <div className="row">
-          <div className="col-md-12 text-center" >
-            <div className="form-inline">
+            <div className="col-md-3">
               <div className="form-group">
                   <div className="dropdown">
-                    <button id="circle" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                    <button id="topbar-icon" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" 
+                    data-tip="Load from zoo">
                       <span className="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                     </button>
                     <ul className="dropdown-menu">
@@ -20,13 +21,15 @@ class TopBar extends React.Component {
                       <li><ModelElement importNet={this.props.importNet} framework="caffe" id="resnet101">ResNet 101</ModelElement></li>
                       <li><ModelElement importNet={this.props.importNet} framework="keras" id="v3">Inception V3</ModelElement></li>
                       <li><ModelElement importNet={this.props.importNet} framework="caffe" id="fcn">FCN32 Pascal</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="siamese_mnist">Mnist Siamese</ModelElement></li>
+                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="siamese_mnist">MNIST Siamese</ModelElement></li>
                     </ul>
                   </div>
               </div>
+            </div>
+            <div className="col-md-3">
               <div className="form-group">
                 <div className="dropdown">
-                  <button id="circle" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                  <button id="topbar-icon" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" data-tip="Export">
                     <span className="glyphicon glyphicon-export" aria-hidden="true"></span>
                   </button>
                   <ul className="dropdown-menu">
@@ -36,9 +39,11 @@ class TopBar extends React.Component {
                   </ul>
                 </div>
               </div>
+            </div>
+            <div className="col-md-3">
               <div className="form-group">
                 <div className="dropdown">
-                  <button id="circle" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown">
+                  <button id="topbar-icon" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" data-tip="Import">
                     <span className="glyphicon glyphicon-import" aria-hidden="true"></span>
                   </button>
                   <ul className="dropdown-menu">
@@ -63,15 +68,17 @@ class TopBar extends React.Component {
                   </ul>
                 </div>
               </div>
+            </div>
+            <div className="col-md-3">
               <div className="form-group">
-                <button id="circle" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" 
-                onClick={() => this.props.saveDb()}>
+                <button id="topbar-icon" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" 
+                onClick={() => this.props.saveDb()} data-tip="Share">
                     <span className="glyphicon glyphicon-share" aria-hidden="true"></span>
                 </button>
               </div>
             </div>
-          </div>
         </div>
+      <ReactTooltip type="dark" multiline={true}/>
       </div>
     );
   }

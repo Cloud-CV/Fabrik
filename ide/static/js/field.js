@@ -68,28 +68,29 @@ class Field extends React.Component {
       );
     } else if (type === 'checkbox') {
       inputElement = (
-        <input
-          type="checkbox"
-          disabled={this.props.disabled}
-          checked={this.props.value}
-          id={this.props.id}
-          onChange={this.change}
-        />
+        <div className="paramsCheckbox">
+          <input
+            type="checkbox"
+            disabled={this.props.disabled}
+            checked={this.props.value}
+            id={this.props.id}
+            onChange={this.change}
+          />
+          <label htmlFor={this.props.id}></label>
+        </div>
       );
     }
-
+    let displayStyle = "inherit";
+    if (inputElement.props.className == 'paramsCheckbox'){
+      displayStyle = "flex";
+    }
     return (
-      <div className="form-group">
-        <label
-          htmlFor={this.props.id}
-          className="col-sm-5
-          control-label"
-        >
-          {this.props.data.name}
+      <div style={{display: displayStyle}}>
+        <label htmlFor={this.props.id} className="sidebar-heading" style={{fontSize:"0.85em"}}>
+          {this.props.data.name.toUpperCase()}
         </label>
-        <div className="col-sm-7">
            {inputElement}
-        </div>
+      <br/>
       </div>
     );
   }

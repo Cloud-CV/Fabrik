@@ -22,4 +22,4 @@ node_modules/
 
 */migrations/
 
-ide/static/bundle/bundle.js
+ide/static/bundle/

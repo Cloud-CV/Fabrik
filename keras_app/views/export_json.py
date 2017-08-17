@@ -30,6 +30,7 @@ def export_json(request):
         try:
             net = get_shapes(net)
         except:
+            print sys.exc_info()
             return JsonResponse({'result': 'error', 'error': str(sys.exc_info()[1])})
 
         layer_map = {
@@ -75,6 +76,14 @@ def export_json(request):
             'AlphaDropout': alpha_dropout,
             'Scale': ''
         }
+
+        # Check if conversion is possible
+        for layerId in net:
+            layerType = net[layerId]['info']['type']
+            if ('Loss' in layerType or layerType == 'Accuracy' or layerType in layer_map):
+                pass
+            else:
+                return JsonResponse({'result': 'error', 'error': 'Cannot convert ' + layerType + ' to Keras'})
 
         stack = []
         net_out = {}
@@ -138,6 +147,7 @@ def export_json(request):
                         stack.append(outputId)
                 processedLayer[layerId] = True
             else:
+                print net[layerId]['info']['type']
                 return JsonResponse({'result': 'error', 'error': 'Cannot convert ' +
                                      net[layerId]['info']['type'] + ' to Keras'})
 
