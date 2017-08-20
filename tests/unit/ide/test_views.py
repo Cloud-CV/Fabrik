@@ -1186,7 +1186,7 @@ class ShapeCalculationTest(unittest.TestCase):
         image_path = os.path.join(settings.BASE_DIR, 'media', 'image_list.txt')
         data, _ = L.ImageData(source=image_path, batch_size=32, ntop=2, rand_skip=0,
                               shuffle=False, new_height=256, new_width=256, is_color=True,
-                              root_folder=os.path.join(settings.BASE_DIR, 'example/'),
+                              root_folder=os.path.join(settings.BASE_DIR, 'ide/static/img/'),
                               transform_param=dict(crop_size=227), name='l0')
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(data)))
@@ -1195,7 +1195,7 @@ class ShapeCalculationTest(unittest.TestCase):
         image_path = os.path.join(settings.BASE_DIR, 'media', 'image_list.txt')
         data, _ = L.ImageData(source=image_path, batch_size=32, ntop=2, rand_skip=0,
                               shuffle=False, new_height=256, new_width=256, is_color=True,
-                              root_folder=os.path.join(settings.BASE_DIR, 'example/'), name='l0')
+                              root_folder=os.path.join(settings.BASE_DIR, 'ide/static/img/'), name='l0')
         with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
             f.write(str(to_proto(data)))
         self.caffe_test(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'ImageData1', True)
