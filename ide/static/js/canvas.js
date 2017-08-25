@@ -212,11 +212,11 @@ class Canvas extends React.Component {
       const layer = net[layerId];
       if (layer.info.type == 'Python'){
         // Changing endpoints depending on the type of Python layer
-        if (layer.params.endPoint == '1, 0'){
+        if (layer.params.endPoint[0] == '1, 0'){
           data[layer.info.type]['endpoint']['trg'] = [];
           data[layer.info.type]['endpoint']['src'] = ['Bottom'];
         }
-        else if (layer.params.endPoint == '0, 1'){
+        else if (layer.params.endPoint[0] == '0, 1'){
           data[layer.info.type]['endpoint']['trg'] = ['Top'];
           data[layer.info.type]['endpoint']['src'] = [];
         }
