@@ -30,7 +30,7 @@ def export_json(request):
         try:
             net = get_shapes(net)
         except:
-            print sys.exc_info()
+            print(sys.exc_info())
             return JsonResponse({'result': 'error', 'error': str(sys.exc_info()[1])})
 
         layer_map = {
@@ -147,7 +147,7 @@ def export_json(request):
                         stack.append(outputId)
                 processedLayer[layerId] = True
             else:
-                print net[layerId]['info']['type']
+                print(net[layerId]['info']['type'])
                 return JsonResponse({'result': 'error', 'error': 'Cannot convert ' +
                                      net[layerId]['info']['type'] + ' to Keras'})
 
