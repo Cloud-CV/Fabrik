@@ -1,0 +1,17 @@
+{
+  "AWSEBDockerrunVersion": 1,
+  "containerDefinitions": [
+    {
+      "name": "fabrik-app",
+      "image": "<AWS_ACCOUNT_ID>.dkr.ecr.us-west-2.amazonaws.com/cloudcv/fabrik:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "hostPort": 8000,
+          "containerPort": 8000
+        }
+      ]
+    }
+  ]
+}

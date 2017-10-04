@@ -6,13 +6,16 @@ language: python
 python:
   - "2.7"
 
+services:
+  - docker
+
 addons:
   postgresql: "9.4"
 
 cache:
   directories:
     - $HOME/.cache/pip
-    - $HOME/caffe
+    #- $HOME/caffe
 
   before_cache:
     - rm -f $HOME/.cache/pip/log/debug.log
@@ -41,3 +44,4 @@ script:
 
 after_success:
   - coveralls
+  - sh docker/deploy.sh

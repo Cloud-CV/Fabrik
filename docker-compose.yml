@@ -1,0 +1,11 @@
+version: "2"
+services:
+  app:
+    container_name: fabrik
+    host_name: fabrik
+    build:
+      context: .
+      dockerfile: docker/prod/Dockerfile
+    command: docker/prod/container-start.sh
+    ports: 
+      - "8000:8000"
