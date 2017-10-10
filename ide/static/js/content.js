@@ -89,7 +89,7 @@ class Content extends React.Component {
   }
   changeHoveredLayer(layerId) {
     const net = this.state.net;
-    if (this.state.hoveredLayer) {
+    if (this.state.hoveredLayer && this.state.hoveredLayer in net) {
       // remove css from previously selected layer
       net[this.state.hoveredLayer].info.class = '';
     }

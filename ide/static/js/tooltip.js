@@ -9,7 +9,7 @@ class Tooltip extends React.Component {
   }
  
   render() {
-    if (this.props.hoveredLayer) {
+    if (this.props.hoveredLayer && this.props.hoveredLayer in this.props.net) {
       const params = [];
       const props = [];
       const layer = this.props.net[this.props.hoveredLayer];
