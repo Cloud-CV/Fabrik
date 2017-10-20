@@ -347,6 +347,7 @@ def Recurrent(layer):
     elif (layer.__class__.__name__ == 'LSTM'):
         params['recurrent_activation'] = layer.recurrent_activation.func_name
         params['unit_forget_bias'] = layer.unit_forget_bias
+        params['return_sequences'] = layer.return_sequences
     return jsonLayer(recurrentMap[layer.__class__.__name__], params, layer)
 
 

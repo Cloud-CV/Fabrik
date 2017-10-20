@@ -24,6 +24,7 @@ class TopBar extends React.Component {
                       <li><ModelElement importNet={this.props.importNet} framework="caffe" id="siamese_mnist">MNIST Siamese</ModelElement></li>
                       <li><ModelElement importNet={this.props.importNet} framework="caffe" id="All_CNN">All CNN</ModelElement></li>
                       <li><ModelElement importNet={this.props.importNet} framework="caffe" id="Squeezenet">Squeezenet</ModelElement></li>
+                      <li><ModelElement importNet={this.props.importNet} framework="keras" id="textGeneration">Text Generation</ModelElement></li>
                     </ul>
                   </div>
               </div>

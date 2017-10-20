@@ -1800,6 +1800,12 @@ export default {
         type: 'number',
         required: false
       },
+      return_sequences: { // Only Keras
+        name: 'Return Sequences',
+        value: false,
+        type: 'checkbox',
+        required: false
+      },
       caffe: {
         name: 'Available Caffe',
         value: true,
