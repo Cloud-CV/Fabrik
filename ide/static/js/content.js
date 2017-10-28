@@ -300,8 +300,10 @@ class Content extends React.Component {
     // so that the new imported layers will all be mounted again
     const tempError = {};
     const error = [];
-    const height = 0.05*window.innerHeight;
-    const width = 0.35*window.innerWidth;
+    // maintaining height & width in integers for use of map in order to
+    // reduce the search space for overlapping layers & plotting.
+    const height = Math.round(0.05*window.innerHeight, 0);
+    const width = Math.round(0.35*window.innerWidth, 0);
     // Initialize Python layer parameters to be empty
     data['Python']['params'] = {}
     this.setState({ net: {}, selectedLayer: null, hoveredLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
@@ -340,6 +342,9 @@ class Content extends React.Component {
     });
     // initialize the position of layers
     let positions = netLayout(net);
+    // use map for maintaining top,left coordinates of layers
+    // in order to avoid overlapping layers
+    let map = {}
     // Layers which are not used alone
     let combined_layers = ['ReLU', 'LRN', 'BatchNorm', 'Dropout', 'Scale'];
     Object.keys(positions).forEach(layerId => {
@@ -366,11 +371,44 @@ class Content extends React.Component {
         }
       }
       // Graph does not centre properly on higher resolution screens
+      var top = height + prev_top + y_space + Math.ceil(41-height);
+      var left = width + 80 * positions[layerId][0];
+      var layerOverlaps = true;
+
+      // Checking for Overlapping layers based on their X-Coordinates
+      // if any layer overlaps then adjust the position else keep
+      // the preferred positions.
+      while (layerOverlaps) {   
+        var overlapFlag = false;    
+        // checking for overlapping layer div's by use of there height & width.
+        for(var topC = Math.max(0,top - 40);topC<(top+80);topC++) {
+          if(map.hasOwnProperty(topC)){
+            var xPositions = map[topC].slice();
+            for(var j=0;j<xPositions.length;j++) {
+              if(xPositions[j]>=(left-130) && xPositions[j]<=(left+260)) {
+                overlapFlag = true;
+                break;
+              }  
+            }
+          }    
+        }
+        if(!overlapFlag) {
+          layerOverlaps = false;
+          break;
+        }
+        top += y_space;
+      }
+
       layer.state = {
-          top: `${height + prev_top + y_space + Math.ceil(41-height)}px`,
-          left: `${width + 80 * positions[layerId][0]}px`,
+          top: `${top}px`,
+          left: `${left}px`,
           class: ''
       };
+      // keeping a map of layer's top,left coordinates.
+      if(!map.hasOwnProperty(top)) {
+        map[top]=[];
+      }
+      map[top].push(left);
     });
 
     if (Object.keys(tempError).length) {
