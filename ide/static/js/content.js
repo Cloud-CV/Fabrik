@@ -346,7 +346,7 @@ class Content extends React.Component {
     // in order to avoid overlapping layers
     let map = {}
     // Layers which are not used alone
-    let combined_layers = ['ReLU', 'LRN', 'BatchNorm', 'Dropout', 'Scale'];
+    let combined_layers = ['ReLU', 'LRN', 'TanH', 'BatchNorm', 'Dropout', 'Scale'];
     Object.keys(positions).forEach(layerId => {
       const layer = net[layerId];
       // Checking if the layer is one of the combined ones

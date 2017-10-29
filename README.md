@@ -29,6 +29,7 @@ This app is presently under active development and we welcome contributions. Ple
         ```
         cd Fabrik/requirements
         sh caffe_tensorflow_keras_install.sh
+        source ~/.bash_profile
         ```
     * For Mac users
         * [Install Caffe](http://caffe.berkeleyvision.org/install_osx.html)

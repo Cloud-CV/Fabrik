@@ -37,7 +37,7 @@ class Canvas extends React.Component {
     );
     if (this.props.rebuildNet) {
       const net = this.props.net;
-      let combined_layers = ['ReLU', 'LRN', 'BatchNorm', 'Dropout', 'Scale'];
+      let combined_layers = ['ReLU', 'LRN', 'TanH', 'BatchNorm', 'Dropout', 'Scale'];
       Object.keys(net).forEach(inputId => {
         const layer = net[inputId];
         if ((layer.info.phase === this.props.selectedPhase) || (layer.info.phase === null)) {

@@ -432,7 +432,7 @@ class RecurrentImportTest(unittest.TestCase):
 
     def test_keras_import(self):
         model = Sequential()
-        model.add(LSTM(64, input_dim=64, input_length=10, return_sequences=True))
+        model.add(LSTM(64, return_sequences=True, input_shape=(10, 64)))
         model.add(SimpleRNN(32, return_sequences=True))
         model.add(GRU(10, kernel_regularizer=regularizers.l2(0.01),
                       bias_regularizer=regularizers.l2(0.01), recurrent_regularizer=regularizers.l2(0.01),
