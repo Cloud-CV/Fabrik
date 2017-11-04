@@ -14,7 +14,7 @@ env/
 *.sqlite3
 
 # Sphinx documentation
-docs/_build/
+docs/build/
 
 node_modules/
 

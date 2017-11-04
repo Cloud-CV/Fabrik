@@ -2,5 +2,5 @@
 max-line-length = 110
 exclude = 
 	./tensorflow_app/caffe-tensorflow,
-	./node_modules/*
-	
+	./node_modules/*,
+	docs/
