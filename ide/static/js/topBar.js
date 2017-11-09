@@ -10,7 +10,7 @@ class TopBar extends React.Component {
             <div className="col-md-3">
               <div className="form-group">
                   <div className="dropdown">
-                    <button id="topbar-icon" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" 
+                    <button id="topbar-icon" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown"
                     data-tip="Load from zoo">
                       <span className="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                     </button>
@@ -26,6 +26,7 @@ class TopBar extends React.Component {
                       <li><ModelElement importNet={this.props.importNet} framework="caffe" id="Squeezenet">Squeezenet</ModelElement></li>
                       <li><ModelElement importNet={this.props.importNet} framework="keras" id="textGeneration">Text Generation</ModelElement></li>
                       <li><ModelElement importNet={this.props.importNet} framework="keras" id="seq2seq_lang">Seq2Seq Translation</ModelElement></li>
+                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="densenet">DenseNet</ModelElement></li>
                     </ul>
                   </div>
               </div>
@@ -75,7 +76,7 @@ class TopBar extends React.Component {
             </div>
             <div className="col-md-3">
               <div className="form-group">
-                <button id="topbar-icon" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown" 
+                <button id="topbar-icon" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown"
                 onClick={() => this.props.saveDb()} data-tip="Share">
                     <span className="glyphicon glyphicon-share" aria-hidden="true"></span>
                 </button>
