@@ -351,7 +351,12 @@ class Content extends React.Component {
       const layer = net[layerId];
       // Checking if the layer is one of the combined ones
       // and deciding vertical spacing accordingly
-      if ($.inArray(layer.info.type, combined_layers) != -1){
+      var parentX = positions[layer.connection.input[0]];
+      var currentX = positions[layerId][0];
+      if (parentX){
+        parentX = parentX[0];
+      }
+      if ($.inArray(layer.info.type, combined_layers) != -1 && parentX==currentX){
         var y_space = 0;
       }
       else {

@@ -50,7 +50,7 @@ class Canvas extends React.Component {
               });
               /* The following code is to identify layers that are part of a group
               and modify their border radius */
-              if ($.inArray(net[outputId].info.type, combined_layers) != -1){
+              if ($.inArray(net[outputId].info.type, combined_layers) != -1 &&net[inputId].connection.output.length==1){
                 if ($.inArray(net[inputId].info.type, combined_layers) == -1){
                   $('#'+inputId).css('border-radius', '10px 10px 0px 0px') 
                 }
@@ -58,7 +58,7 @@ class Canvas extends React.Component {
                   $('#'+inputId).css('border-radius', '0px 0px 0px 0px') 
                 }
               }
-              else {
+              else if (net[inputId].connection.input.length==1){
                 if ($.inArray(net[inputId].info.type, combined_layers) != -1){
                   $('#'+inputId).css('border-radius', '0px 0px 10px 10px') 
                 }
