@@ -41,7 +41,10 @@ def import_prototxt(request):
 
             # this logic for phase has to be improved
             if len(layer.include):
-                phase = layer.include[0].phase
+                if (layer.include[0].HasField('phase')):
+                    phase = layer.include[0].phase
+                else:
+                    phase = None
             else:
                 phase = None
 
