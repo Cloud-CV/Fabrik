@@ -528,7 +528,7 @@ button.close {
     margin-top: 0;
     max-height: 500px;
     min-width: 30px;
-    overflow: auto;
+    overflow-y: scroll;
     background-color: #455062;
 }
 

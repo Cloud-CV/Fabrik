@@ -45,15 +45,14 @@ layer {
     }
   }
 }
-# Excluding Dropout layers for now, revisit later.
-# layer {
-#  name: "embed-drop"
-#  type: "Dropout"
-#  bottom: "embedded_input_sentence"
-#  top: "embedded_input_sentence"
-#  dropout_param { dropout_ratio: 0.5 }
-#  include { stage: "embed-drop" }
-# }
+layer {
+  name: "embed-drop"
+  type: "Dropout"
+  bottom: "embedded_input_sentence"
+  top: "embedded_input_sentence"
+  dropout_param { dropout_ratio: 0.5 }
+  include { stage: "embed-drop" }
+}
 layer {
   name: "lstm1"
   type: "LSTM"
@@ -73,15 +72,14 @@ layer {
     }
   }
 }
-# Excluding Dropout layers for now, revisit later.
-# layer {
-#  name: "lstm-drop"
-#  type: "Dropout"
-#  bottom: "lstm1"
-#  top: "lstm1"
-#  dropout_param { dropout_ratio: 0.5 }
-#  include { stage: "lstm-drop" }
-# }
+layer {
+  name: "lstm-drop"
+  type: "Dropout"
+  bottom: "lstm1"
+  top: "lstm1"
+  dropout_param { dropout_ratio: 0.5 }
+  include { stage: "lstm-drop" }
+}
 layer {
   name: "predict"
   type: "InnerProduct"
