@@ -241,7 +241,7 @@ class Content extends React.Component {
     const url = {'caffe': '/caffe/import', 'keras': '/keras/import', 'tensorflow': '/tensorflow/import'};
     const formData = new FormData();
     const caffe_fillers = ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'];
-    const keras_fillers = ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal', 
+    const keras_fillers = ['Zeros', 'Ones', 'Constant', 'RandomNormal', 'RandomUniform', 'TruncatedNormal',
     'VarianceScaling', 'Orthogonal', 'Identity', 'lecun_uniform', 'glorot_normal', 'glorot_uniform', 'he_normal', 'he_uniform'];
     if (framework == 'samplecaffe'){
       framework = 'caffe'
@@ -321,7 +321,7 @@ class Content extends React.Component {
         // add the missing params with default values
         Object.keys(data[type].params).forEach(param => {
           if (!layer.params.hasOwnProperty(param)) {
-            // The initial value is a list with the first element being the actual value, and the second being a flag which 
+            // The initial value is a list with the first element being the actual value, and the second being a flag which
             // controls wheter the parameter is disabled or not on the frontend.
             layer.params[param] = [data[type].params[param].value, false];
           }
@@ -383,8 +383,8 @@ class Content extends React.Component {
       // Checking for Overlapping layers based on their X-Coordinates
       // if any layer overlaps then adjust the position else keep
       // the preferred positions.
-      while (layerOverlaps) {   
-        var overlapFlag = false;    
+      while (layerOverlaps) {
+        var overlapFlag = false;
         // checking for overlapping layer div's by use of there height & width.
         for(var topC = Math.max(0,top - 40);topC<(top+80);topC++) {
           if(map.hasOwnProperty(topC)){
@@ -393,9 +393,9 @@ class Content extends React.Component {
               if(xPositions[j]>=(left-130) && xPositions[j]<=(left+260)) {
                 overlapFlag = true;
                 break;
-              }  
+              }
             }
-          }    
+          }
         }
         if(!overlapFlag) {
           layerOverlaps = false;
@@ -605,7 +605,7 @@ class Content extends React.Component {
         },
         success : function (response) {
           if (response.result == 'success'){
-            var url = 'https://www.fabrik.cloudcv.org/caffe/load?id='+response.id;
+            var url = 'http://fabrik.cloudcv.org/caffe/load?id='+response.id;
             this.modalHeader = 'Your model url is:';
             this.modalContent = (<a href={url}>{url}</a>);
             this.openModal();
