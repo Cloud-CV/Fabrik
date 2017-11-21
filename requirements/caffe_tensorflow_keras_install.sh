@@ -40,9 +40,9 @@ pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensor
 echo "#################### Tensorflow Install Complete! ####################"
 
 echo "Installing Theano"
-pip install --upgrade Theano
+pip install theano==0.9.0
 
 echo "Installing Keras"
-pip install --upgrade keras
+pip install keras==2.0.8
 
 echo "#################### Keras Install Complete! ####################"
