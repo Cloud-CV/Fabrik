@@ -52,15 +52,15 @@ class Canvas extends React.Component {
               and modify their border radius */
               if ($.inArray(net[outputId].info.type, combined_layers) != -1 &&net[inputId].connection.output.length==1){
                 if ($.inArray(net[inputId].info.type, combined_layers) == -1){
-                  $('#'+inputId).css('border-radius', '10px 10px 0px 0px') 
+                  $('#'+inputId).css('border-radius', '10px 10px 0px 0px')
                 }
                 else {
-                  $('#'+inputId).css('border-radius', '0px 0px 0px 0px') 
+                  $('#'+inputId).css('border-radius', '0px 0px 0px 0px')
                 }
               }
               else if (net[inputId].connection.input.length==1){
                 if ($.inArray(net[inputId].info.type, combined_layers) != -1){
-                  $('#'+inputId).css('border-radius', '0px 0px 10px 10px') 
+                  $('#'+inputId).css('border-radius', '0px 0px 10px 10px')
                 }
               }
             }
@@ -113,7 +113,7 @@ class Canvas extends React.Component {
   connectionEvent(connInfo, originalEvent) {
     if (originalEvent != null) { // user manually makes a connection
       /* Added check for cyclic graphs, the custom BFS finds all parents
-      of the source node and then checks to see if the target matches 
+      of the source node and then checks to see if the target matches
       any parent*/
       var parents = [];
       var stack = [connInfo.connection.sourceId];
@@ -192,6 +192,8 @@ class Canvas extends React.Component {
       Object.keys(data[type].params).forEach(j => {
         layer.params[j] = [data[type].params[j].value, false];
       });
+
+      layer.params['endPoint'] = [data[type]['endpoint'], false];
       // l.props = JSON.parse(JSON.stringify(data[type].props));
       layer.props = {};
       // default name
@@ -227,7 +229,7 @@ class Canvas extends React.Component {
         if (layer.params){
           Object.keys(layer.params).forEach(param => {
             if (param != 'endPoint'){
-            data[layer.info.type]['params'][param] = {'name': param, 'type': 'text', 
+            data[layer.info.type]['params'][param] = {'name': param, 'type': 'text',
             'required': false, 'value': ''};
             }
           });
