@@ -676,9 +676,16 @@ input[type="file"] {
   background-color: #cdcfd2;
 }
 
-
-
 /* css loader*/
+.loaderOverlay {
+  background: #959393;
+  opacity: 0.3;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 5;
+}
+
 .loader:before,
 .loader:after,
 .loader {
@@ -691,11 +698,12 @@ input[type="file"] {
   animation: load7 1.8s infinite ease-in-out;
 }
 .loader {
-  color: #bcbcbc;
+  color: #FFFFFF;
   font-size: 10px;
+  left:40%;
+  top:45%;
   position: absolute;
-  right:65px;
-  top:15px;
+  z-index: 5;  
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);

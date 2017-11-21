@@ -670,7 +670,9 @@ class Content extends React.Component {
   render() {
     let loader = null;
     if (this.state.load) {
-      loader = (<div className="loader"></div>);
+      loader = (<div className="loaderOverlay">
+                  <div className="loader"></div>
+                </div>);
     }
     return (
         <div id="parent">
