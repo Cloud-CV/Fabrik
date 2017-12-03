@@ -28,7 +28,14 @@ This app is presently under active development and we welcome contributions. Ple
     * For Linux users
         ```
         cd Fabrik/requirements
-        sh caffe_tensorflow_keras_install.sh
+        yes Y | sh caffe_tensorflow_keras_install.sh
+        ```
+        Open your ~/.bashrc file and append this line at the end
+        ```        
+        export PYTHONPATH=~/caffe/caffe/python:$PYTHONPATH
+        ```
+        Save, exit and then run
+        ```
         source ~/.bash_profile
         ```
     * For Mac users
@@ -46,6 +53,9 @@ This app is presently under active development and we welcome contributions. Ple
     ```
 5. [Install postgres >= 9.5](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
 * Setup postgres database
+    * Start postgresql by typing ```sudo service postgresql start```
+    * Now login as user postgres by running ```sudo -u postgres psql``` and type the commands below
+    
     ```
       psql -c "CREATE DATABASE fabrik" -U postgres
       psql -c "CREATE USER admin WITH PASSWORD 'fabrik'" -U postgres
