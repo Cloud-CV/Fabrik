@@ -745,3 +745,76 @@ input[type="file"] {
     box-shadow: 0 2.5em 0 0;
   }
 }
+
+@media(max-width: 1200px) {
+  #main {
+    left: 0;
+    width: 100%;
+    z-index: 10;
+  }
+
+  #sidebar {
+    width: 240px;
+    z-index: 20;
+    transform: translateX(-240px);
+    transition: transform 0.1s ease-in-out;
+  }
+
+  #sidebar.visible {
+    transform: translateX(0);
+  }
+
+  .sidebar-button {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 3rem;
+    height: 3rem;
+    z-index: 30;
+    cursor: pointer;
+  }
+
+  .sidebar-button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    height: 0.2rem;
+    width: 1.5rem;
+    background: #333;
+    transition: all 0.1s ease-in-out;
+  }
+
+  .sidebar-button:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    height: 1.2rem;
+    width: 1.5rem;
+    border-top: 0.2rem solid #333;
+    border-bottom: 0.2rem solid #333;
+    transition: all 0.1s ease-in-out;
+  }
+
+  .sidebar-button.close:before {
+    background: white;
+    width: 1.2rem;
+    transform: rotate(45deg)
+  }
+
+  .sidebar-button.close:after {
+    height: 0.2rem;
+    width: 1.2rem;
+    border-top: 0px solid #333;
+    border-bottom: 0px solid #333;
+    background: white;
+    transform: rotate(-45deg)
+  }
+}

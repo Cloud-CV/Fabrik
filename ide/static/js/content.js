@@ -61,6 +61,7 @@ class Content extends React.Component {
     this.saveDb = this.saveDb.bind(this);
     this.loadDb = this.loadDb.bind(this);
     this.infoModal = this.infoModal.bind(this);
+    this.toggleSidebar = this.toggleSidebar.bind(this);
     this.modalContent = null;
     this.modalHeader = null;
   }
@@ -667,6 +668,10 @@ class Content extends React.Component {
                          Keras, and TensorFlow.`;
     this.openModal();
   }
+  toggleSidebar() {
+    $('#sidebar').toggleClass('visible');
+    $('.sidebar-button').toggleClass('close');
+  }
   render() {
     let loader = null;
     if (this.state.load) {
@@ -676,6 +681,7 @@ class Content extends React.Component {
     }
     return (
         <div id="parent">
+        <a className="sidebar-button" onClick={this.toggleSidebar}></a>
         <div id="sidebar">
           <div id="logo_back">
             <a href="http://fabrik.cloudcv.org"><img src={'/static/img/fabrik_t.png'} className="img-responsive" alt="logo" id="logo"/></a>
