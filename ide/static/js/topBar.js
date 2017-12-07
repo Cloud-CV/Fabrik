@@ -1,5 +1,4 @@
 import React from 'react';
-import ModelElement from './modelElement';
 import ReactTooltip from 'react-tooltip';
 
 class TopBar extends React.Component {
@@ -11,25 +10,9 @@ class TopBar extends React.Component {
               <div className="form-group">
                   <div className="dropdown">
                     <button id="topbar-icon" className="btn btn-default dropdown-toggle form-control" data-toggle="dropdown"
-                    data-tip="Load from zoo">
+                    onClick={() => this.props.zooModal()} data-tip="Load from zoo">
                       <span className="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                     </button>
-                    <ul className="dropdown-menu">
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="alexnet">AlexNet</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="vgg16">VGG 16</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="GoogleNet">GoogLeNet</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="resnet101">ResNet 101</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="keras" id="v3">Inception V3</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="fcn">FCN32 Pascal</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="siamese_mnist">MNIST Siamese</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="All_CNN">All CNN</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="Squeezenet">Squeezenet</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="keras" id="textGeneration">Text Generation</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="keras" id="seq2seq_lang">Seq2Seq Translation</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="densenet">DenseNet</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="CoCo_Caption">CoCo Caption</ModelElement></li>
-                      <li><ModelElement importNet={this.props.importNet} framework="caffe" id="yolo_net">YOLONet</ModelElement></li>
-                    </ul>
                   </div>
               </div>
             </div>
@@ -95,7 +78,8 @@ TopBar.propTypes = {
   exportNet: React.PropTypes.func,
   importNet: React.PropTypes.func,
   saveDb: React.PropTypes.func,
-  loadDb: React.PropTypes.func
+  loadDb: React.PropTypes.func,
+  zooModal: React.PropTypes.func
 };
 
 export default TopBar;

@@ -8,6 +8,7 @@ class ModelElement extends React.Component {
     if (this.props.children){
       return (
       <a
+        style={{color: "#848a92"}}
         className="btn"
         onClick={() => this.props.importNet('sample'+this.props.framework, this.props.id)}
         >

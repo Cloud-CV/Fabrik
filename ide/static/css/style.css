@@ -355,6 +355,34 @@ body {
   padding: 0px;
 }
 
+.ReactModal__Content {
+  max-height: 90%;
+  width: 65%;
+  overflow: auto;
+}
+
+.zoo-modal {
+  text-align: center;
+}
+
+.centered-zoo-modal {
+  display: inline-block;
+  text-align: left;
+}
+
+.zoo-modal-model {
+  display: inline-block;
+  vertical-align: top;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.zoo-modal-text {
+  padding-left: 12px;
+  padding-right: 12px;
+  font-weight: bold;
+}
+
 .setparams{
   position: absolute;
   background-color: white;
