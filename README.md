@@ -37,6 +37,7 @@ This app is presently under active development and we welcome contributions. Ple
         Save, exit and then run
         ```
         source ~/.bash_profile
+        cd .. 
         ```
     * For Mac users
         * [Install Caffe](http://caffe.berkeleyvision.org/install_osx.html)
@@ -57,15 +58,17 @@ This app is presently under active development and we welcome contributions. Ple
     * Now login as user postgres by running ```sudo -u postgres psql``` and type the commands below
     
     ```
-      psql -c "CREATE DATABASE fabrik" -U postgres
-      psql -c "CREATE USER admin WITH PASSWORD 'fabrik'" -U postgres
-      psql -c "ALTER ROLE admin SET client_encoding TO 'utf8'" -U postgres
-      psql -c "ALTER ROLE admin SET default_transaction_isolation TO 'read committed'" -U postgres
-      psql -c "ALTER ROLE admin SET timezone TO 'UTC'" -U postgres
-      psql -c "ALTER USER admin CREATEDB" -U postgres
+      CREATE DATABASE fabrik;
+      CREATE USER admin WITH PASSWORD 'fabrik';
+      ALTER ROLE admin SET client_encoding TO 'utf8';
+      ALTER ROLE admin SET default_transaction_isolation TO 'read committed';
+      ALTER ROLE admin SET timezone TO 'UTC';
+      ALTER USER admin CREATEDB;
     ```
+    * Exit psql by typing in \q and hitting enter. 
 * Migrate
     ```
+    
     python manage.py makemigrations caffe_app
     python manage.py migrate
     ```
