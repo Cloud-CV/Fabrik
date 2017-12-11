@@ -27,12 +27,15 @@ function isProcessPossible(layerId){
 
 /* allocatePosition finds the closest position available to preferred position,
 the algorithm checks if the location at that depth is occupied by any other node
-along the X direction, if yes, the closest available right or left position is 
+along the X direction, if yes, the closest available right or left position is
 assigned */
 function allocatePosition(layerId, preferredPosition){
   if (!map.hasOwnProperty(preferredPosition[1])) {
     map[preferredPosition[1]] = [];
   }
+  
+  map[0]=[];
+    
   let positionsY = map[preferredPosition[1]];
   if (positionsY.indexOf(preferredPosition[0]) != -1) { // If X position is taken
     let temp = preferredPosition[0], i = 2;

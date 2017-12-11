@@ -33,7 +33,6 @@ def import_json(request):
             return JsonResponse({'result': 'error', 'error': 'Invalid JSON'})
 
     model = model_from_json(json.dumps(model))
-
     layer_map = {
         'InputLayer': Input,
         'Dense': Dense,
