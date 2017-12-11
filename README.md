@@ -88,6 +88,9 @@ KERAS_BACKEND=theano python manage.py runserver
 * Use `example/caffe/GoogleNet.prototxt` for caffe import
 * Use `example/keras/vgg16.json` for keras import
 
+### Documentation
+* [Using a Keras model exported from Fabrik](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/keras_json_usage.md)
+
 ### License
 
 This software is licensed under GNU GPLv3. Please see the included License file. All external libraries, if modified, will be mentioned below explicitly.
