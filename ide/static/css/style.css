@@ -82,6 +82,7 @@ body {
   box-shadow:none ;
   border: none;
   margin: 0px;
+  z-index: auto;
 }
 
 .canvas-icon{
@@ -321,7 +322,7 @@ body {
 }
 
 .dropdown {
-  z-index: 99;
+  z-index: auto;
 }
 
 .drowpdown-button{
@@ -556,7 +557,6 @@ button.close {
     margin-top: 0;
     max-height: 500px;
     min-width: 30px;
-    overflow-y: scroll;
     background-color: #455062;
 }
 
