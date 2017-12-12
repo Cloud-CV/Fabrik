@@ -13,6 +13,7 @@ class PaneElement extends React.Component {
       <div
         className="btn btn-block drowpdown-button"
         draggable="true"
+        onClickCapture={this.props.handleClick}        
         onDragStart={this.drag}
         id={this.props.id}
       >
@@ -24,7 +25,8 @@ class PaneElement extends React.Component {
 
 PaneElement.propTypes = {
   id: React.PropTypes.string.isRequired,
-  children: React.PropTypes.string.isRequired
+  children: React.PropTypes.string.isRequired,
+  handleClick: React.PropTypes.func.isRequired
 };
 
 export default PaneElement;

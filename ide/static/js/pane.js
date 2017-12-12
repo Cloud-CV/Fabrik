@@ -36,15 +36,15 @@ class Pane extends React.Component {
                 </div>
                 <div id="data" className="panel-collapse collapse" role=" tabpanel">
                   <div className="panel-body">
-                    <PaneElement id="ImageData">Image Data</PaneElement>
-                    <PaneElement id="Data">Data</PaneElement>
-                    <PaneElement id="HDF5Data">HDF5 Data</PaneElement>
-                    <PaneElement id="HDF5Output">HDF5 Output</PaneElement>
-                    <PaneElement id="Input">Input</PaneElement>
-                    <PaneElement id="WindowData">Window Data</PaneElement>
-                    <PaneElement id="MemoryData">Memory Data</PaneElement>
-                    <PaneElement id="DummyData">Dummy Data</PaneElement>
-                    <PaneElement id="Python">Python</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="ImageData">Image Data</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Data">Data</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="HDF5Data">HDF5 Data</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="HDF5Output">HDF5 Output</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Input">Input</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="WindowData">Window Data</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="MemoryData">Memory Data</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="DummyData">Dummy Data</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Python">Python</PaneElement>
                   </div>
                 </div>
               </div>
@@ -59,13 +59,13 @@ class Pane extends React.Component {
                 </div>
                 <div id="vision" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement id="Convolution">Convolution</PaneElement>
-                    <PaneElement id="Pooling">Pool</PaneElement>
-                    <PaneElement id="Upsample">Upsample</PaneElement>
-                    <PaneElement id="LocallyConnected">Locally Connected</PaneElement>
-                    <PaneElement id="Crop">Crop</PaneElement>
-                    <PaneElement id="SPP">SPP</PaneElement>
-                    <PaneElement id="Deconvolution">Deconvolution</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Convolution">Convolution</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Pooling">Pool</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Upsample">Upsample</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="LocallyConnected">Locally Connected</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Crop">Crop</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="SPP">SPP</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Deconvolution">Deconvolution</PaneElement>
                   </div>
                 </div>
               </div>
@@ -80,10 +80,10 @@ class Pane extends React.Component {
                 </div>
                 <div id="recurrent" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement id="Recurrent">Recurrent</PaneElement>
-                    <PaneElement id="RNN">RNN</PaneElement>
-                    <PaneElement id="GRU">GRU</PaneElement>
-                    <PaneElement id="LSTM">LSTM</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Recurrent">Recurrent</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="RNN">RNN</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="GRU">GRU</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="LSTM">LSTM</PaneElement>
                   </div>
                 </div>
               </div>
@@ -98,21 +98,21 @@ class Pane extends React.Component {
                 </div>
                 <div id="utility" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement id="Flatten">Flatten</PaneElement>
-                    <PaneElement id="Reshape">Reshape</PaneElement>
-                    <PaneElement id="BatchReindex">Batch Reindex</PaneElement>
-                    <PaneElement id="Split">Split</PaneElement>
-                    <PaneElement id="Concat">Concat</PaneElement>
-                    <PaneElement id="Eltwise">Eltwise</PaneElement>
-                    <PaneElement id="Filter">Filter</PaneElement>
-                    <PaneElement id="Reduction">Reduction</PaneElement>
-                    <PaneElement id="Silence">Silence</PaneElement>
-                    <PaneElement id="ArgMax">ArgMax</PaneElement>
-                    <PaneElement id="Softmax">Softmax</PaneElement>
-                    <PaneElement id="Permute">Permute</PaneElement>
-                    <PaneElement id="RepeatVector">Repeat Vector</PaneElement>
-                    <PaneElement id="Regularization">Regularization</PaneElement>
-                    <PaneElement id="Masking">Masking</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Flatten">Flatten</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Reshape">Reshape</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="BatchReindex">Batch Reindex</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Split">Split</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Concat">Concat</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Eltwise">Eltwise</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Filter">Filter</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Reduction">Reduction</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Silence">Silence</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="ArgMax">ArgMax</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Softmax">Softmax</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Permute">Permute</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="RepeatVector">Repeat Vector</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Regularization">Regularization</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Masking">Masking</PaneElement>
                   </div>
                 </div>
               </div>
@@ -127,24 +127,24 @@ class Pane extends React.Component {
                 </div>
                 <div id="activation" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement id="ReLU">ReLU/Leaky-ReLU</PaneElement>
-                    <PaneElement id="PReLU">PReLU</PaneElement>
-                    <PaneElement id="ELU">ELU</PaneElement>
-                    <PaneElement id="ThresholdedReLU">Thresholded ReLU</PaneElement>
-                    <PaneElement id="SELU">SELU</PaneElement>
-                    <PaneElement id="Softplus">Softplus</PaneElement>
-                    <PaneElement id="Softsign">Softsign</PaneElement>
-                    <PaneElement id="Sigmoid">Sigmoid</PaneElement>
-                    <PaneElement id="TanH">TanH</PaneElement>
-                    <PaneElement id="HardSigmoid">Hard Sigmoid</PaneElement>
-                    <PaneElement id="AbsVal">Absolute Value</PaneElement>
-                    <PaneElement id="Power">Power</PaneElement>
-                    <PaneElement id="Exp">Exp</PaneElement>
-                    <PaneElement id="Log">Log</PaneElement>
-                    <PaneElement id="BNLL">BNLL</PaneElement>
-                    <PaneElement id="Threshold">Threshold</PaneElement>
-                    <PaneElement id="Bias">Bias</PaneElement>
-                    <PaneElement id="Scale">Scale</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="ReLU">ReLU/Leaky-ReLU</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="PReLU">PReLU</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="ELU">ELU</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="ThresholdedReLU">Thresholded ReLU</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="SELU">SELU</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Softplus">Softplus</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Softsign">Softsign</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Sigmoid">Sigmoid</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="TanH">TanH</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="HardSigmoid">Hard Sigmoid</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="AbsVal">Absolute Value</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Power">Power</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Exp">Exp</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Log">Log</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="BNLL">BNLL</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Threshold">Threshold</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Bias">Bias</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Scale">Scale</PaneElement>
                   </div>
                 </div>
               </div>
@@ -159,9 +159,9 @@ class Pane extends React.Component {
                 </div>
                 <div id="normalization" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement id="LRN">LRN</PaneElement>
-                    <PaneElement id="MVN">MVN</PaneElement>
-                    <PaneElement id="BatchNorm">Batch Norm</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="LRN">LRN</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="MVN">MVN</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="BatchNorm">Batch Norm</PaneElement>
                   </div>
                 </div>
               </div>
@@ -176,9 +176,9 @@ class Pane extends React.Component {
                 </div>
                 <div id="common" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement id="InnerProduct">Inner Product</PaneElement>
-                    <PaneElement id="Dropout">Dropout</PaneElement>
-                    <PaneElement id="Embed">Embed</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="InnerProduct">Inner Product</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Dropout">Dropout</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Embed">Embed</PaneElement>
                   </div>
                 </div>
               </div>
@@ -193,9 +193,9 @@ class Pane extends React.Component {
                 </div>
                 <div id="noise" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement id="GaussianNoise">Gaussian Noise</PaneElement>
-                    <PaneElement id="GaussianDropout">Gaussian Dropout</PaneElement>
-                    <PaneElement id="AlphaDropout">Alpha Dropout</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="GaussianNoise">Gaussian Noise</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="GaussianDropout">Gaussian Dropout</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="AlphaDropout">Alpha Dropout</PaneElement>
                   </div>
                 </div>
               </div>
@@ -210,15 +210,15 @@ class Pane extends React.Component {
                 </div>
                 <div id="loss" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement id="MultinomialLogisticLoss">Multinomial Logistic Loss</PaneElement>
-                    <PaneElement id="InfogainLoss">Infogain Loss</PaneElement>
-                    <PaneElement id="SoftmaxWithLoss">Softmax With Loss</PaneElement>
-                    <PaneElement id="EuclideanLoss">Euclidean Loss</PaneElement>
-                    <PaneElement id="HingeLoss">Hinge Loss</PaneElement>
-                    <PaneElement id="SigmoidCrossEntropyLoss">Sigmoid Cross Entropy Loss</PaneElement>
-                    <PaneElement id="Accuracy">Accuracy</PaneElement>
-                    <PaneElement id="ContrastiveLoss">Contrastive Loss</PaneElement>
-                    <PaneElement id="Python">Python</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="MultinomialLogisticLoss">Multinomial Logistic Loss</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="InfogainLoss">Infogain Loss</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="SoftmaxWithLoss">Softmax With Loss</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="EuclideanLoss">Euclidean Loss</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="HingeLoss">Hinge Loss</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="SigmoidCrossEntropyLoss">Sigmoid Cross Entropy Loss</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Accuracy">Accuracy</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="ContrastiveLoss">Contrastive Loss</PaneElement>
+                    <PaneElement handleClick={this.props.handleClick} id="Python">Python</PaneElement>
                   </div>
                 </div>
               </div>
@@ -228,5 +228,7 @@ class Pane extends React.Component {
       );
   }
 }
-
+Pane.propTypes = {
+  handleClick: React.PropTypes.func.isRequired
+};
 export default Pane;

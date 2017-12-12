@@ -35,8 +35,8 @@ class Canvas extends React.Component {
         grid: [8, 8]
       }
     );
+    const net = this.props.net;    
     if (this.props.rebuildNet) {
-      const net = this.props.net;
       let combined_layers = ['ReLU', 'LRN', 'TanH', 'BatchNorm', 'Dropout', 'Scale'];
       Object.keys(net).forEach(inputId => {
         const layer = net[inputId];
@@ -69,6 +69,24 @@ class Canvas extends React.Component {
       });
       this.props.changeNetStatus(false);
       // instance.repaintEverything();
+    }
+    if(Object.keys(net).length>1){
+      const x1 = parseInt(net[`l${this.props.nextLayerId-2}`].state.top.split('px'));
+      const x2 = parseInt(net[`l${this.props.nextLayerId-1}`].state.top.split('px')); 
+      const s = instance.getEndpoints(`l${this.props.nextLayerId-2}`)[0];
+      var t = instance.getEndpoints(`l${this.props.nextLayerId-1}`);
+      // To handle case of loss layer being target
+      if (t.length == 1){
+        t = t[0];
+      }
+      else{
+        t = t[1];
+      }
+      if (x2-x1==80) { //since only layers added through handleClick will be exactly 80px apart, we can connect those like this.
+        instance.connect({
+          source: s,
+          target: t});
+      }
     }
   }
   allowDrop(event) {
@@ -301,7 +319,7 @@ class Canvas extends React.Component {
 Canvas.propTypes = {
   nextLayerId: React.PropTypes.number,
   selectedPhase: React.PropTypes.number,
-  net: React.PropTypes.object,
+  net: React.PropTypes.object.isRequired,
   modifyLayer: React.PropTypes.func,
   addNewLayer: React.PropTypes.func,
   changeSelectedLayer: React.PropTypes.func,
