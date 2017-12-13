@@ -70,7 +70,8 @@ class Canvas extends React.Component {
       this.props.changeNetStatus(false);
       // instance.repaintEverything();
     }
-    if(Object.keys(net).length>1){
+    // Might need to improve the logic of clickEvent
+    if(Object.keys(net).length>1 && this.props.clickEvent){
       const x1 = parseInt(net[`l${this.props.nextLayerId-2}`].state.top.split('px'));
       const x2 = parseInt(net[`l${this.props.nextLayerId-1}`].state.top.split('px')); 
       const s = instance.getEndpoints(`l${this.props.nextLayerId-2}`)[0];
@@ -329,7 +330,8 @@ Canvas.propTypes = {
   addError: React.PropTypes.func,
   dismissError: React.PropTypes.func,
   error: React.PropTypes.array,
-  placeholder: React.PropTypes.bool
+  placeholder: React.PropTypes.bool,
+  clickEvent: React.PropTypes.bool
 };
 
 export default Canvas;

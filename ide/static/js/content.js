@@ -67,6 +67,8 @@ class Content extends React.Component {
     this.zooModal = this.zooModal.bind(this);
     this.modalContent = null;
     this.modalHeader = null;
+    // Might need to improve the logic of clickEvent
+    this.clickEvent = false;
     this.handleClick = this.handleClick.bind(this);
   }
   openModal() {
@@ -244,6 +246,7 @@ class Content extends React.Component {
   importNet(framework, id) {
     this.dismissAllErrors();
     this.closeModal();
+    this.clickEvent = false;
     const url = {'caffe': '/caffe/import', 'keras': '/keras/import', 'tensorflow': '/tensorflow/import'};
     const formData = new FormData();
     const caffe_fillers = ['constant', 'gaussian', 'positive_unitball', 'uniform', 'xavier', 'msra', 'bilinear'];
@@ -685,6 +688,7 @@ class Content extends React.Component {
   
   handleClick(event) {
     event.preventDefault();
+    this.clickEvent = true;
 
     const net = this.state.net;
     const id = event.target.id;
@@ -745,7 +749,6 @@ class Content extends React.Component {
       layer.props.name = `${next.name}${this.state.nextLayerId}`;          
       this.addNewLayer(layer); 
     }
-
   }
   render() {
     let loader = null;
@@ -797,6 +800,7 @@ class Content extends React.Component {
             error={this.state.error}
             dismissError={this.dismissError}
             addError={this.addError}
+            clickEvent={this.clickEvent}
           />
           <SetParams
             net={this.state.net}
