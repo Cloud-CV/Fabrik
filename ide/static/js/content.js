@@ -191,10 +191,10 @@ class Content extends React.Component {
   exportNet(framework) {
     this.dismissAllErrors();
     const error = [];
-    const net = this.state.net;
+    const netObj = JSON.parse(JSON.stringify(this.state.net));
 
-    Object.keys(net).forEach(layerId => {
-      const layer = net[layerId];
+    Object.keys(netObj).forEach(layerId => {
+      const layer = netObj[layerId];
       Object.keys(layer.params).forEach(param => {
         layer.params[param] = layer.params[param][0];
         const paramData = data[layer.info.type].params[param];
@@ -210,7 +210,7 @@ class Content extends React.Component {
     if (error.length) {
       this.setState({ error });
     } else {
-      const netData = JSON.parse(JSON.stringify(this.state.net));
+      const netData = netObj;
       Object.keys(netData).forEach(layerId => {
         delete netData[layerId].state;
       });
