@@ -528,12 +528,16 @@ def batch_norm(layer, layer_in, layerId, idNext, nextLayer,):
     out = {}
     momentum = layer['params']['moving_average_fraction']
     eps = layer['params']['eps']
-    if (eps >= 1e-5):
+    if (eps <= 1e-5):
         eps = 0.0001  # In Keras the max epsilon allowed in 1e-5
     moving_mean_initializer = layer['params']['moving_mean_initializer']
     moving_variance_initializer = layer['params']['moving_variance_initializer']
     if (nextLayer['info']['type'] == 'Scale'):
         axis = nextLayer['params']['axis']
+        # In Caffe the first dimension has number of filters/outputs but in Keras it is the last
+        # dimension
+        if (axis == 1):
+            axis = -1
         center = nextLayer['params']['bias_term']
         scale = nextLayer['params']['scale']
         if (nextLayer['params']['filler'] in fillerMap):
