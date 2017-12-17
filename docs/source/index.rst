@@ -6,12 +6,16 @@
 Welcome to Fabrik's documentation!
 ==================================
 
+Fabrik is an online collaborative platform to build, visualize and train deep learning models via a simple drag-and-drop interface. It allows researchers to collaboratively develop and debug models using a web GUI that supports importing, editing and exporting networks written in widely popular frameworks like Caffe, Keras, and TensorFlow.
+
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-
+   setup
+   keras_json_usage
+   tested_models
 
 Indices and tables
 ==================
