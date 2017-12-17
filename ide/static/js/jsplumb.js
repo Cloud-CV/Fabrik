@@ -21,8 +21,30 @@ export default function () {
         y1:paintInfo.ty - dy,
         x2:paintInfo.tx,
         y2:paintInfo.ty
-      });
+      })
     } else {
+      if (paintInfo.ty-paintInfo.sy > 40) {
+        var extend = Math.sqrt(paintInfo.ty-paintInfo.sy / 80) + 70;
+      _super.addSegment(this, "Straight", {
+        x1:paintInfo.sx,
+        y1:paintInfo.sy,
+        x2:paintInfo.sx - extend,
+        y2:paintInfo.sy +40
+      });
+      _super.addSegment(this, "Straight", {
+        x1:paintInfo.sx - extend,
+        y1:paintInfo.sy +40,
+        x2:paintInfo.sx - extend,
+        y2:paintInfo.ty -40
+      });
+      _super.addSegment(this, "Straight", {
+        x1:paintInfo.sx - extend,
+        y1:paintInfo.ty-40,
+        x2:paintInfo.tx,
+        y2:paintInfo.ty
+      });
+    }
+    else {
       _super.addSegment(this, "Straight", {
         x1:paintInfo.sx,
         y1:paintInfo.sy,
@@ -30,6 +52,7 @@ export default function () {
         y2:paintInfo.ty
       });
     }
+  }
   };
 };
 jsPlumbUtil.extend(ArrowConnector, jsPlumb.Connectors.AbstractConnector);
