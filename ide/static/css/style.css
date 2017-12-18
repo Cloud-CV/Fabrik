@@ -85,6 +85,34 @@ body {
   z-index: auto;
 }
 
+input#netName {
+  border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 30%;
+  margin: auto;
+  text-align: center;
+  font-size: 2.5rem;
+  padding: 1rem;
+  outline: none;
+  z-index: 100;
+  background: transparent;
+  border-bottom: 2px solid;
+  border-color: #cdcfd2;
+}
+
+input#netName:focus {
+  border-color: #cdcfd2;
+}
+
+input#netName.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .canvas-icon{
   margin: 0px;
   position: fixed;

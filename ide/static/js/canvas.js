@@ -11,6 +11,7 @@ class Canvas extends React.Component {
     super(props);
     this.allowDrop = this.allowDrop.bind(this);
     this.drop = this.drop.bind(this);
+    this.scrollCanvas = this.scrollCanvas.bind(this);
     this.clickCanvas = this.clickCanvas.bind(this);
     this.clickLayerEvent = this.clickLayerEvent.bind(this);
     this.hoverLayerEvent = this.hoverLayerEvent.bind(this);
@@ -108,6 +109,9 @@ class Canvas extends React.Component {
       this.hover = 0;
     }
     event.stopPropagation();
+  }
+  scrollCanvas() {
+    $('#netName').css('top', '-' + $('#panZoomContainer').scrollTop() + 'px');
   }
   clickCanvas(event) {
     this.placeholder = false;
@@ -289,6 +293,7 @@ class Canvas extends React.Component {
         onDragOver={this.allowDrop}
         onDrop={this.drop}
         onClick={this.clickCanvas}
+        onScroll={this.scrollCanvas}
       >
         {errors}
         {placeholder}
