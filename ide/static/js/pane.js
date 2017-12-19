@@ -1,5 +1,6 @@
 import React from 'react';
 import PaneElement from './paneElement';
+import $ from 'jquery'
 
 class Pane extends React.Component {
   constructor(props) {
@@ -17,9 +18,11 @@ class Pane extends React.Component {
             loss: false
         };
     }
-    toggleClass(layer) {
+    toggleClass() {
         var obj = {};
-        obj[layer] = !this.state[layer];
+        for (var entry in this.state) {
+            obj[entry] = $("#" + entry).attr("aria-expanded") === "true";
+        }
         this.setState(obj);
     }
     render(){
