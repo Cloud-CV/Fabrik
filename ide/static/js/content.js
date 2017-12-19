@@ -743,7 +743,7 @@ class Content extends React.Component {
       layer.props = JSON.parse(JSON.stringify(next.props)) //copys all props from data.js
       const height = Math.round(0.05*window.innerHeight, 0); // 5% of screen height, rounded to zero decimals
       const width = Math.round(0.35*window.innerWidth, 0); // 35% of screen width, rounded to zero decimals
-      var top = height + Math.ceil(41-height);
+      var top = height + Math.ceil(81-height);
       var left = width;
       layer.state = {
             top: `${top}px`,

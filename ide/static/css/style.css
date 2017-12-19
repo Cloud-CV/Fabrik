@@ -530,7 +530,7 @@ input#netName.hidden {
     color: white;
     background-color: #f44336;
     border: none;
-    z-index: 22;
+    z-index: 120;
     position: absolute;
     top: 3%;
     left:30%;
