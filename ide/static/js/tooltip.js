@@ -7,6 +7,10 @@ class Tooltip extends React.Component {
   constructor(props) {
     super(props);
   }
+  
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
  
   render() {
     if (this.props.hoveredLayer && this.props.hoveredLayer in this.props.net) {
