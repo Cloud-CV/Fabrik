@@ -218,8 +218,8 @@ class Canvas extends React.Component {
 
       layer.info = { type, phase };
       layer.state = {
-        top: `${(event.clientY - event.target.getBoundingClientRect().top - canvas.y)/zoom - 25}px`,
-        left: `${(event.clientX - event.target.getBoundingClientRect().left - canvas.x)/zoom - 45}px`,
+        top: `${(event.clientY - event.target.getBoundingClientRect().top - canvas.y + $('#panZoomContainer').scrollTop())/zoom - 25}px`,
+        left: `${(event.clientX - event.target.getBoundingClientRect().left - canvas.x + $('#panZoomContainer').scrollLeft())/zoom - 45}px`,
         class: ''
       };
       // 25px difference between layerTop and dropping point
