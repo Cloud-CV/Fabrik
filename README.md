@@ -92,6 +92,7 @@ KERAS_BACKEND=theano python manage.py runserver
 ### Documentation
 * [Using a Keras model exported from Fabrik](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/keras_json_usage.md)
 * [List of models tested with Fabrik](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/tested_models.md)
+* [Adding model to the Fabrik model zoo](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/AddingNewModel.md)
 
 ### License
 
