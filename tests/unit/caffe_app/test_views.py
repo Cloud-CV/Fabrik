@@ -14,17 +14,34 @@ class ImportPrototxtTest(unittest.TestCase):
         self.client = Client()
 
     def test_caffe_import(self):
-        sample_file = open(os.path.join(settings.BASE_DIR, 'example/caffe', 'GoogleNet.prototxt'), 'r')
+        sample_file = open(os.path.join(settings.BASE_DIR,
+                                        'example/caffe',
+                                        'GoogleNet.prototxt'), 'r')
         # Test 1
-        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = self.client.post(reverse('caffe-import'),
+                                    {'file': sample_file})
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'success')
         # Test 2
-        sample_file = open(os.path.join(settings.BASE_DIR, 'example/keras', 'vgg16.json'), 'r')
-        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        sample_file = open(os.path.join(settings.BASE_DIR,
+                                        'example/keras',
+                                        'vgg16.json'), 'r')
+        response = self.client.post(reverse('caffe-import'),
+                                    {'file': sample_file})
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'error')
         self.assertEqual(response['error'], 'Invalid Prototxt')
+
+    def test_caffe_import_by_sample_id(self):
+        response = self.client.post(reverse('caffe-import'),
+                                    {'sample_id': 'GoogleNet'})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+        response = self.client.post(reverse('caffe-import'),
+                                    {'sample_id': 'vgg15'})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'error')
+        self.assertEqual(response['error'], 'No Prototxt model file found')
 
 
 class ExportPrototxtTest(unittest.TestCase):
@@ -912,6 +929,17 @@ class ReductionLayerTest(unittest.TestCase):
         response = json.loads(response.content)
         os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
         self.assertGreaterEqual(len(response['net']['l0']['params']), 3)
+        self.assertEqual(response['result'], 'success')
+        # Test 5
+        top = L.Reduction(axis=0, coeff=1.0)
+        with open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'w') as f:
+            f.write(str(to_proto(top)))
+        sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'), 'r')
+        response = self.client.post(reverse('caffe-import'), {'file': sample_file})
+        response = json.loads(response.content)
+        os.remove(os.path.join(settings.BASE_DIR, 'media', 'test.prototxt'))
+        self.assertGreaterEqual(len(response['net']['l0']['params']), 3)
+        self.assertEqual(response['net']['l0']['params']['operation'], 'SUM')
         self.assertEqual(response['result'], 'success')
 
 

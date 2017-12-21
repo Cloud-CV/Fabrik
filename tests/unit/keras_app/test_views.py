@@ -6,7 +6,8 @@ import yaml
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import Client
-from keras.layers import Dense, Activation, Dropout, Flatten, Reshape, Permute, RepeatVector
+from keras.layers import Dense, Activation, Dropout, Flatten
+from keras.layers import Reshape, Permute, RepeatVector
 from keras.layers import ActivityRegularization, Masking
 from keras.layers import Conv1D, Conv2D, Conv3D, Conv2DTranspose
 from keras.layers import UpSampling1D, UpSampling2D, UpSampling3D
@@ -17,16 +18,18 @@ from keras.layers import LocallyConnected1D, LocallyConnected2D
 from keras.layers import SimpleRNN, LSTM, GRU
 from keras.layers import Embedding
 from keras.layers import add, concatenate
-from keras.layers.advanced_activations import LeakyReLU, PReLU, ELU, ThresholdedReLU
+from keras.layers.advanced_activations import LeakyReLU, PReLU, \
+    ELU, ThresholdedReLU
 from keras.layers import BatchNormalization
 from keras.layers import GaussianNoise, GaussianDropout, AlphaDropout
 from keras.layers import Input
 from keras import regularizers
 from keras.models import Model, Sequential
-from keras_app.views.layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
-    recurrent, batch_norm, activation, flatten, reshape, eltwise, concat, upsample,\
-    locally_connected, permute, repeat_vector, regularization, masking, gaussian_noise, gaussian_dropout,\
-    alpha_dropout
+from keras_app.views.layers_export import data, convolution, deconvolution, \
+    pooling, dense, dropout, embed, recurrent, batch_norm, activation, \
+    flatten, reshape, eltwise, concat, upsample, locally_connected, permute, \
+    repeat_vector, regularization, masking, gaussian_noise, \
+    gaussian_dropout, alpha_dropout
 from ide.utils.shapes import get_shapes
 
 
@@ -36,16 +39,39 @@ class ImportJsonTest(unittest.TestCase):
 
     def test_keras_import(self):
         # Test 1
-        sample_file = open(os.path.join(settings.BASE_DIR, 'example/keras', 'vgg16.json'), 'r')
-        response = self.client.post(reverse('keras-import'), {'file': sample_file})
+        sample_file = open(os.path.join(settings.BASE_DIR,
+                                        'example/keras',
+                                        'vgg16.json'), 'r')
+        response = self.client.post(reverse('keras-import'),
+                                    {'file': sample_file})
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'success')
         # Test 2
-        sample_file = open(os.path.join(settings.BASE_DIR, 'example/caffe', 'GoogleNet.prototxt'), 'r')
-        response = self.client.post(reverse('keras-import'), {'file': sample_file})
+        sample_file = open(os.path.join(settings.BASE_DIR,
+                                        'example/caffe',
+                                        'GoogleNet.prototxt'), 'r')
+        response = self.client.post(reverse('keras-import'),
+                                    {'file': sample_file})
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'error')
         self.assertEqual(response['error'], 'Invalid JSON')
+
+    def test_keras_import_sample_id(self):
+        # Test 1
+        response = self.client.post(
+            reverse('keras-import'),
+            {'sample_id': 'vgg16'})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+        self.assertEqual(response['net_name'], 'vgg16')
+        self.assertTrue('net' in response)
+        # Test 2
+        response = self.client.post(
+            reverse('keras-import'),
+            {'sample_id': 'shapeCheck4D'})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'error')
+        self.assertEqual(response['error'], 'No JSON model file found')
 
 
 class ExportJsonTest(unittest.TestCase):
