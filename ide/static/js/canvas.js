@@ -73,10 +73,24 @@ class Canvas extends React.Component {
     }
     // Might need to improve the logic of clickEvent
     if(Object.keys(net).length>1 && this.props.clickEvent){
-      const x1 = parseInt(net[`l${this.props.nextLayerId-2}`].state.top.split('px'));
-      const x2 = parseInt(net[`l${this.props.nextLayerId-1}`].state.top.split('px')); 
-      const s = instance.getEndpoints(`l${this.props.nextLayerId-2}`)[0];
-      var t = instance.getEndpoints(`l${this.props.nextLayerId-1}`);
+      for (let i = this.props.nextLayerId - 1; i >= 0; i --) { //find last layer id
+        if (net[`l${i}`] !== undefined) {
+          var lastLayerId = i;
+          break;
+        }
+      }
+      for (let i = lastLayerId - 1; i >= 0; i --) { //find second last layer id
+        if (net[`l${i}`] !== undefined) {
+          var prevLayerId = i;
+          break;
+        }
+      }
+      lastLayerId = `l${lastLayerId}`; //add 'l' ahead of the index
+      prevLayerId = `l${prevLayerId}`;
+      const x1 = parseInt(net[prevLayerId].state.top.split('px'));
+      const x2 = parseInt(net[lastLayerId].state.top.split('px')); 
+      const s = instance.getEndpoints(prevLayerId)[0];
+      var t = instance.getEndpoints(lastLayerId);
       // To handle case of loss layer being target
       if (t.length == 1){
         t = t[0];
