@@ -110,6 +110,50 @@ def repeat(layer):
     return shape
 
 
+def handle_concat_layer(outputLayer, inputLayer):
+    if('input' not in outputLayer['shape']):
+        shape = inputLayer['shape']['output'][:]
+    else:
+        old_num_output = outputLayer['shape']['input'][0]
+        shape = inputLayer['shape']['output'][:]
+        shape[0] += old_num_output
+    return shape
+
+
+def get_layer_shape(layerId, net):
+    # separating checking the type of layer inorder to make it modular
+    # which can be reused in case we only want to get shapes of a single
+    # layer, for example: if a new layer is added to already drawn model
+    dataLayers = ['ImageData', 'Data', 'HDF5Data', 'Input', 'WindowData', 'MemoryData', 'DummyData']
+
+    if(net[layerId]['info']['type'] in dataLayers):
+        return data(net[layerId])
+
+    elif(net[layerId]['info']['type'] in ['Convolution', 'Pooling', 'Deconvolution', 'DepthwiseConv']):
+        return filter(net[layerId])
+
+    elif(net[layerId]['info']['type'] in ['InnerProduct', 'Recurrent', 'RNN', 'LSTM', 'Embed']):
+        return output(net[layerId])
+
+    elif(net[layerId]['info']['type'] == 'Flatten'):
+        return flatten(net[layerId])
+
+    elif(net[layerId]['info']['type'] == 'Reshape'):
+        return reshape(net[layerId])
+
+    elif(net[layerId]['info']['type'] == 'Upsample'):
+        return upsample(net[layerId])
+
+    elif(net[layerId]['info']['type'] == 'RepeatVector'):
+        return repeat(net[layerId])
+
+    elif(net[layerId]['info']['type'] in ['SPP', 'Crop']):
+        raise Exception('Cannot determine shape of ' + net[layerId]['info']['type'] + 'layer.')
+
+    else:
+        return identity(net[layerId])
+
+
 def get_shapes(net):
     stack = []
     dataLayers = ['ImageData', 'Data', 'HDF5Data', 'Input', 'WindowData', 'MemoryData', 'DummyData']
@@ -134,36 +178,29 @@ def get_shapes(net):
         stack.remove(layerId)
 
         if(net[layerId]['info']['type'] in dataLayers):
-            net[layerId]['shape']['input'], net[layerId]['shape']['output'] = data(net[layerId])
-
-        elif(net[layerId]['info']['type'] in ['Convolution', 'Pooling', 'Deconvolution', 'DepthwiseConv']):
-            net[layerId]['shape']['output'] = filter(net[layerId])
-
-        elif(net[layerId]['info']['type'] in ['InnerProduct', 'Recurrent', 'RNN', 'LSTM', 'Embed']):
-            net[layerId]['shape']['output'] = output(net[layerId])
-
-        elif(net[layerId]['info']['type'] == 'Flatten'):
-            net[layerId]['shape']['output'] = flatten(net[layerId])
-
-        elif(net[layerId]['info']['type'] == 'Reshape'):
-            net[layerId]['shape']['output'] = reshape(net[layerId])
-
-        elif(net[layerId]['info']['type'] == 'Upsample'):
-            net[layerId]['shape']['output'] = upsample(net[layerId])
-
-        elif(net[layerId]['info']['type'] == 'RepeatVector'):
-            net[layerId]['shape']['output'] = repeat(net[layerId])
-
-        elif(net[layerId]['info']['type'] in ['SPP', 'Crop']):
-            raise Exception('Cannot determine shape of ' + net[layerId]['info']['type'] + 'layer.')
-
+            net[layerId]['shape']['input'], net[layerId]['shape']['output'] = get_layer_shape(layerId, net)
         else:
-            net[layerId]['shape']['output'] = identity(net[layerId])
+            net[layerId]['shape']['output'] = get_layer_shape(layerId, net)
 
         for outputId in net[layerId]['connection']['output']:
             if (not processedLayer[outputId]):
-                net[outputId]['shape']['input'] = net[layerId]['shape']['output']
-                stack.append(outputId)
+                # Handling Concat layer separately
+                if (net[outputId]['info']['type'] == "Concat"):
+                    net[outputId]['shape']['input'] = handle_concat_layer(net[outputId], net[layerId])
+                else:
+                    net[outputId]['shape']['input'] = net[layerId]['shape']['output'][:]
+
+                # Implement topo sort check
+                flag = True
+                for parentLayerId in net[outputId]['connection']['input']:
+                    if ((not processedLayer[parentLayerId]) and parentLayerId != layerId):
+                        flag = False
+                        break
+                if flag:
+                    stack.append(outputId)
+            else:
+                if (net[outputId]['info']['type'] == "Concat"):
+                    net[outputId]['shape']['input'] = handle_concat_layer(net[outputId], net[layerId])
 
         processedLayer[layerId] = True
 

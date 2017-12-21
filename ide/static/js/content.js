@@ -39,7 +39,8 @@ class Content extends React.Component {
       selectedPhase: 0,
       error: [],
       load: false,
-      modalIsOpen: false
+      modalIsOpen: false,
+      totalParameters: 0
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
@@ -66,6 +67,9 @@ class Content extends React.Component {
     this.infoModal = this.infoModal.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.zooModal = this.zooModal.bind(this);
+    this.loadLayerShapes = this.loadLayerShapes.bind(this);
+    this.calculateParameters = this.calculateParameters.bind(this);
+    this.updateParameters = this.updateParameters.bind(this);
     this.modalContent = null;
     this.modalHeader = null;
     // Might need to improve the logic of clickEvent
@@ -189,6 +193,92 @@ class Content extends React.Component {
     });
     this.setState({ net, selectedLayer: null });
   }
+  updateParameters(layer, net) {
+    // obtain the total parameters of the model
+    var totalParameters = this.state.totalParameters;
+    var weight_params = 0;
+    var bias_params = 0;
+
+    var filter_layers = ["Convolution", "Deconvolution"];
+    var fc_layers = ["InnerProduct", "Embed", "Recurrent", "LSTM"];
+
+    if(filter_layers.includes(layer.info.type)) {
+      // if layer is Conv or DeConv calculating total parameter of the layer using:
+      // N_Input * K_H * K_W * N_Output 
+      var kernel_params = 1;
+      if(layer.params['kernel_h'][0] != '')
+        kernel_params *= layer.params['kernel_h'][0];
+      if(layer.params['kernel_w'][0] != '')
+        kernel_params *= layer.params['kernel_w'][0];
+      if(layer.params['kernel_d'][0] != '')
+        kernel_params *= layer.params['kernel_d'][0];
+
+      weight_params = layer.shape['input'][0] * kernel_params * layer.params['num_output'][0];
+      bias_params += layer.params['num_output'][0];
+    }
+    else if(fc_layers.includes(layer.info.type)) {
+      // if layer is one of Recurrent layer or Fully Connected layers calculate parameters using:
+      // Num_Input * Num_Ouput
+      // if previous layer is D-dimensional then obtain the total inputs by (N1xN2x...xNd)
+      var inputParams = 1;
+      for(var i=0;i<layer.shape['input'].length;i++) {
+        if(layer.shape['input'][i] != 0)
+          inputParams *= layer.shape['input'][i];
+      }
+      weight_params = inputParams * layer.params['num_output'][0];
+      bias_params = layer.params['num_output'][0];
+    }
+    if(layer.info.type == "BatchNorm") {
+      let cnt = 2;
+      const childLayer = net[layer.connection['output'][0]];
+      if(childLayer.info.type == "Scale") {
+        if(childLayer.params['scale'][0] == true)
+          cnt +=1
+        if(childLayer.params['bias_term'][0] == true)
+          cnt +=1;
+      }
+      weight_params = cnt * layer.shape['output'][0];
+    }
+    if('use_bias' in layer.params) {
+      if (layer.params['use_bias'][0] == false)
+        bias_params = 0;
+    }
+    totalParameters += (weight_params + bias_params);
+
+    // Update the total parameters of model after considering this layer.
+    this.setState({ totalParameters: totalParameters });
+  }
+  calculateParameters(net) {
+    // Iterate over model's each layer & separately add the contribution of each layer
+    Object.keys(net).sort().forEach(layerId => {
+      const layer = net[layerId];
+      this.updateParameters(layer, net);
+    });
+  }
+  loadLayerShapes() {
+    this.dismissAllErrors();
+    
+    // Making call to endpoint inorder to obtain shape of each layer i.e. input & output shape
+    const netData = JSON.parse(JSON.stringify(this.state.net));
+    $.ajax({
+      url: 'model_parameter/',
+      dataType: 'json',
+      type: 'POST',
+      data: {
+        net: JSON.stringify(netData)
+      },
+      success : function (response) {
+        const net = response.net;
+        // call to intermediate method which will iterate over layers & calculate the parameters separately
+        this.calculateParameters(net);
+        // update the net object with shape attributes added
+        this.setState({ net });  
+      }.bind(this),
+      error() {
+        //console.log('error'+response.error);
+      }
+    });
+  }
   exportNet(framework) {
     this.dismissAllErrors();
     const error = [];
@@ -294,6 +384,7 @@ class Content extends React.Component {
       success: function (response) {
         if (response.result === 'success'){
           this.initialiseImportedNet(response.net,response.net_name);
+          this.loadLayerShapes();
         } else if (response.result === 'error'){
           this.addError(response.error);
         }
@@ -332,7 +423,7 @@ class Content extends React.Component {
         Object.keys(data[type].params).forEach(param => {
           if (!layer.params.hasOwnProperty(param)) {
             // The initial value is a list with the first element being the actual value, and the second being a flag which
-            // controls wheter the parameter is disabled or not on the frontend.
+            // controls whether the parameter is disabled or not on the frontend.
             layer.params[param] = [data[type].params[param].value, false];
           }
           else {
@@ -442,7 +533,8 @@ class Content extends React.Component {
         nextLayerId: Object.keys(net).length,
         rebuildNet: true,
         selectedPhase: 0,
-        error: []
+        error: [],
+        totalParameters: 0
       });
     }
   }
@@ -813,6 +905,7 @@ class Content extends React.Component {
             dismissError={this.dismissError}
             addError={this.addError}
             clickEvent={this.clickEvent}
+            totalParameters={this.state.totalParameters}
           />
           <SetParams
             net={this.state.net}

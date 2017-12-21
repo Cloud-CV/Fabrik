@@ -27,6 +27,7 @@ from keras_app.views.layers_export import data, convolution, deconvolution, pool
     recurrent, batch_norm, activation, flatten, reshape, eltwise, concat, upsample,\
     locally_connected, permute, repeat_vector, regularization, masking, gaussian_noise, gaussian_dropout,\
     alpha_dropout
+from ide.utils.shapes import get_shapes
 
 
 class ImportJsonTest(unittest.TestCase):
@@ -68,7 +69,8 @@ class ExportJsonTest(unittest.TestCase):
         sample_file = open(os.path.join(settings.BASE_DIR, 'media', 'test.json'), 'r')
         response = self.client.post(reverse('keras-import'), {'file': sample_file})
         response = json.loads(response.content)
-        response = self.client.post(reverse('keras-export'), {'net': json.dumps(response['net']),
+        net = get_shapes(response['net'])
+        response = self.client.post(reverse('keras-export'), {'net': json.dumps(net),
                                                               'net_name': ''})
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'success')
@@ -79,6 +81,7 @@ class ExportJsonTest(unittest.TestCase):
         tests.close()
         net = yaml.safe_load(json.dumps(response['net']))
         net = {'l0': net['HDF5Data']}
+        # Currently we can't determine shape of HDF5Data Layer
         response = self.client.post(reverse('keras-export'), {'net': json.dumps(net),
                                                               'net_name': ''})
         response = json.loads(response.content)

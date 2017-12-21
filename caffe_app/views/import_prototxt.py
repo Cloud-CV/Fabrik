@@ -358,6 +358,7 @@ def Bias(layer):
 
 def Scale(layer):
     params = {}
+    params['scale'] = True
     params['axis'] = layer.scale_param.axis
     params['num_axes'] = layer.scale_param.num_axes
     params['filler'] = layer.scale_param.filler.type

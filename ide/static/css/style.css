@@ -138,6 +138,31 @@ input#netName.hidden {
   right: 8%;
 }
 
+#modelParameter{
+  margin: 0px;
+  position: fixed;
+  bottom: 4%;
+  left: 22%;
+  width: 180px;
+}
+
+#modelParameter > p{
+  margin: 0px;
+  color: #9ea2a9;
+}
+
+#modelParameter > #content{
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
+  text-align: center;
+  background-color: #cdcfd2;
+  box-shadow:none ;
+  border: none;
+  padding: 2px 2px 2px 2px;
+}
+
+
 .extra-buttons{
   padding-left: 0px;
   font-weight: bold;

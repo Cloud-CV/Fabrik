@@ -305,6 +305,12 @@ class Canvas extends React.Component {
       >
         {layers}
       </div>
+      <div id='modelParameter'>
+        <p>Total Parameters</p>
+        <div id="content">
+          {this.props.totalParameters}
+        </div>
+      </div>
       <div id='icon-plus' className="canvas-icon">
         <p>Press ]</p>
         <button className="btn btn-default text-center">
@@ -336,7 +342,8 @@ Canvas.propTypes = {
   dismissError: React.PropTypes.func,
   error: React.PropTypes.array,
   placeholder: React.PropTypes.bool,
-  clickEvent: React.PropTypes.bool
+  clickEvent: React.PropTypes.bool,
+  totalParameters: React.PropTypes.number
 };
 
 export default Canvas;

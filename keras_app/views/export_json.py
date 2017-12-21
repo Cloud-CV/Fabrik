@@ -2,13 +2,11 @@ import json
 import os
 import random
 import string
-import sys
 import yaml
 
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from ide.utils.shapes import get_shapes
 from keras.models import Model
 from layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
     recurrent, batch_norm, activation, flatten, reshape, eltwise, concat, upsample, locally_connected,\
@@ -30,11 +28,6 @@ def export_json(request):
         net_name = request.POST.get('net_name')
         if net_name == '':
             net_name = 'Net'
-        try:
-            net = get_shapes(net)
-        except BaseException:
-            return JsonResponse(
-                {'result': 'error', 'error': str(sys.exc_info()[1])})
 
         layer_map = {
             'ImageData': data,
