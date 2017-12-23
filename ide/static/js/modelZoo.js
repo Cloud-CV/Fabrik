@@ -29,6 +29,8 @@ class ModelZoo extends React.Component {
               <ModelElement importNet={this.props.importNet} framework="caffe" id="fcn">FCN32 Pascal</ModelElement>
               <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="yolo_net">YOLONet</ModelElement>
+              <br/>
+              <ModelElement importNet={this.props.importNet} framework="caffe" id="HED">HED</ModelElement>
           </div>
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Retrieval</h3>

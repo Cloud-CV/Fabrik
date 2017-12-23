@@ -18,7 +18,7 @@ List of all models for which import/export has been tested with Fabrik.
 * FCN32 Pascal [\[Source\]](https://github.com/shelhamer/fcn.berkeleyvision.org)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113426rgyqo)
 * RCNN [\[Source\]](https://github.com/rbgirshick/rcnn)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208120915yxabc)
 * YOLONet [\[Source\]](https://github.com/xingwangsfu/caffe-yolo)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113441rfnbr)
-
+* Holistically-Nested Edge Detection [\[Source\]](https://gist.github.com/s9xie/c6bd432f7347548b0187)
 ## Retrieval
 
 * MNIST Siamese [\[Source\]](https://github.com/BVLC/caffe/tree/master/examples/siamese)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113503xgnfd)
