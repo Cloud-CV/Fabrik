@@ -6,7 +6,6 @@ export default function () {
   let dy = params.y || 20;
 
   this._compute = function(paintInfo, paintParams) {
-
     if(paintParams.targetEndpoint.isTarget && 
       ((paintParams.targetEndpoint.element.attributes['data-type'].nodeValue === 'Concat') ||
        (paintParams.targetEndpoint.element.attributes['data-type'].nodeValue === 'Eltwise'))){
@@ -23,28 +22,34 @@ export default function () {
         y2:paintInfo.ty
       })
     } else {
-      if (paintInfo.ty-paintInfo.sy > 40) {
-        var extend = Math.sqrt(paintInfo.ty-paintInfo.sy / 80) + 70;
+      //check to see if the cutting has been specified for this layer
+      // the first statement should short circuit on dragging a layer
+      if (!(window.connectorParams == undefined) && 
+      !(window.connectorParams[paintParams.sourceEndpoint.elementId] == undefined) &&
+      !(window.connectorParams[paintParams.sourceEndpoint.elementId][paintParams.targetEndpoint.elementId] == undefined) &&
+       window.connectorParams[paintParams.sourceEndpoint.elementId][paintParams.targetEndpoint.elementId] != 0) {
+        var extend = window.connectorParams[paintParams.sourceEndpoint.elementId][paintParams.targetEndpoint.elementId];
+       
       _super.addSegment(this, "Straight", {
         x1:paintInfo.sx,
         y1:paintInfo.sy,
-        x2:paintInfo.sx - extend,
-        y2:paintInfo.sy +40
+        x2:paintInfo.sx + extend,
+        y2:paintInfo.sy + 40
       });
       _super.addSegment(this, "Straight", {
-        x1:paintInfo.sx - extend,
-        y1:paintInfo.sy +40,
-        x2:paintInfo.sx - extend,
-        y2:paintInfo.ty -40
+        x1:paintInfo.sx + extend,
+        y1:paintInfo.sy + 40 ,
+        x2:paintInfo.sx + extend,
+        y2:paintInfo.ty - 40
       });
       _super.addSegment(this, "Straight", {
-        x1:paintInfo.sx - extend,
-        y1:paintInfo.ty-40,
+        x1:paintInfo.sx + extend,
+        y1:paintInfo.ty - 40 ,
         x2:paintInfo.tx,
         y2:paintInfo.ty
       });
-    }
-    else {
+     }
+    else { 
       _super.addSegment(this, "Straight", {
         x1:paintInfo.sx,
         y1:paintInfo.sy,
