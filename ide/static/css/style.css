@@ -177,8 +177,12 @@ input#netName.hidden {
   border: none;
   background-color: transparent;
   box-shadow: none;
+  cursor: pointer;
 }
-
+.panel-heading > a {
+  text-decoration: none;
+  color: #455062;
+}
 .panel-group{
   padding-left: 8px;
   padding-right: 8px;
