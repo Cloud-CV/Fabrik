@@ -14,8 +14,10 @@ Contents:
    :maxdepth: 2
 
    setup
-   keras_json_usage
+   keras_json_usage_1
+   keras_json_usage_2
    tested_models
+   caffe_prototxt_usage
 
 Indices and tables
 ==================
