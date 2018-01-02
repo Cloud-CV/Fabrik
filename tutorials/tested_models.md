@@ -1,7 +1,7 @@
 List of all models for which import/export has been tested with Fabrik.
 
 ## Recognition
-
+* MNIST LeNet [\[Source\]](https://github.com/wenwei202/caffe/blob/scnn/examples/mnist)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180101094606ewlrt#/?_k=uu2fiw)
 * AlexNet [\[Source\]](https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113052pazsy)
 * All CNN [\[Source\]](https://github.com/mateuszbuda/ALL-CNN)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113139kxufp)
 * CaffeNet [\[Source\]](https://github.com/BVLC/caffe/tree/master/models/bvlc_reference_caffenet)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208120646sxjld)
