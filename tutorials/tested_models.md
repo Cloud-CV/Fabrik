@@ -12,6 +12,8 @@ List of all models for which import/export has been tested with Fabrik.
 * ResNet-101 [\[Source\]](https://github.com/KaimingHe/deep-residual-networks)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113311evllg)
 * SqueezeNet [\[Source\]](https://github.com/DeepScale/SqueezeNet)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113403vkslv)
 * VGG-16 [\[Source\]](https://gist.github.com/ksimonyan/211839e770f7b538e2d8#file-readme-md)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113208hjcvb)
+* DeepYeast [\[Source\]](http://kodu.ut.ee/~leopoldp/2016_DeepYeast/code/caffe_model/)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180102135425bzkzy)
+* SpeechNet [\[Source\]](https://github.com/pannous/caffe-speech-recognition)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180102135032ctsho)
 
 ## Detection
 
