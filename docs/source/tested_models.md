@@ -1,7 +1,7 @@
 List of all models for which import/export has been tested with Fabrik.
 
 ## Recognition
-
+* MNIST LeNet [\[Source\]](https://github.com/wenwei202/caffe/blob/scnn/examples/mnist)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180101094606ewlrt#/?_k=uu2fiw)
 * AlexNet [\[Source\]](https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113052pazsy)
 * All CNN [\[Source\]](https://github.com/mateuszbuda/ALL-CNN)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113139kxufp)
 * CaffeNet [\[Source\]](https://github.com/BVLC/caffe/tree/master/models/bvlc_reference_caffenet)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208120646sxjld)
@@ -12,9 +12,12 @@ List of all models for which import/export has been tested with Fabrik.
 * ResNet-101 [\[Source\]](https://github.com/KaimingHe/deep-residual-networks)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113311evllg)
 * SqueezeNet [\[Source\]](https://github.com/DeepScale/SqueezeNet)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113403vkslv)
 * VGG-16 [\[Source\]](https://gist.github.com/ksimonyan/211839e770f7b538e2d8#file-readme-md)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113208hjcvb)
+* DeepYeast [\[Source\]](http://kodu.ut.ee/~leopoldp/2016_DeepYeast/code/caffe_model/)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180102135425bzkzy)
+* SpeechNet [\[Source\]](https://github.com/pannous/caffe-speech-recognition)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180102135032ctsho)
 
 ## Detection
 
+* Vanilla CNN [\[Source\]](https://github.com/ishay2b/VanillaCNN)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180103153019dogjt)
 * FCN32 Pascal [\[Source\]](https://github.com/shelhamer/fcn.berkeleyvision.org)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113426rgyqo)
 * RCNN [\[Source\]](https://github.com/rbgirshick/rcnn)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208120915yxabc)
 * YOLONet [\[Source\]](https://github.com/xingwangsfu/caffe-yolo)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113441rfnbr)

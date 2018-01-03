@@ -1,0 +1,323 @@
+name: "Vanilla CNN"
+
+layer {
+   type: "HDF5Data"
+   top: "X" # same name as given in create_dataset!
+   top: "landmarks"
+   hdf5_data_param {
+     source: "/Users/ishay/Dev/VanilaCNN/caffeData/train.txt" # do not give the h5 files directly, but the list.
+     batch_size: 30
+   }
+   include { phase:TRAIN }
+ }
+
+layer {
+   type: "HDF5Data"
+   top: "X" # same name as given in create_dataset!
+   top: "landmarks"
+   hdf5_data_param {
+     source: "/Users/ishay/Dev/VanilaCNN/caffeData/test.txt" # do not give the h5 files directly, but the list.
+     batch_size: 10
+   }
+   include { phase:TEST }
+}
+
+layer {
+    name: "Conv1"
+    type: "Convolution"
+    bottom: "X"
+    top: "Conv1"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param {
+        num_output: 16
+        pad: 2
+        kernel_size: 5
+        stride: 1
+        weight_filler {
+            type: "xavier"
+            std: 0.1
+        }
+        bias_filler {
+            type: "constant"
+            value: 0.2
+        }
+    }
+}
+
+layer {
+  name: "ActivationTangH1"
+  bottom: "Conv1"
+  top: "ActivationTangH1"
+  type: "TanH"
+}
+
+layer {
+  name: "ActivationAbs1"
+  bottom: "ActivationTangH1"
+  top: "Abs1"
+  type: "AbsVal"
+}
+
+layer {
+    name: "Pool1"
+    type: "Pooling"
+    bottom: "Abs1"
+    top: "Pool1"
+    pooling_param {
+        pool: MAX
+        kernel_size: 2
+        stride: 2
+    }
+}
+
+layer {
+    name: "Conv2"
+    type: "Convolution"
+    bottom: "Pool1"
+    top: "Conv2"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param {
+        num_output: 48
+        pad: 1
+        kernel_size: 3
+        stride: 1
+        weight_filler {
+        type: "xavier"
+        std: 0.1
+    }
+    bias_filler {
+        type: "constant"
+        value: 0.2
+        }
+    }
+}
+
+layer {
+  name: "ActivationTangH2"
+  bottom: "Conv2"
+  top: "ActivationTangH2"
+  type: "TanH"
+}
+
+layer {
+  name: "ActivationAbs2"
+  bottom: "ActivationTangH2"
+  top: "Abs2"
+  type: "AbsVal"
+}
+
+
+layer {
+    name: "Pool2"
+    type: "Pooling"
+    bottom: "Abs2"
+    top: "Pool2"
+    pooling_param {
+        pool: MAX
+        kernel_size: 2
+        stride: 2
+    }
+}
+
+# layer 3
+layer {
+    name: "Conv3"
+    type: "Convolution"
+    bottom: "Pool2"
+    top: "Conv3"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param {
+        num_output: 64
+        pad: 0
+        kernel_size: 3
+        stride: 1
+        weight_filler {
+            type: "xavier"
+            std: 0.1
+        }
+        bias_filler {
+            type: "constant"
+            value: 0.2
+        }
+    }
+}
+
+
+layer {
+  name: "ActivationTangH3"
+  bottom: "Conv3"
+  top: "ActivationTangH3"
+  type: "TanH"
+}
+
+layer {
+  name: "ActivationAbs3"
+  bottom: "ActivationTangH3"
+  top: "Abs3"
+  type: "AbsVal"
+}
+
+layer {
+    name: "Pool3"
+    type: "Pooling"
+    bottom: "Abs3"
+    top: "Pool3"
+    pooling_param {
+        pool: MAX
+        kernel_size: 3
+        stride: 2
+    }
+}
+
+# layer 4
+layer {
+    name: "Conv4"
+    type: "Convolution"
+    bottom: "Pool3"
+    top: "Conv4"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    convolution_param {
+        num_output: 64
+        pad: 0
+        kernel_size: 2
+        stride: 1
+        weight_filler {
+            type: "xavier"
+            std: 0.1
+        }
+        bias_filler {
+            type: "constant"
+            value: 0.2
+        }
+    }
+}
+
+
+layer {
+  name: "ActivationTangH4"
+  bottom: "Conv4"
+  top: "ActivationTangH4"
+  type: "TanH"
+}
+
+layer {
+  name: "ActivationAbs4"
+  bottom: "ActivationTangH4"
+  top: "Abs4"
+  type: "AbsVal"
+}
+
+
+########################################
+
+layer {
+    name: "Dense1"
+    type: "InnerProduct"
+    bottom: "Abs4"
+    top: "Dense1"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    inner_product_param {
+        num_output: 100
+        weight_filler {
+            type: "xavier"
+        }
+        bias_filler {
+            type: "constant"
+            value: 0
+        }
+    }
+}
+
+
+layer {
+  name: "ActivationTangH5"
+  bottom: "Dense1"
+  top: "ActivationTangH5"
+  type: "TanH"
+}
+
+layer {
+  name: "ActivationAbs5"
+  bottom: "ActivationTangH5"
+  top: "Abs5"
+  type: "AbsVal"
+}
+
+
+layer {
+    name: "Dense2"
+    type: "InnerProduct"
+    bottom: "Abs5"
+    top: "Dense2"
+    param {
+        lr_mult: 1
+        decay_mult: 1
+    }
+    param {
+        lr_mult: 2
+        decay_mult: 0
+    }
+    inner_product_param {
+        num_output: 10
+        weight_filler {
+            type: "xavier"
+        }
+        bias_filler {
+            type: "constant"
+            value: 0
+        }
+    }
+}
+
+layer {
+  type: 'Python'
+  name: 'loss'
+  top: 'loss'
+  bottom: 'Dense2'
+  bottom: 'landmarks'
+  python_param {
+    # the module name -- usually the filename -- that needs to be in $PYTHONPATH
+    module: 'python.NormlizedMSE'
+    # the layer name -- the class name in the module
+    layer: 'NormlizedMSE'
+  }
+  # set loss weight so Caffe knows this is a loss layer.
+  # since PythonLayer inherits directly from Layer, this isn't automatically
+  # known to Caffe
+  loss_weight: 1
+}
