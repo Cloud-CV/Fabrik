@@ -8,9 +8,10 @@ import os
 from ide.utils.jsonToPrototxt import json_to_prototxt
 import tensorflow as tf
 import sys
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, BASE_DIR+'/media/')
-sys.path.insert(0, BASE_DIR+'/tensorflow_app/caffe-tensorflow/')
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, BASE_DIR + '/media/')
+sys.path.insert(0, BASE_DIR + '/tensorflow_app/caffe-tensorflow/')
 
 
 def randomword(length):
@@ -25,8 +26,9 @@ def export_to_tensorflow(request):
         if net_name == '':
             net_name = 'Net'
         prototxt, input_dim = json_to_prototxt(net, net_name)
+
         randomId = datetime.now().strftime('%Y%m%d%H%M%S') + randomword(5)
-        with open(BASE_DIR+'/media/'+randomId+'.prototxt', 'w') as f:
+        with open(BASE_DIR + '/media/' + randomId + '.prototxt', 'w') as f:
             f.write(prototxt)
 
         os.system('python ' + BASE_DIR + '/tensorflow_app/caffe-tensorflow/convert.py ' + BASE_DIR
@@ -45,12 +47,12 @@ def export_to_tensorflow(request):
             images = tf.placeholder(tf.float32, input_tensorflow)
             net = getattr(net, net_name)({'blob0': images})
             graph_def = tf.get_default_graph().as_graph_def(add_shapes=True)
-            with open(BASE_DIR+'/media/'+randomId+'.pbtxt', 'w') as f:
+            with open(BASE_DIR + '/media/' + randomId + '.pbtxt', 'w') as f:
                 f.write(str(graph_def))
         except AssertionError:
             return JsonResponse({'result': 'error', 'error': 'Cannot convert to GraphDef'})
         except AttributeError:
             return JsonResponse({'result': 'error', 'error': 'GraphDef not supported'})
 
-        return JsonResponse({'result': 'success', 'id': randomId, 'name': randomId+'.pbtxt',
-                             'url': '/media/'+randomId+'.pbtxt'})
+        return JsonResponse({'result': 'success', 'id': randomId, 'name': randomId + '.pbtxt',
+                             'url': '/media/' + randomId + '.pbtxt'})

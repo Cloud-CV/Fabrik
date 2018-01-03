@@ -41,7 +41,7 @@ This app is presently under active development and we welcome contributions. Ple
         ```
     * For Mac users
         * [Install Caffe](http://caffe.berkeleyvision.org/install_osx.html)
-        * [Install Tensorflow](https://www.tensorflow.org/versions/r0.12/get_started/os_setup#virtualenv_installation)
+        * [Install Tensorflow](https://www.tensorflow.org/install/install_mac)
         * [Install Keras](https://keras.io/#installation)
 4. Install dependencies
 * For developers:
