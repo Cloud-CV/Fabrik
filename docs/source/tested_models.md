@@ -18,7 +18,7 @@ List of all models for which import/export has been tested with Fabrik.
 * FCN32 Pascal [\[Source\]](https://github.com/shelhamer/fcn.berkeleyvision.org)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113426rgyqo)
 * RCNN [\[Source\]](https://github.com/rbgirshick/rcnn)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208120915yxabc)
 * YOLONet [\[Source\]](https://github.com/xingwangsfu/caffe-yolo)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113441rfnbr)
-
+* Holistically-Nested Edge Detection [\[Source\]](https://gist.github.com/s9xie/c6bd432f7347548b0187)
 ## Retrieval
 
 * MNIST Siamese [\[Source\]](https://github.com/BVLC/caffe/tree/master/examples/siamese)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113503xgnfd)
@@ -31,9 +31,7 @@ List of all models for which import/export has been tested with Fabrik.
 ## Captioning
 
 * COCO Caption [\[Source\]](https://github.com/jeffdonahue/caffe/tree/recurrent-rebase-cleanup/examples/coco_caption)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113707zcgth)
-
+* VQA [\[Source\]](https://github.com/iamaaditya/VQA_Demo)
 ## Miscellaneous
 
-* VQA [\[Source\]](https://github.com/iamaaditya/VQA_Demo)
 * Ranking CNN [\[Source\]](https://github.com/RankingCNN/Using-Ranking-CNN-for-Age-Estimation)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208121544acjpu)
-* FCN for Segmantic Segmentation [\[Source\]](https://github.com/shelhamer/fcn.berkeleyvision.org)

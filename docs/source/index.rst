@@ -18,6 +18,8 @@ Contents:
    keras_json_usage_2
    tested_models
    caffe_prototxt_usage
+   AddingNewModel
+   adding_new_layers
 
 Indices and tables
 ==================
