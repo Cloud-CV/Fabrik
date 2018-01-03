@@ -561,8 +561,8 @@ def import_prototxt(request):
         caffe_net = caffe_pb2.NetParameter()
         try:
             text_format.Merge(prototxt.read(), caffe_net)
-        except Exception:
-            return JsonResponse({'result': 'error', 'error': 'Invalid Prototxt'})
+        except Exception as ex:
+            return JsonResponse({'result': 'error', 'error': 'Invalid Prototxt\n'+str(ex)})
 
         net = {}
         i = 0
@@ -610,7 +610,6 @@ def import_prototxt(request):
                 },
                 'params': params
             }
-
             # this logic was written for a scenario where train and test layers are mixed up
             # But as we know, the only differences between the train and test phase are:
             # 1) input layer with different source in test

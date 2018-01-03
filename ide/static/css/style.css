@@ -564,6 +564,7 @@ input#netName.hidden {
     top: 3%;
     left:30%;
     border-radius: 5px;
+    white-space: pre-line;
 }
 
 .alert-dismissible .close {
