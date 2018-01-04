@@ -9,6 +9,7 @@ class SetParams extends React.Component {
     this.changeProps = this.changeProps.bind(this);
     this.trainOnly = this.trainOnly.bind(this);
     this.close = this.close.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
   changeProps(prop, value) {
     const net = this.props.net;
@@ -31,6 +32,17 @@ class SetParams extends React.Component {
     if (e.target.checked) {
       this.props.trainOnly();
     }
+  }
+  handleKeyPress(event){
+     if (event.key == 'Delete'){
+      this.props.deleteLayer(this.props.selectedLayer);
+    }
+  }
+  componentDidMount(){
+    document.addEventListener("keydown", this.handleKeyPress, false);
+  }
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.handleKeyPress, false);
   }
   render() {
     if (this.props.selectedLayer) {
@@ -89,7 +101,6 @@ class SetParams extends React.Component {
 
       return (
         <div className="setparams setparamsActive" >
-
           <div className="setHead">
             <h5 className="sidebar-heading">LAYER SELECTED</h5>
             <h4>{layer.props.name}</h4>
