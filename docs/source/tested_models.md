@@ -16,7 +16,6 @@ List of all models for which import/export has been tested with Fabrik.
 * SpeechNet [\[Source\]](https://github.com/pannous/caffe-speech-recognition)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180102135032ctsho)
 
 ## Detection
-
 * Vanilla CNN [\[Source\]](https://github.com/ishay2b/VanillaCNN)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180103153019dogjt)
 * FCN32 Pascal [\[Source\]](https://github.com/shelhamer/fcn.berkeleyvision.org)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113426rgyqo)
 * RCNN [\[Source\]](https://github.com/rbgirshick/rcnn)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208120915yxabc)

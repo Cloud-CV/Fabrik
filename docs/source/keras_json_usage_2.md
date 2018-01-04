@@ -35,7 +35,7 @@ loadedModel = model_from_json(loadedModel)
 print (loadedModel.summary())
 ```
 
-- Save the file at the same location where the kerasModel.json is saved and close the text editor.
+- Save the file at the same location where the ```kerasModel.json``` is saved and close the text editor.
 - Switch to the terminal we were using earlier.
 - Type ```python kerasModelLoader.py```.
 - Congrats! You should see a summary of the exported model.
