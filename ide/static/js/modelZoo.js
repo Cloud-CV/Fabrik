@@ -53,6 +53,8 @@ class ModelZoo extends React.Component {
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">VQA</h3>
             <ModelElement importNet={this.props.importNet} framework="keras" id="VQA">VQA</ModelElement>
+            <br/>
+            <ModelElement importNet={this.props.importNet} framework="keras" id="VQA2">VQA2</ModelElement>
           </div>
         </div>
       </div>
