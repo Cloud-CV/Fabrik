@@ -29,6 +29,7 @@ List of all models for which import/export has been tested with Fabrik.
 
 * Seq2Seq Translation [\[Source\]](https://github.com/fchollet/keras/blob/master/examples/lstm_seq2seq.py)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208115116hsfax)
 * Text Generation [\[Source\]](https://machinelearningmastery.com/text-generation-lstm-recurrent-neural-networks-python-keras/)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113517iphlh)
+* Pix2Pix [\[Source\]](https://github.com/phillipi/pix2pix) [\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180105143836eahgb)
 
 ## Captioning
 
