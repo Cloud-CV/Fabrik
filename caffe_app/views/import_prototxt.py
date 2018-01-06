@@ -4,6 +4,8 @@ from django.conf import settings
 import os
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
+import tempfile
+import subprocess
 
 
 # ******Data Layers******
@@ -559,8 +561,23 @@ def import_prototxt(request):
                 return JsonResponse({'result': 'error',
                                      'error': 'No Prototxt model file found'})
         caffe_net = caffe_pb2.NetParameter()
+
+        # try to convert to new prototxt
         try:
-            text_format.Merge(prototxt.read(), caffe_net)
+            content = prototxt.read()
+            tempFile = tempfile.NamedTemporaryFile()
+            tempFile.write(content)
+            tempFile.seek(0)
+            subprocess.call("~/caffe/caffe/build/tools/upgrade_net_proto_text "
+                            + tempFile.name + " " + tempFile.name, shell=True)
+            tempFile.seek(0)
+            content = tempFile.read()
+            tempFile.close()
+        except Exception as ex:
+            return JsonResponse({'result': 'error', 'error': 'Invalid Prototxt\n'+str(ex)})
+
+        try:
+            text_format.Merge(content, caffe_net)
         except Exception as ex:
             return JsonResponse({'result': 'error', 'error': 'Invalid Prototxt\n'+str(ex)})
 
