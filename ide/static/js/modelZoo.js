@@ -10,6 +10,8 @@ class ModelZoo extends React.Component {
             <h3 className="zoo-modal-text">Recognition</h3>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="lenet">MNIST LeNet</ModelElement>
               <br/>
+              <ModelElement importNet={this.props.importNet} framework="caffe" id="cifar10_full">Cifar10 CNN</ModelElement>
+              <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="alexnet">AlexNet</ModelElement>
               <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="All_CNN">All CNN</ModelElement>
@@ -25,6 +27,8 @@ class ModelZoo extends React.Component {
               <ModelElement importNet={this.props.importNet} framework="keras" id="v3">Inception V3</ModelElement>
               <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="Squeezenet">Squeezenet</ModelElement>
+              <br/>
+              <ModelElement importNet={this.props.importNet} framework="keras" id="imdb_cnn_lstm">IMDB CNN LSTM</ModelElement>
           </div>
           <div className="zoo-modal-model">
             <h3 className="zoo-modal-text">Detection</h3>
