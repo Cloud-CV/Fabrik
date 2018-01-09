@@ -1,4 +1,6 @@
-<h1>Adding New Model - Caffe</h1>
+## Adding New Models
+
+### Adding New Model - Caffe
 
 1. For Setup instructions, look at the [README](https://github.com/Cloud-CV/Fabrik/blob/master/README.md).
 2. Add the new model as a .prototxt file to the <b>[Example/Caffe](https://github.com/Cloud-CV/Fabrik/tree/master/example/caffe)</b> folder.
@@ -11,7 +13,7 @@
 5. Create a pull request for the same and get reviewed by the mentors.
 Cheers!
 
-<h1>Adding New Model - Keras </h1>
+### Adding New Model - Keras
 
 1. For Setup instructions, look at the [README](https://github.com/Cloud-CV/Fabrik/blob/master/README.md).
 2. Add the new model as a .json file to the <b>[Example/Keras](https://github.com/Cloud-CV/Fabrik/tree/master/example/keras)</b> folder.

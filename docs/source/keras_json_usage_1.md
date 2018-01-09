@@ -1,13 +1,13 @@
-### Basics of Using the Exported Keras Model
+## Basics of Using the Exported Keras Model
 
 We want to export our model for Keras from Fabrik.
 
 1. First, select the 2nd button from the left in the Actions section of the sidebar.
-<img src="exportbutton.png">
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/exportbutton.png">
 
 2. A drop-down list should appear. Select Keras.
     * This should download a JSON file to your computer.
-<img src="exportdropdown.png">
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/exportdropdown.png">
 
 3. Rename the file to ```model.json```.
 

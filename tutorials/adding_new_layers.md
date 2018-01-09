@@ -7,7 +7,7 @@
 
 - Open the ```data.js``` file in any text other.
 
-<img src="layercategory.png" />
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layercategory.png" />
 
 - You should see the line ```/* ********** Data Layers ********** */```, it is the category of the layer. There are many categories in the file as mentioned below:
     - Data Layers
@@ -26,7 +26,7 @@
 
 ### Detailed overview of a layer
 
-<img src="layerdetails.png" />
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerdetails.png" />
 
 - Here is a whole layer shown named ```ReLU```. It is a ```Activation/Neuron Layer```, that's why it is kept below the line ```/* ********** Activation/Neron Layers ********** */```.
 - Then add the suitable comment for you layer or leave it empty if it is not for any specific framework.
@@ -48,7 +48,7 @@
 
 - Open [pane.js](https://github.com/Cloud-CV/Fabrik/blob/master/ide/static/js/pane.js) in a text editor, and you should see something like this.
 
-<img src="layerpanel.png" />
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerpanel.png" />
 
 - Now, add a new line for the layer you just added in ```data.js``` in the section of Activation/Neuron Layer, because this layer belongs to this category.
 - ```<PaneElement handleClick={this.props.handleClick} id="your_layer_id">your_layer_name</PaneElement>``` this line will make your layer visible in Fabrik.
@@ -57,25 +57,25 @@
 
 - Open [import_prototxt.py](https://github.com/Cloud-CV/Fabrik/blob/master/caffe_app/views/import_prototxt.py) file in a text editor.
 
-<img src="layerImportPrototxt1.png" />
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerImportPrototxt1.png" />
 
 - Add a function for the new layer below the category of this layer.
 - Load the parameters, do the calculations for your layer in pyhton and return the value of ```params``` (parameters).
 - Move down in the file.
 
-<img src="layerImportPrototxt2.png" />
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerImportPrototxt2.png" />
 
 - Add your defined layer in the ```layer_dict``` array, as shown above.
 
 - Now, open [jsonToPrototxt.py](https://github.com/Cloud-CV/Fabrik/blob/master/ide/utils/jsonToPrototxt.py) in a text editor.
 
-<img src="layerJSONtoPrototxt1.png" />
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerJSONtoPrototxt1.png" />
 
 - Add an export function for training and testing of the new layer.
 - There you need to load parameters, then train & test values and at last return the trained and tested data.
 - Move down in this file as well.
 
-<img src="layerJSONtoPrototxt2.png" />
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerJSONtoPrototxt2.png" />
 
 - Add the export function in the ```layer_map``` array.
 
@@ -83,7 +83,7 @@
 
 - Run the fabrik application on you local machine by following the instructions in [README](https://github.com/Cloud-CV/Fabrik/blob/master/README.md) file.
 
-<img src="layertesting.png" />
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layertesting.png" />
 
 - Check the new layer inside the category you added it. See if all the parameters are properly displayed and usable as you wanted.
 - If everything is working fine commit your changes and push it to your fork then make a Pull Request.

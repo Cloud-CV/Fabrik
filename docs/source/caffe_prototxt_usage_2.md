@@ -1,19 +1,19 @@
-### Use exported model in Caffe
+## Use exported model in Caffe
 
-#### To export the model for Caffe in Fabrik
+### To export the model for Caffe in Fabrik
 
 - Click on the export button in the Actions section of the sidebar.
 
-<img src="exportbutton.png">
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/exportbutton.png">
 
 - Select Caffe option from the dropdown list.
     - A JSON file will be downloaded to your computer. It may take a while though.
 
-<img src="exportcaffe.png">
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/exportcaffe.png">
 
 - Rename the file to ```caffeModel.prototxt```.
 
-#### Load the exported model in python and show it's parameters and output sizes.
+### Load the exported model in python and show it's parameters and output sizes.
 
 - Open a terminal and cd into the directory where the ```caffeModel.prototxt``` is saved.
 - Do ```touch caffeLoader.py```.

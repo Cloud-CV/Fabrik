@@ -1,4 +1,4 @@
-### How to setup
+## How to setup
 1. First set up a virtualenv
     ```
     sudo apt-get install python-pip python-dev python-virtualenv 

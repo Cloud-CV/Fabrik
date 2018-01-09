@@ -3,11 +3,11 @@
 In order to export a Caffe Model from Fabrik:
 
 1. Select the 2nd button from the left in the Actions section of the sidebar.
-<img src="exportbutton.png">
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/exportbutton.png">
 
 2. A drop-down list should appear. Select Caffe.
     * This should download a prototxt file to your computer.
-<img src="exportcaffe.png">
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/exportcaffe.png">
 
 3. Rename the file to `model.prototxt`.
 
