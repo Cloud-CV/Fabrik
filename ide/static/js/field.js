@@ -8,6 +8,8 @@ class Field extends React.Component {
   change(e) {
     if (this.props.data.type === 'checkbox') {
       this.props.changeField(this.props.id, e.target.checked);
+    } else if(this.props.data.type === 'number') {
+      this.props.changeField(this.props.id, Number(e.target.value));
     } else {
       this.props.changeField(this.props.id, e.target.value);
     }
