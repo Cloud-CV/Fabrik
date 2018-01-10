@@ -1,0 +1,619 @@
+name: "VQS"
+layer {
+  name: "imageDataInput"
+  type: "Data"
+  top: "imageDataInput"
+  #top: "Imagelabel"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "featuresRegionRes5cTrain"
+    batch_size: 128
+    backend: LMDB
+  }
+}
+layer {
+  name: "imageDataInput"
+  type: "Data"
+  top: "imageDataInput"
+  #top: "Imagelabel"
+  include {
+    phase: TEST
+  }
+  data_param {
+    source: "featuresRegionRes5cVal"
+    batch_size: 128
+    backend: LMDB
+  }
+}
+layer {
+  name: "QuestionDataInput"
+  type: "Data"
+  top: "QuestionDataInput"
+  #top: "Questionlabel"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "vqaQuestionTrainLmdb"
+    batch_size: 128
+    backend: LMDB
+  }
+}
+layer {
+  name: "QuestionDataInput"
+  type: "Data"
+  top: "QuestionDataInput"
+  #top: "Questionlabel"
+  include {
+    phase: TEST
+  }
+  data_param {
+    source: "vqaQuestionValLmdb"
+    batch_size: 128
+    backend: LMDB
+  }
+}
+layer {
+  name: "lableCrossEntropy"
+  type: "Data"
+  top: "lableCrossEntropy"
+  #top: "lableuseless"
+  include {
+    phase: TRAIN
+  }
+  data_param {
+    source: "vqaTrainAttentClassLableLmdb"
+    batch_size: 128
+    backend: LMDB
+  }
+}
+layer {
+  name: "lableCrossEntropy"
+  type: "Data"
+  top: "lableCrossEntropy"
+  #top: "lableuseless"
+  include {
+    phase: TEST
+  }
+  data_param {
+    source: "vqaValAttentClassLableLmdb"
+    batch_size: 128
+    backend: LMDB
+  }
+}
+layer {
+  name: "conv1_q"
+  type: "Convolution"
+  bottom: "QuestionDataInput"
+  top: "conv1_q"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 128
+    #kernel_size: 11
+    kernel_w: 300
+    kernel_h:1
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "conv2_q"
+  type: "Convolution"
+  bottom: "QuestionDataInput"
+  top: "conv2_q"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 256
+    #kernel_size: 11
+    kernel_w: 300
+    kernel_h:2
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "conv3_q"
+  type: "Convolution"
+  bottom: "QuestionDataInput"
+  top: "conv3_q"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 256
+    #kernel_size: 11
+    kernel_w: 300
+    kernel_h:3
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "tan1"
+  bottom: "conv1_q"
+  top: "tan1"
+  type: "TanH"
+}
+layer {
+  name: "tan2"
+  bottom: "conv2_q"
+  top: "tan2"
+  type: "TanH"
+}
+layer {
+  name: "tan3"
+  bottom: "conv3_q"
+  top: "tan3"
+  type: "TanH"
+}
+layer {
+  name: "pool1_q"
+  type: "Pooling"
+  bottom: "tan1"
+  top: "pool1_q"
+  pooling_param {
+    pool: MAX
+    kernel_w: 1
+    kernel_h: 20
+    stride: 1
+  }
+}
+layer {
+  name: "pool2_q"
+  type: "Pooling"
+  bottom: "tan2"
+  top: "pool2_q"
+  pooling_param {
+    pool: MAX
+    kernel_w: 1
+    kernel_h: 19
+    stride: 1
+  }
+}
+layer {
+  name: "pool3_q"
+  type: "Pooling"
+  bottom: "tan3"
+  top: "pool3_q"
+  pooling_param {
+    pool: MAX
+    kernel_w: 1
+    kernel_h: 18
+    stride: 1
+  }
+}
+layer {
+  name: "concatCnn"
+  bottom: "pool1_q"
+  bottom: "pool2_q"
+  bottom: "pool3_q"
+  top: "concatCnn"
+  type: "Concat"
+  concat_param {
+    axis: 1
+  }
+}
+layer {
+  name: "ip1_q"
+  type: "InnerProduct"
+  bottom: "concatCnn"
+  top: "ip1_q"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 1
+  }
+  inner_product_param {
+    num_output: 2048
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu1_q"
+  type: "ReLU"
+  bottom: "ip1_q"
+  top: "ip1_q"
+}
+layer {
+  name: "drop1_q"
+  type: "Dropout"
+  bottom: "ip1_q"
+  top: "ip1_q"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+    name: "reshapeip1"
+    type: "Reshape"
+    bottom: "ip1_q"
+    top: "reshapeip1"
+    reshape_param {
+      shape {
+        dim: 0  # copy the dimension from below
+        dim: 0
+        dim: 1
+        dim: 1 # infer it from the other dimensions
+      }
+    }
+  }
+layer {
+  name: "ip2_q"
+  type: "InnerProduct"
+  bottom: "ip1_q"
+  top: "ip2_q"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 1
+  }
+  inner_product_param {
+    num_output: 500
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu2_q"
+  type: "ReLU"
+  bottom: "ip2_q"
+  top: "ip2_q"
+}
+layer {
+  name: "drop2_q"
+  type: "Dropout"
+  bottom: "ip2_q"
+  top: "ip2_q"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+    name: "reshape"
+    type: "Reshape"
+    bottom: "ip2_q"
+    top: "reshape"
+    reshape_param {
+      shape {
+        dim: 0  # copy the dimension from below
+        dim: 0
+        dim: 1
+        dim: 1 # infer it from the other dimensions
+      }
+    }
+  }
+layer {
+  name: "convImage"
+  type: "Convolution"
+  bottom: "imageDataInput"
+  top: "convImage"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 500
+    #kernel_size: 11
+    kernel_w: 1
+    kernel_h:1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer{
+  name: "eltwisefuse"
+  type: "Eltwise"
+  bottom: "convImage"
+  top: "featureSum"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "tanAtten"
+  bottom: "featureSum"
+  top: "featureSum"
+  type: "TanH"
+}
+layer {
+  name: "convSum"
+  type: "Convolution"
+  bottom: "featureSum"
+  top: "convSum"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 1
+    #kernel_size: 11
+    kernel_w: 1
+    kernel_h: 1
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "AttenSoftmax"
+  type: "Sigmoid"
+  bottom: "convSum"
+  top: "AttenSoftmax"
+}
+layer {
+  name: "loss1"
+  type: "SigmoidCrossEntropyLoss"
+  bottom: "convSum"
+  bottom: "lableCrossEntropy"
+  top: "cross_entropy_loss1"
+  loss_weight: 0.4
+}
+layer {
+  name: "convAtten"
+  type: "Convolution"
+  bottom: "AttenSoftmax"
+  top: "convAtten"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 2048
+    #kernel_size: 11
+    kernel_w: 1
+    kernel_h: 1
+    stride: 1
+    weight_filler {
+      type: "constant"
+      value: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer{
+  name: "eltwiseAttent"
+  type: "Eltwise"
+  bottom: "convAtten"
+  bottom: "imageDataInput"
+  top: "featureAttent"
+  eltwise_param {
+    operation: PROD
+  }
+}
+layer {
+  name: "poolAttent"
+  type: "Pooling"
+  bottom: "featureAttent"
+  top: "poolAttent"
+  pooling_param {
+    pool: AVE
+    kernel_w: 14
+    kernel_h: 14
+    stride: 1
+  }
+}
+
+layer {
+  name: "attentfuse"
+  bottom: "poolAttent"
+  bottom: "reshapeip1"
+  top: "attentfuse"
+  type: "Eltwise"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "ip1_1"
+  type: "InnerProduct"
+  bottom: "attentfuse"
+  top: "ip1_1"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 1
+  }
+  inner_product_param {
+    num_output: 500
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      #value : 0
+    }
+  }
+}
+layer {
+    name: "reshapeip1_1"
+    type: "Reshape"
+    bottom: "ip1_1"
+    top: "reshapeip1_1"
+    reshape_param {
+      shape {
+        dim: 0  # copy the dimension from below
+        dim: 0
+        dim: 1
+        dim: 1 # infer it from the other dimensions
+      }
+    }
+  }
+
+layer {
+  name: "convImage_1"
+  type: "Convolution"
+  bottom: "imageDataInput"
+  top: "convImage_1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 500
+    #kernel_size: 11
+    kernel_w: 1
+    kernel_h:1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer{
+  name: "eltwisefuse_1"
+  type: "Eltwise"
+  bottom: "convImage_1"
+  top: "featureSum_1"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "tanAtten_1"
+  bottom: "featureSum_1"
+  top: "featureSum_1"
+  type: "TanH"
+}
+layer {
+  name: "convSum_1"
+  type: "Convolution"
+  bottom: "featureSum_1"
+  top: "convSum_1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 1
+    #kernel_size: 11
+    kernel_w: 1
+    kernel_h: 1
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+    name: "lableshape"
+    type: "Reshape"
+    bottom: "convSum_1"
+    top: "lableshape"
+    reshape_param {
+      shape {
+        dim: 0  # copy the dimension from below
+        dim: 196
+        dim: 1
+        dim: 1 # infer it from the other dimensions
+      }
+    }
+  }
+
+layer {
+  name: "loss2"
+  type: "SigmoidCrossEntropyLoss"
+  bottom: "lableshape"
+  bottom: "lableCrossEntropy"
+  top: "cross_entropy_loss2"
+  loss_weight: 0.6
+}
+
