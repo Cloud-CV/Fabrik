@@ -546,7 +546,8 @@ layer_dict = {'Accuracy': Accuracy,
 def import_prototxt(request):
     if request.method == 'POST':
         if ('file' in request.FILES) and \
-           (request.FILES['file'].content_type == 'application/octet-stream'):
+           (request.FILES['file'].content_type == 'application/octet-stream' or
+                request.FILES['file'].content_type == 'text/plain'):
             try:
                 prototxt = request.FILES['file']
             except Exception:

@@ -298,7 +298,7 @@ class Canvas extends React.Component {
     const canvas = document.getElementById('jsplumbContainer');
     const zoom = instance.getZoom();
 
-    const type = event.dataTransfer.getData('element_type');
+    const type = this.props.draggingLayer;
     if (data[type].learn && (this.props.selectedPhase === 1)) {
       this.props.addError(`Error: you can not add a "${type}" layer in test phase`);
     } else {
@@ -331,6 +331,7 @@ class Canvas extends React.Component {
       layer.props.name = `${data[type].name}${this.props.nextLayerId}`;
       this.props.addNewLayer(layer);
     }
+    this.props.setDraggingLayer(null);
   }
   render() {
     const layers = [];
@@ -452,7 +453,9 @@ Canvas.propTypes = {
   error: React.PropTypes.array,
   placeholder: React.PropTypes.bool,
   clickEvent: React.PropTypes.bool,
-  totalParameters: React.PropTypes.number
+  totalParameters: React.PropTypes.number,
+  setDraggingLayer: React.PropTypes.func,
+  draggingLayer: React.PropTypes.string
 };
 
 export default Canvas;

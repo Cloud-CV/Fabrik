@@ -40,15 +40,33 @@ class Pane extends React.Component {
                 </div>
                 <div id="data" className="panel-collapse collapse" role=" tabpanel">
                   <div className="panel-body">
-                    <PaneElement handleClick={this.props.handleClick} id="ImageData">Image Data</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Data">Data</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="HDF5Data">HDF5 Data</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="HDF5Output">HDF5 Output</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Input">Input</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="WindowData">Window Data</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="MemoryData">Memory Data</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="DummyData">Dummy Data</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Python">Python</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="ImageData">Image Data</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Data">Data</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="HDF5Data">HDF5 Data</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="HDF5Output">HDF5 Output</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Input">Input</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="WindowData">Window Data</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="MemoryData">Memory Data</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="DummyData">Dummy Data</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Python">Python</PaneElement>
                   </div>
                 </div>
               </div>
@@ -64,13 +82,27 @@ class Pane extends React.Component {
                 </div>
                 <div id="vision" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement handleClick={this.props.handleClick} id="Convolution">Convolution</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Pooling">Pool</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Upsample">Upsample</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="LocallyConnected">Locally Connected</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Crop">Crop</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="SPP">SPP</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Deconvolution">Deconvolution</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Convolution">Convolution</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Pooling">Pool</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Upsample">Upsample</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="LocallyConnected">Locally Connected</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Crop">Crop</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="SPP">SPP</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Deconvolution">Deconvolution</PaneElement>
                   </div>
                 </div>
               </div>
@@ -87,10 +119,18 @@ class Pane extends React.Component {
                 </div>
                 <div id="recurrent" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement handleClick={this.props.handleClick} id="Recurrent">Recurrent</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="RNN">RNN</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="GRU">GRU</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="LSTM">LSTM</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Recurrent">Recurrent</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="RNN">RNN</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="GRU">GRU</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="LSTM">LSTM</PaneElement>
                   </div>
                 </div>
               </div>
@@ -107,21 +147,51 @@ class Pane extends React.Component {
                 </div>
                 <div id="utility" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement handleClick={this.props.handleClick} id="Flatten">Flatten</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Reshape">Reshape</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="BatchReindex">Batch Reindex</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Split">Split</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Concat">Concat</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Eltwise">Eltwise</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Filter">Filter</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Reduction">Reduction</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Silence">Silence</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="ArgMax">ArgMax</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Softmax">Softmax</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Permute">Permute</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="RepeatVector">Repeat Vector</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Regularization">Regularization</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Masking">Masking</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Flatten">Flatten</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Reshape">Reshape</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="BatchReindex">Batch Reindex</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Split">Split</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Concat">Concat</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Eltwise">Eltwise</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Filter">Filter</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Reduction">Reduction</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Silence">Silence</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="ArgMax">ArgMax</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Softmax">Softmax</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Permute">Permute</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="RepeatVector">Repeat Vector</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Regularization">Regularization</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Masking">Masking</PaneElement>
                   </div>
                 </div>
               </div>
@@ -137,24 +207,60 @@ class Pane extends React.Component {
                 </div>
                 <div id="activation" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement handleClick={this.props.handleClick} id="ReLU">ReLU/Leaky-ReLU</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="PReLU">PReLU</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="ELU">ELU</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="ThresholdedReLU">Thresholded ReLU</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="SELU">SELU</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Softplus">Softplus</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Softsign">Softsign</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Sigmoid">Sigmoid</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="TanH">TanH</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="HardSigmoid">Hard Sigmoid</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="AbsVal">Absolute Value</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Power">Power</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Exp">Exp</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Log">Log</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="BNLL">BNLL</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Threshold">Threshold</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Bias">Bias</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Scale">Scale</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="ReLU">ReLU/Leaky-ReLU</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="PReLU">PReLU</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="ELU">ELU</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="ThresholdedReLU">Thresholded ReLU</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="SELU">SELU</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Softplus">Softplus</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Softsign">Softsign</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Sigmoid">Sigmoid</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="TanH">TanH</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="HardSigmoid">Hard Sigmoid</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="AbsVal">Absolute Value</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Power">Power</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Exp">Exp</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Log">Log</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="BNLL">BNLL</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Threshold">Threshold</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Bias">Bias</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Scale">Scale</PaneElement>
                   </div>
                 </div>
               </div>
@@ -170,9 +276,15 @@ class Pane extends React.Component {
                 </div>
                 <div id="normalization" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement handleClick={this.props.handleClick} id="LRN">LRN</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="MVN">MVN</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="BatchNorm">Batch Norm</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="LRN">LRN</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="MVN">MVN</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="BatchNorm">Batch Norm</PaneElement>
                   </div>
                 </div>
               </div>
@@ -188,9 +300,15 @@ class Pane extends React.Component {
                 </div>
                 <div id="common" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement handleClick={this.props.handleClick} id="InnerProduct">Inner Product</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Dropout">Dropout</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Embed">Embed</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="InnerProduct">Inner Product</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Dropout">Dropout</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Embed">Embed</PaneElement>
                   </div>
                 </div>
               </div>
@@ -208,9 +326,15 @@ class Pane extends React.Component {
                 </div>
                 <div id="noise" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement handleClick={this.props.handleClick} id="GaussianNoise">Gaussian Noise</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="GaussianDropout">Gaussian Dropout</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="AlphaDropout">Alpha Dropout</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="GaussianNoise">Gaussian Noise</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="GaussianDropout">Gaussian Dropout</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="AlphaDropout">Alpha Dropout</PaneElement>
                   </div>
                 </div>
               </div>
@@ -226,15 +350,33 @@ class Pane extends React.Component {
                 </div>
                 <div id="loss" className="panel-collapse collapse" role="tabpanel">
                   <div className="panel-body">
-                    <PaneElement handleClick={this.props.handleClick} id="MultinomialLogisticLoss">Multinomial Logistic Loss</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="InfogainLoss">Infogain Loss</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="SoftmaxWithLoss">Softmax With Loss</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="EuclideanLoss">Euclidean Loss</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="HingeLoss">Hinge Loss</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="SigmoidCrossEntropyLoss">Sigmoid Cross Entropy Loss</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Accuracy">Accuracy</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="ContrastiveLoss">Contrastive Loss</PaneElement>
-                    <PaneElement handleClick={this.props.handleClick} id="Python">Python</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="MultinomialLogisticLoss">Multinomial Logistic Loss</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="InfogainLoss">Infogain Loss</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="SoftmaxWithLoss">Softmax With Loss</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="EuclideanLoss">Euclidean Loss</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="HingeLoss">Hinge Loss</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="SigmoidCrossEntropyLoss">Sigmoid Cross Entropy Loss</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Accuracy">Accuracy</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="ContrastiveLoss">Contrastive Loss</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Python">Python</PaneElement>
                   </div>
                 </div>
               </div>
@@ -245,6 +387,7 @@ class Pane extends React.Component {
   }
 }
 Pane.propTypes = {
-  handleClick: React.PropTypes.func.isRequired
+  handleClick: React.PropTypes.func.isRequired,
+  setDraggingLayer: React.PropTypes.func.isRequired
 };
 export default Pane;

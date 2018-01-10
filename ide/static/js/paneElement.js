@@ -6,7 +6,7 @@ class PaneElement extends React.Component {
     this.drag = this.drag.bind(this);
   }
   drag(e) {
-    e.dataTransfer.setData('element_type', e.target.id);
+    this.props.setDraggingLayer(e.target.id);
   }
   render() {
     return (
@@ -26,7 +26,8 @@ class PaneElement extends React.Component {
 PaneElement.propTypes = {
   id: React.PropTypes.string.isRequired,
   children: React.PropTypes.string.isRequired,
-  handleClick: React.PropTypes.func.isRequired
+  handleClick: React.PropTypes.func.isRequired,
+  setDraggingLayer: React.PropTypes.func.isRequired
 };
 
 export default PaneElement;
