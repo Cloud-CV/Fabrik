@@ -4,16 +4,25 @@ from tensorflow.core.framework import graph_pb2
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import math
-import traceback
 
 # map from operation name(tensorflow) to layer name(caffe)
 op_layer_map = {'Placeholder': 'Input', 'Conv2D': 'Convolution', 'MaxPool': 'Pooling',
                 'MatMul': 'InnerProduct', 'Relu': 'ReLU', 'Softmax': 'Softmax', 'LRN': 'LRN',
-                'Concat': 'Concat', 'AvgPool': 'Pooling'}
+                'Concat': 'Concat', 'AvgPool': 'Pooling', 'Reshape': 'Flatten'}
+name_map = {'flatten': 'Flatten', 'dropout': 'Dropout'}
 
 
 def get_layer_name(node_name):
     i = node_name.find('/')
+    if i == -1:
+        name = str(node_name)
+    else:
+        name = str(node_name[:i])
+    return name
+
+
+def get_layer_type(node_name):
+    i = node_name.find('_')
     if i == -1:
         name = str(node_name)
     else:
@@ -73,19 +82,24 @@ def import_graph_def(request):
             text_format.Merge(f.read(), graph_def)
         except Exception:
             return JsonResponse({'result': 'error', 'error': 'Invalid GraphDef'})
-        try:
-            tf.import_graph_def(graph_def, name='')
-        except Exception:
-            return JsonResponse({'result': 'error', 'error': 'Import Failed' + traceback.format_exc()})
+
+        tf.import_graph_def(graph_def, name='')
         graph = tf.get_default_graph()
 
         for node in graph.get_operations():
             name = get_layer_name(node.name)
+            if node.type == 'NoOp':
+                continue
             if name not in d:
                 d[name] = {'type': [], 'input': [], 'output': [], 'params': {}}
                 order.append(name)
             if node.type in op_layer_map:
                 d[name]['type'].append(op_layer_map[node.type])
+            else:  # For cases where the ops are composed of only basic ops
+                layer_type = get_layer_type(node.name)
+                if layer_type in name_map:
+                    if name_map[layer_type] not in d[name]['type']:
+                        d[name]['type'].append(name_map[layer_type])
             for input_tensor in node.inputs:
                 input_layer_name = get_layer_name(input_tensor.op.name)
                 if input_layer_name != name:
@@ -94,9 +108,11 @@ def import_graph_def(request):
                         d[input_layer_name]['output'].append(name)
 
         # seperating relu layers
+        # This logic is only needed for inplace operations, it might be possible to do this
+        # in a better way
         temp_d = {}
         for layer_name in d:
-            if 'ReLU' in d[layer_name]['type']:
+            if 'ReLU' in d[layer_name]['type'] and get_layer_type(layer_name) != 'activation':
                 relu_layer_name = layer_name + '_relu'
                 temp_d[relu_layer_name] = {'type': ['ReLU'], 'input': [layer_name],
                                            'output': d[layer_name]['output'], 'params': {}}
@@ -110,6 +126,8 @@ def import_graph_def(request):
 
         # setting params
         for node in graph.get_operations():
+            if node.type == 'NoOp':
+                continue
             name = get_layer_name(node.name)
             layer = d[name]
 
@@ -119,7 +137,7 @@ def import_graph_def(request):
                                                  for i in [0, 3, 1, 2]]))[1:-1]
 
             elif layer['type'][0] == 'Convolution':
-                if str(node.name) == name + '/weights':
+                if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
                     # since conv takes weights as input, this node will be processed first
                     # acquired parameters are then required in get_padding function
                     layer['params']['kernel_h'] = int(node.get_attr('shape').dim[0].size)
@@ -166,7 +184,7 @@ def import_graph_def(request):
                                              'error': 'Missing shape info in GraphDef'})
 
             elif layer['type'][0] == 'InnerProduct':
-                if str(node.name) == name + '/weights':
+                if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
                     layer['params']['num_output'] = int(node.get_attr('shape').dim[1].size)
 
             elif layer['type'][0] == 'ReLU':
@@ -179,6 +197,12 @@ def import_graph_def(request):
                 pass
 
             elif layer['type'][0] == 'Softmax':
+                pass
+
+            elif layer['type'][0] == 'Flatten':
+                pass
+
+            elif layer['type'][0] == 'Dropout':
                 pass
 
         net = {}
