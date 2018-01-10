@@ -544,6 +544,7 @@ layer_dict = {'Accuracy': Accuracy,
 
 @csrf_exempt
 def import_prototxt(request):
+    prototxtIsText = False
     if request.method == 'POST':
         if ('file' in request.FILES) and \
            (request.FILES['file'].content_type == 'application/octet-stream' or
@@ -561,11 +562,17 @@ def import_prototxt(request):
             except Exception:
                 return JsonResponse({'result': 'error',
                                      'error': 'No Prototxt model file found'})
+        elif 'config' in request.POST:
+            prototxt = request.POST['config']
+            prototxtIsText = True
         caffe_net = caffe_pb2.NetParameter()
 
         # try to convert to new prototxt
         try:
-            content = prototxt.read()
+            if prototxtIsText is True:
+                content = prototxt
+            else:
+                content = prototxt.read()
             tempFile = tempfile.NamedTemporaryFile()
             tempFile.write(content)
             tempFile.seek(0)

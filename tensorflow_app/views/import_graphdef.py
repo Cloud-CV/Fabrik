@@ -71,17 +71,25 @@ def get_padding(node, layer):
 @csrf_exempt
 def import_graph_def(request):
     if request.method == 'POST':
-        try:
-            f = request.FILES['file']
-        except Exception:
-            return JsonResponse({'result': 'error', 'error': 'No GraphDef model file found'})
+        if ('file' in request.FILES) and \
+           (request.FILES['file'].content_type == 'application/octet-stream' or
+                request.FILES['file'].content_type == 'text/plain'):
+            try:
+                f = request.FILES['file']
+                config = f.read()
+            except Exception:
+                return JsonResponse({'result': 'error', 'error': 'No GraphDef model file found'})
+        elif 'config' in request.POST:
+            config = request.POST['config']
+        else:
+            return JsonResponse({'result': 'error', 'error': 'No GraphDef model found'})
 
         graph_def = graph_pb2.GraphDef()
         d = {}
         order = []
 
         try:
-            text_format.Merge(f.read(), graph_def)
+            text_format.Merge(config, graph_def)
         except Exception:
             return JsonResponse({'result': 'error', 'error': 'Invalid GraphDef'})
 

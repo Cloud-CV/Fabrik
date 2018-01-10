@@ -33,6 +33,26 @@ class ImportPrototxtTest(unittest.TestCase):
         self.assertEqual(response['error'], 'Invalid Prototxt\n'
                                             'local variable \'prototxt\' referenced before assignment')
 
+    def test_caffe_import_by_input(self):
+        sample_file = open(os.path.join(settings.BASE_DIR,
+                                        'example/caffe',
+                                        'GoogleNet.prototxt'), 'r')
+        # Test 1
+        response = self.client.post(reverse('caffe-import'),
+                                    {'config': sample_file.read()})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        sample_file = open(os.path.join(settings.BASE_DIR,
+                                        'example/keras',
+                                        'vgg16.json'), 'r')
+        response = self.client.post(reverse('caffe-import'),
+                                    {'config': sample_file.read()})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'error')
+        self.assertEqual(response['error'], 'Invalid Prototxt\n'
+                                            '1:1 : Expected identifier or number, got {.')
+
     def test_caffe_import_by_sample_id(self):
         response = self.client.post(reverse('caffe-import'),
                                     {'sample_id': 'GoogleNet'})

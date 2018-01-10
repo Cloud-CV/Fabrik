@@ -56,6 +56,25 @@ class ImportJsonTest(unittest.TestCase):
         self.assertEqual(response['result'], 'error')
         self.assertEqual(response['error'], 'Invalid JSON')
 
+    def test_keras_import_input(self):
+        # Test 1
+        sample_file = open(os.path.join(settings.BASE_DIR,
+                                        'example/keras',
+                                        'vgg16.json'), 'r')
+        response = self.client.post(reverse('keras-import'),
+                                    {'config': sample_file.read()})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        sample_file = open(os.path.join(settings.BASE_DIR,
+                                        'example/caffe',
+                                        'GoogleNet.prototxt'), 'r')
+        response = self.client.post(reverse('keras-import'),
+                                    {'config': sample_file.read()})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'error')
+        self.assertEqual(response['error'], 'Invalid JSON')
+
     def test_keras_import_sample_id(self):
         # Test 1
         response = self.client.post(

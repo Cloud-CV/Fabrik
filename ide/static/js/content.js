@@ -9,6 +9,7 @@ import data from './data';
 import netLayout from './netLayout_vertical';
 import Modal from 'react-modal';
 import ModelZoo from './modelZoo';
+import ImportTextbox from './importTextbox';
 import $ from 'jquery'
 
 const infoStyle = {
@@ -41,7 +42,9 @@ class Content extends React.Component {
       error: [],
       load: false,
       modalIsOpen: false,
-      totalParameters: 0
+      totalParameters: 0,
+      modelConfig: null,
+      modelFramework: 'caffe'
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
@@ -69,6 +72,9 @@ class Content extends React.Component {
     this.infoModal = this.infoModal.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.zooModal = this.zooModal.bind(this);
+    this.textboxModal = this.textboxModal.bind(this);
+    this.setModelConfig = this.setModelConfig.bind(this);
+    this.setModelFramework = this.setModelFramework.bind(this);
     this.loadLayerShapes = this.loadLayerShapes.bind(this);
     this.calculateParameters = this.calculateParameters.bind(this);
     this.updateParameters = this.updateParameters.bind(this);
@@ -356,6 +362,10 @@ class Content extends React.Component {
     else if (framework == 'samplekeras'){
       framework = 'keras'
       formData.append('sample_id', id);
+    }
+    else if (framework == 'input') {
+      framework = this.state.modelFramework;
+      formData.append('config', this.state.modelConfig);
     }
     else
       formData.append('file', $('#inputFile'+framework)[0].files[0]);
@@ -788,7 +798,29 @@ class Content extends React.Component {
     this.modalContent = <ModelZoo importNet={this.importNet}/>;
     this.openModal();
   }
-  
+  setModelFramework(e) {
+    const el = e.target;
+    const modelFramework = el.dataset.framework;
+    this.setState({modelFramework});
+    $('.import-textbox-tab.selected').removeClass('selected');
+    $(el).addClass('selected');
+  }
+  setModelConfig(e) {
+    const modelConfig = e.target.value;
+    this.setState({modelConfig});
+  }
+  textboxModal() {
+    this.modalHeader = null;
+    this.modalContent = <ImportTextbox
+                          modelConfig={this.state.modelConfig}
+                          modelFramework={this.state.modelFramework}
+                          setModelConfig={this.setModelConfig}
+                          setModelFramework={this.setModelFramework}
+                          importNet={this.importNet}
+                          addError={this.addError}
+                        />;
+    this.openModal();
+  }
   handleClick(event) {
     event.preventDefault();
     this.clickEvent = true;
@@ -876,6 +908,7 @@ class Content extends React.Component {
               importNet={this.importNet}
               saveDb={this.saveDb}
               zooModal={this.zooModal}
+              textboxModal={this.textboxModal}
              />
              <h5 className="sidebar-heading">INSERT LAYER</h5>
              <Pane 
