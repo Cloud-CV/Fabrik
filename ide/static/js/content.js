@@ -869,7 +869,7 @@ class Content extends React.Component {
           <div id="logo_back">
             <a href="http://fabrik.cloudcv.org"><img src={'/static/img/fabrik_t.png'} className="img-responsive" alt="logo" id="logo"/></a>
           </div>
-          <div className="col-md-12">
+          <div id="sidebar-scroll" className="col-md-12">
              <h5 className="sidebar-heading">ACTIONS</h5>
              <TopBar
               exportNet={this.exportNet}
