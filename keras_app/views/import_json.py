@@ -127,6 +127,8 @@ def import_json(request):
                 for node in layer.inbound_nodes[0].inbound_layers:
                     net[node.name]['connection']['output'].append(name)
         else:
+            return JsonResponse({'result': 'error',
+                                'error': 'Cannot import layer of '+layer.__class__.__name__+' type'})
             raise Exception('Cannot import layer of '+layer.__class__.__name__+' type')
     # collect names of all zeroPad layers
     zeroPad = []

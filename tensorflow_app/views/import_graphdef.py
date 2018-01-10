@@ -4,6 +4,7 @@ from tensorflow.core.framework import graph_pb2
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import math
+import traceback
 
 # map from operation name(tensorflow) to layer name(caffe)
 op_layer_map = {'Placeholder': 'Input', 'Conv2D': 'Convolution', 'MaxPool': 'Pooling',
@@ -72,8 +73,10 @@ def import_graph_def(request):
             text_format.Merge(f.read(), graph_def)
         except Exception:
             return JsonResponse({'result': 'error', 'error': 'Invalid GraphDef'})
-
-        tf.import_graph_def(graph_def, name='')
+        try:
+            tf.import_graph_def(graph_def, name='')
+        except Exception:
+            return JsonResponse({'result': 'error', 'error': 'Import Failed' + traceback.format_exc()})
         graph = tf.get_default_graph()
 
         for node in graph.get_operations():
