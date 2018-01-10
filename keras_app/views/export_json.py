@@ -22,7 +22,7 @@ def randomword(length):
 
 
 @csrf_exempt
-def export_json(request):
+def export_json(request, is_tf=False):
     if request.method == 'POST':
         net = yaml.safe_load(request.POST.get('net'))
         net_name = request.POST.get('net_name')
@@ -143,7 +143,8 @@ def export_json(request):
                     type = net[net[layerId]['connection']
                                ['input'][0]]['info']['type']
                     if (type != 'BatchNorm'):
-                        error.append(layerId + '(' + net[layerId]['info']['type'] + ')')
+                        error.append(
+                            layerId + '(' + net[layerId]['info']['type'] + ')')
                 else:
                     try:
                         net_out.update(layer_map[net[layerId]['info']['type']](
@@ -155,7 +156,8 @@ def export_json(request):
                         stack.append(outputId)
                 processedLayer[layerId] = True
             else:
-                error.append(layerId + '(' + net[layerId]['info']['type'] + ')')
+                error.append(
+                    layerId + '(' + net[layerId]['info']['type'] + ')')
         if len(error):
             return JsonResponse(
                 {'result': 'error', 'error': 'Cannot convert ' + ', '.join(error) + ' to Keras'})
@@ -170,10 +172,14 @@ def export_json(request):
 
         model = Model(inputs=final_input, outputs=final_output, name=net_name)
         json_string = Model.to_json(model)
+
         randomId = datetime.now().strftime('%Y%m%d%H%M%S') + randomword(5)
         with open(BASE_DIR + '/media/' + randomId + '.json', 'w') as f:
             json.dump(json.loads(json_string), f, indent=4)
-        return JsonResponse({'result': 'success',
-                             'id': randomId,
-                             'name': randomId + '.json',
-                             'url': '/media/' + randomId + '.json'})
+        if not is_tf:
+            return JsonResponse({'result': 'success',
+                                 'id': randomId,
+                                 'name': randomId + '.json',
+                                 'url': '/media/' + randomId + '.json'})
+        else:
+            return randomId

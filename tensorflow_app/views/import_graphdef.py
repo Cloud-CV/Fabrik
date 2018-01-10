@@ -4,12 +4,14 @@ from tensorflow.core.framework import graph_pb2
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import math
+import re
 
 # map from operation name(tensorflow) to layer name(caffe)
 op_layer_map = {'Placeholder': 'Input', 'Conv2D': 'Convolution', 'MaxPool': 'Pooling',
                 'MatMul': 'InnerProduct', 'Relu': 'ReLU', 'Softmax': 'Softmax', 'LRN': 'LRN',
                 'Concat': 'Concat', 'AvgPool': 'Pooling', 'Reshape': 'Flatten'}
-name_map = {'flatten': 'Flatten', 'dropout': 'Dropout'}
+name_map = {'flatten': 'Flatten', 'dropout': 'Dropout',
+            'batch': 'BatchNorm', 'add': 'Eltwise', 'mul': 'Eltwise'}
 
 
 def get_layer_name(node_name):
@@ -51,9 +53,9 @@ def get_padding(node, layer):
     '''
 
     pad_h = ((int(output_shape[1]) - 1) * layer['params']['stride_h'] +
-             layer['params']['kernel_h'] - int(input_shape[1]))/float(2)
+             layer['params']['kernel_h'] - int(input_shape[1])) / float(2)
     pad_w = ((int(output_shape[2]) - 1) * layer['params']['stride_w'] +
-             layer['params']['kernel_w'] - int(input_shape[2]))/float(2)
+             layer['params']['kernel_w'] - int(input_shape[2])) / float(2)
 
     # check this logic (see caffe-tensorflow/kaffe/shapes.py)
     if node.type == "Conv2D":
@@ -130,22 +132,26 @@ def import_graph_def(request):
                 continue
             name = get_layer_name(node.name)
             layer = d[name]
-
             if layer['type'][0] == 'Input':
                 # NCHW to NWHC data format
                 layer['params']['dim'] = str(map(int, [node.get_attr('shape').dim[i].size
-                                                 for i in [0, 3, 1, 2]]))[1:-1]
+                                                       for i in [0, 3, 1, 2]]))[1:-1]
 
             elif layer['type'][0] == 'Convolution':
                 if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
                     # since conv takes weights as input, this node will be processed first
                     # acquired parameters are then required in get_padding function
-                    layer['params']['kernel_h'] = int(node.get_attr('shape').dim[0].size)
-                    layer['params']['kernel_w'] = int(node.get_attr('shape').dim[1].size)
-                    layer['params']['num_output'] = int(node.get_attr('shape').dim[3].size)
+                    layer['params']['kernel_h'] = int(
+                        node.get_attr('shape').dim[0].size)
+                    layer['params']['kernel_w'] = int(
+                        node.get_attr('shape').dim[1].size)
+                    layer['params']['num_output'] = int(
+                        node.get_attr('shape').dim[3].size)
                 if str(node.type) == 'Conv2D':
-                    layer['params']['stride_h'] = int(node.get_attr('strides')[1])
-                    layer['params']['stride_w'] = int(node.get_attr('strides')[2])
+                    layer['params']['stride_h'] = int(
+                        node.get_attr('strides')[1])
+                    layer['params']['stride_w'] = int(
+                        node.get_attr('strides')[2])
                     layer['params']['layer_type'] = '2D'
                     try:
                         layer['params']['pad_h'], layer['params']['pad_w'] = \
@@ -157,10 +163,14 @@ def import_graph_def(request):
             elif layer['type'][0] == 'Pooling':
                 if str(node.type) == 'MaxPool':
                     layer['params']['pool'] = 0
-                    layer['params']['kernel_h'] = int(node.get_attr('ksize')[1])
-                    layer['params']['kernel_w'] = int(node.get_attr('ksize')[2])
-                    layer['params']['stride_h'] = int(node.get_attr('strides')[1])
-                    layer['params']['stride_w'] = int(node.get_attr('strides')[2])
+                    layer['params']['kernel_h'] = int(
+                        node.get_attr('ksize')[1])
+                    layer['params']['kernel_w'] = int(
+                        node.get_attr('ksize')[2])
+                    layer['params']['stride_h'] = int(
+                        node.get_attr('strides')[1])
+                    layer['params']['stride_w'] = int(
+                        node.get_attr('strides')[2])
                     layer['params']['layer_type'] = '2D'
                     try:
                         layer['params']['pad_h'], layer['params']['pad_w'] = \
@@ -171,10 +181,14 @@ def import_graph_def(request):
 
                 if str(node.type) == 'AvgPool':
                     layer['params']['pool'] = 1
-                    layer['params']['kernel_h'] = int(node.get_attr('ksize')[1])
-                    layer['params']['kernel_w'] = int(node.get_attr('ksize')[2])
-                    layer['params']['stride_h'] = int(node.get_attr('strides')[1])
-                    layer['params']['stride_w'] = int(node.get_attr('strides')[2])
+                    layer['params']['kernel_h'] = int(
+                        node.get_attr('ksize')[1])
+                    layer['params']['kernel_w'] = int(
+                        node.get_attr('ksize')[2])
+                    layer['params']['stride_h'] = int(
+                        node.get_attr('strides')[1])
+                    layer['params']['stride_w'] = int(
+                        node.get_attr('strides')[2])
                     layer['params']['layer_type'] = '2D'
                     try:
                         layer['params']['pad_h'], layer['params']['pad_w'] = \
@@ -185,7 +199,28 @@ def import_graph_def(request):
 
             elif layer['type'][0] == 'InnerProduct':
                 if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
-                    layer['params']['num_output'] = int(node.get_attr('shape').dim[1].size)
+                    layer['params']['num_output'] = int(
+                        node.get_attr('shape').dim[1].size)
+
+            elif layer['type'][0] == 'BatchNorm':
+                if re.match('.*\/batchnorm[_]?[0-9]?\/add.*', str(node.name)):
+                    try:
+                        layer['params']['epsilon'] = node.get_attr(
+                            'value').float_val[0]
+                    except:
+                        pass
+
+                if str(node.name) == name + '/AssignMovingAvg/decay':
+                    layer['params']['moving_average_fraction'] = node.get_attr(
+                        'value').float_val[0]
+
+            elif layer['type'][0] == 'Eltwise':
+                if str(node.name).split('_')[0] == 'add':
+                    layer['params']['layer_type'] = 'Sum'
+                if str(node.name).split('_')[0] == 'mul':
+                    layer['params']['layer_type'] = 'Product'
+                if str(node.name).split('_')[0] == 'dot':
+                    layer['params']['layer_type'] = 'Dot'
 
             elif layer['type'][0] == 'ReLU':
                 pass
@@ -204,19 +239,36 @@ def import_graph_def(request):
 
             elif layer['type'][0] == 'Dropout':
                 pass
-
         net = {}
-        for key in d:
+        batch_norms = []
+        for key in d.keys():
+            if d[key]['type'][0] == 'BatchNorm' and len(d[key]['input']) > 0 and len(d[key]['output']) > 0:
+                batch_norms.append(key)
+
+        temp_d_batch = {}
+        for layer_name in batch_norms:
+            scale_layer_name = layer_name + '_scale'
+            temp_d_batch[scale_layer_name] = {'type': ['Scale'], 'input': [layer_name],
+                                              'output': d[layer_name]['output'], 'params': {}}
+            for output_layer_name in d[layer_name]['output']:
+                for n, i in enumerate(d[output_layer_name]['input']):
+                    if i == layer_name:
+                        d[output_layer_name]['input'][n] = scale_layer_name
+            d[layer_name]['output'] = [scale_layer_name]
+        for key in temp_d_batch:
+            d[key] = temp_d_batch[key]
+
+        for key in d.keys():
             net[key] = {
-                    'info': {
-                        'type': d[key]['type'][0],
-                        'phase': None
-                    },
-                    'connection': {
-                        'input': d[key]['input'],
-                        'output': d[key]['output']
-                    },
-                    'params': d[key]['params']
-                }
+                'info': {
+                    'type': d[key]['type'][0],
+                    'phase': None
+                },
+                'connection': {
+                    'input': d[key]['input'],
+                    'output': d[key]['output']
+                },
+                'params': d[key]['params']
+            }
 
         return JsonResponse({'result': 'success', 'net': net, 'net_name': ''})
