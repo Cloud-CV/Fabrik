@@ -18,6 +18,8 @@ def randomword(length):
 @csrf_exempt
 def export_to_tensorflow(request):
     response = export_json(request, is_tf=True)
+    if isinstance(response, JsonResponse):
+        return response
     randomId = response
     os.chdir(BASE_DIR + '/tensorflow_app/views/')
     os.system('KERAS_BACKEND=tensorflow python json2pbtxt.py -input_file ' +
