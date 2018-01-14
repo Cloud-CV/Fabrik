@@ -1,7 +1,9 @@
 ## List of all models for which import/export has been tested with Fabrik.
 
 ### Recognition
-
+* Age [\[Source\]](https://gist.github.com/GilLevi/c9e99062283c719c03de)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180111095436rpeqn)
+ * Gender [\[Source\]](https://gist.github.com/GilLevi/c9e99062283c719c03de)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180111095510lqlej)
+* CNDS [\[Source\]](https://github.com/lwwang/Places_CNDS_model)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180111080430dzvwc)
 * Cifar10 CNN [\[Source\]](https://github.com/BVLC/caffe/tree/master/examples/cifar10)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180107213805mhzsp)
 * MNIST LeNet [\[Source\]](https://github.com/wenwei202/caffe/blob/scnn/examples/mnist)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180101094606ewlrt#/?_k=uu2fiw)
 * AlexNet [\[Source\]](https://github.com/BVLC/caffe/tree/master/models/bvlc_alexnet)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113052pazsy)
@@ -19,7 +21,7 @@
 * SENet [\[Source\]](https://github.com/hujie-frank/SENet) [\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180106091323ectck)
 
 ### Detection
-
+* 48NET [\[Source\]](https://github.com/CongWeilin/mtcnn-caffe/tree/master/48net)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180110093832phqza)
 * Vanilla CNN [\[Source\]](https://github.com/ishay2b/VanillaCNN)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180103153019dogjt)
 * FCN32 Pascal [\[Source\]](https://github.com/shelhamer/fcn.berkeleyvision.org)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208113426rgyqo)
 * RCNN [\[Source\]](https://github.com/rbgirshick/rcnn)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208120915yxabc)
@@ -42,6 +44,9 @@
 * VQA [\[Source\]](https://github.com/iamaaditya/VQA_Demo)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180111120048qeblm)
 * VQA2 [\[Source\]](https://github.com/anantzoid/VQA-Keras-Visual-Question-Answering)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180105045732jmyeu)
 * mlpVQA [\[Source\]](https://github.com/Cold-Winter/vqs) [\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180110074224tzbmz)
+
+## Segmentation
+* Image Segmentation CRF-RNN [\[Source\]](https://github.com/torrvision/crfasrnn/tree/master/python-scripts)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180111183110okaux)
 
 ### Miscellaneous
 
