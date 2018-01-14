@@ -129,7 +129,7 @@ class Canvas extends React.Component {
     );
     const net = this.props.net;    
     if (this.props.rebuildNet) {
-      let combined_layers = ['ReLU', 'LRN', 'TanH', 'BatchNorm', 'Dropout', 'Scale'];
+      let combined_layers = ['ReLU', 'PReLU', 'LRN', 'TanH', 'BatchNorm', 'Dropout', 'Scale'];
       this.checkCutting(net);
       Object.keys(net).forEach(inputId => {
         const layer = net[inputId];
