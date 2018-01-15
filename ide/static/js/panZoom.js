@@ -65,22 +65,34 @@ export default function() {
 
   panZoom.ondblclick = function(e) {
     e.preventDefault();
-    onZoom((e.ctrlKey || e.metaKey) ? current.zoom * 1.2 : current.zoom / 1.2);
+    if ( ! document.getElementById('btn-plus').disabled || ! document.getElementById('btn-minus').disabled) {
+      onZoom((e.ctrlKey || e.metaKey) ? current.zoom * 1.2 : current.zoom / 1.2);
+    }
   };
 
   window.onkeypress = function(e) { 
-   if (e.key == '[')
-    onZoom(current.zoom * 1.2);
-   else if (e.key == ']')
-    onZoom(current.zoom / 1.2); 
+   if (e.key == '[') {
+     if ( ! document.getElementById('btn-minus').disabled) {
+      onZoom(current.zoom * 1.2);
+     }
+    }
+   else if (e.key == ']') {
+     if ( ! document.getElementById('btn-plus').disabled) {
+      onZoom(current.zoom / 1.2);
+     } 
+    }
   }
 
   zoomOut.onclick = function(){
-    onZoom(current.zoom * 1.2);
+    if ( ! document.getElementById('btn-minus').disabled) {
+      onZoom(current.zoom * 1.2);      
+    }  
   };
 
   zoomIn.onclick = function(){
-    onZoom(current.zoom / 1.2);
+    if ( ! document.getElementById('btn-plus').disabled) {
+      onZoom(current.zoom / 1.2);
+    }
   };
 
   function onZoom(zoom) {
