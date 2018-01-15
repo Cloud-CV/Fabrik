@@ -1,4 +1,4 @@
-name: "mnist_siamese_train_test"
+name: "MNIST Siamese"
 layer {
   name: "pair_data"
   type: "Data"

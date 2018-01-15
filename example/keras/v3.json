@@ -11754,7 +11754,7 @@
                 0
             ]
         ], 
-        "name": "inception_v3", 
+        "name": "Inception V3", 
         "output_layers": [
             [
                 "predictions", 

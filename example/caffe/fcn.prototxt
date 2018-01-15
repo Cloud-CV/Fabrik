@@ -1,3 +1,4 @@
+name: "FCN32 Pascal"
 layer {
   name: "data"
   type: "Python"

@@ -1,4 +1,4 @@
-name: "lstm_language_model"
+name: "CoCo Caption"
 layer {
   name: "data"
   type: "HDF5Data"
