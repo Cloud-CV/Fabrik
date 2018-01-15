@@ -77,7 +77,8 @@ class Content extends React.Component {
     this.setModelFramework = this.setModelFramework.bind(this);
     this.loadLayerShapes = this.loadLayerShapes.bind(this);
     this.calculateParameters = this.calculateParameters.bind(this);
-    this.updateParameters = this.updateParameters.bind(this);
+    this.getLayerParameters = this.getLayerParameters.bind(this);
+    this.updateLayerShape = this.updateLayerShape.bind(this);
     this.modalContent = null;
     this.modalHeader = null;
     // Might need to improve the logic of clickEvent
@@ -92,8 +93,28 @@ class Content extends React.Component {
   }
   addNewLayer(layer) {
     const net = this.state.net;
-    net[`l${this.state.nextLayerId}`] = layer;
-    this.setState({ net, nextLayerId: this.state.nextLayerId + 1 });
+    const layerId = `l${this.state.nextLayerId}`;
+    var totalParameters = this.state.totalParameters;
+    net[layerId] = layer;
+    // Parsing for integer parameters when new layers are added as by default all params are string
+    // In case some parameters are missed please cover them too
+    var intParams = ["crop_size", "num_output", "new_height", "new_width", "height", "width", "kernel_h", "kernel_w",
+                      "kernel_d", "stride_h", "stride_w", "stride_d", "pad_h", "pad_w", "pad_d", "size_h", "size_w",
+                      "size_d", "n"];
+    Object.keys(net[layerId].params).forEach(param => {
+      if (intParams.includes(param)){
+        net[layerId].params[param][0] = parseInt(net[layerId].params[param][0]);
+        if (isNaN(net[layerId].params[param][0]))
+          net[layerId].params[param][0] = 0;
+      }
+    });
+    this.updateLayerShape(net, layerId);
+    // Check for only layers with valid shape
+    if (net[layerId]['shape']['input'] != null && net[layerId]['shape']['output'] != null) {
+      net[layerId]['info']['parameters'] = this.getLayerParameters(net[layerId], net);
+      totalParameters += net[layerId]['info']['parameters'];
+    }
+    this.setState({ net, nextLayerId: this.state.nextLayerId + 1, totalParameters: totalParameters });
   }
   changeSelectedLayer(layerId) {
     const net = this.state.net;
@@ -122,8 +143,16 @@ class Content extends React.Component {
 
   modifyLayer(layer, layerId = this.state.selectedLayer) {
     const net = this.state.net;
+    var oldLayerParams = this.state.totalParameters;
+    if (net[layerId]['shape']['input'] != null && net[layerId]['shape']['output'] != null)
+      oldLayerParams -= net[layerId]['info']['parameters'];
     net[layerId] = layer;
-    this.setState({ net });
+    this.updateLayerShape(net, layerId);
+    if (net[layerId]['shape']['input']!=null && net[layerId]['shape']['output']!=null) {
+      net[layerId]['info']['parameters'] = this.getLayerParameters(net[layerId], net);
+      oldLayerParams += net[layerId]['info']['parameters'];
+    }
+    this.setState({ net: net, totalParameters: oldLayerParams });
   }
   modifyLayerParams(layer, layerId = this.state.selectedLayer) {
     const net = this.state.net;
@@ -192,7 +221,9 @@ class Content extends React.Component {
     const layerIdNum = parseInt(layerId.substring(1,layerId.length)); //numeric value of the layerId
     const nextLayerId = this.state.nextLayerId - 1 == layerIdNum ? layerIdNum : this.state.nextLayerId; 
        //if last layer was deleted nextLayerId is replaced by deleted layer's id
+    var totalParameters = this.state.totalParameters;
     let index;
+    totalParameters -= this.getLayerParameters(net[layerId], net);
     delete net[layerId];
     input.forEach(inputId => {
       index = net[inputId].connection.output.indexOf(layerId);
@@ -202,11 +233,42 @@ class Content extends React.Component {
       index = net[outputId].connection.input.indexOf(layerId);
       net[outputId].connection.input.splice(index, 1);
     });
-    this.setState({ net, selectedLayer: null, nextLayerId: nextLayerId });
+    this.setState({ net, selectedLayer: null, nextLayerId: nextLayerId, totalParameters: totalParameters });
   }
-  updateParameters(layer, net) {
+
+  updateLayerShape(net, layerId) {
+    const netData = JSON.parse(JSON.stringify(net));
+    Object.keys(netData[layerId].params).forEach(param => {
+      netData[layerId].params[param] = netData[layerId].params[param][0];
+    });
+    net[layerId]['shape'] = {};
+    net[layerId]['shape']['input'] = null;
+    net[layerId]['shape']['output'] = null;
+    net[layerId]['info']['parameters'] = 0;
+
+    $.ajax({
+      url: 'layer_parameter/',
+      dataType: 'json',
+      type: 'POST',
+      async: false,
+      data: {
+        net: JSON.stringify(netData),
+        layerId: layerId
+      },
+      success : function (response) {
+        if (response.result == "success") {
+          if (response.net[layerId]['shape']['input'] != null)
+            net[layerId]['shape']['input'] = response.net[layerId]['shape']['input'].slice();
+          if (response.net[layerId]['shape']['output'] != null)
+            net[layerId]['shape']['output'] = response.net[layerId]['shape']['output'].slice();
+        }
+        else
+          this.addError(response.error);
+      }.bind(this)
+    });
+  }
+  getLayerParameters(layer, net) {
     // obtain the total parameters of the model
-    var totalParameters = this.state.totalParameters;
     var weight_params = 0;
     var bias_params = 0;
 
@@ -254,17 +316,19 @@ class Content extends React.Component {
       if (layer.params['use_bias'][0] == false)
         bias_params = 0;
     }
-    totalParameters += (weight_params + bias_params);
-
+    
     // Update the total parameters of model after considering this layer.
-    this.setState({ totalParameters: totalParameters });
+    return (weight_params + bias_params);
   }
   calculateParameters(net) {
     // Iterate over model's each layer & separately add the contribution of each layer
+    var totalParameters = 0;
     Object.keys(net).sort().forEach(layerId => {
       const layer = net[layerId];
-      this.updateParameters(layer, net);
+      net[layerId]['info']['parameters'] = this.getLayerParameters(layer, net);
+      totalParameters += net[layerId]['info']['parameters'];
     });
+    this.setState({ net: net, totalParameters: totalParameters});
   }
   loadLayerShapes() {
     this.dismissAllErrors();
@@ -951,6 +1015,7 @@ class Content extends React.Component {
             selectedPhase={this.state.selectedPhase}
             draggingLayer={this.state.draggingLayer}
             setDraggingLayer={this.setDraggingLayer}
+            selectedLayer={this.state.selectedLayer}
           />
           <SetParams
             net={this.state.net}
@@ -962,6 +1027,7 @@ class Content extends React.Component {
             selectedPhase={this.state.selectedPhase}
             copyTrain={this.copyTrain}
             trainOnly={this.trainOnly}
+            updateLayerWithShape={this.modifyLayer}
           />
           <Tooltip
             id={'tooltip_text'}

@@ -120,38 +120,38 @@ def handle_concat_layer(outputLayer, inputLayer):
     return shape
 
 
-def get_layer_shape(layerId, net):
+def get_layer_shape(layer):
     # separating checking the type of layer inorder to make it modular
     # which can be reused in case we only want to get shapes of a single
     # layer, for example: if a new layer is added to already drawn model
     dataLayers = ['ImageData', 'Data', 'HDF5Data', 'Input', 'WindowData', 'MemoryData', 'DummyData']
 
-    if(net[layerId]['info']['type'] in dataLayers):
-        return data(net[layerId])
+    if(layer['info']['type'] in dataLayers):
+        return data(layer)
 
-    elif(net[layerId]['info']['type'] in ['Convolution', 'Pooling', 'Deconvolution', 'DepthwiseConv']):
-        return filter(net[layerId])
+    elif(layer['info']['type'] in ['Convolution', 'Pooling', 'Deconvolution', 'DepthwiseConv']):
+        return filter(layer)
 
-    elif(net[layerId]['info']['type'] in ['InnerProduct', 'Recurrent', 'RNN', 'LSTM', 'Embed']):
-        return output(net[layerId])
+    elif(layer['info']['type'] in ['InnerProduct', 'Recurrent', 'RNN', 'LSTM', 'Embed']):
+        return output(layer)
 
-    elif(net[layerId]['info']['type'] == 'Flatten'):
-        return flatten(net[layerId])
+    elif(layer['info']['type'] == 'Flatten'):
+        return flatten(layer)
 
-    elif(net[layerId]['info']['type'] == 'Reshape'):
-        return reshape(net[layerId])
+    elif(layer['info']['type'] == 'Reshape'):
+        return reshape(layer)
 
-    elif(net[layerId]['info']['type'] == 'Upsample'):
-        return upsample(net[layerId])
+    elif(layer['info']['type'] == 'Upsample'):
+        return upsample(layer)
 
-    elif(net[layerId]['info']['type'] == 'RepeatVector'):
-        return repeat(net[layerId])
+    elif(layer['info']['type'] == 'RepeatVector'):
+        return repeat(layer)
 
-    elif(net[layerId]['info']['type'] in ['SPP', 'Crop']):
-        raise Exception('Cannot determine shape of ' + net[layerId]['info']['type'] + 'layer.')
+    elif(layer['info']['type'] in ['SPP', 'Crop']):
+        raise Exception('Cannot determine shape of ' + layer['info']['type'] + 'layer.')
 
     else:
-        return identity(net[layerId])
+        return identity(layer)
 
 
 def get_shapes(net):
@@ -178,9 +178,9 @@ def get_shapes(net):
         stack.remove(layerId)
 
         if(net[layerId]['info']['type'] in dataLayers):
-            net[layerId]['shape']['input'], net[layerId]['shape']['output'] = get_layer_shape(layerId, net)
+            net[layerId]['shape']['input'], net[layerId]['shape']['output'] = get_layer_shape(net[layerId])
         else:
-            net[layerId]['shape']['output'] = get_layer_shape(layerId, net)
+            net[layerId]['shape']['output'] = get_layer_shape(net[layerId])
 
         for outputId in net[layerId]['connection']['output']:
             if (not processedLayer[outputId]):

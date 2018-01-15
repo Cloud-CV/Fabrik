@@ -22,10 +22,19 @@ class SetParams extends React.Component {
     const net = this.props.net;
     let layer = net[this.props.selectedLayer];
     layer = JSON.parse(JSON.stringify(layer));
+    var intParams = ["crop_size", "num_output", "new_height", "new_width", "height", "width", "kernel_h", "kernel_w",
+                      "kernel_d", "stride_h", "stride_w", "stride_d", "pad_h", "pad_w", "pad_d", "size_h", "size_w",
+                      "size_d", "n"];
+    if (intParams.includes(para)){
+      value = parseInt(value);
+      if(isNaN(value))
+        value = 0;
+    }
     layer.params[para] = [value, false];
     this.props.modifyLayer(this.props.adjustParameters(layer, para, value));
   }
   close() {
+    this.props.updateLayerWithShape(this.props.net[this.props.selectedLayer], this.props.selectedLayer);
     this.props.changeSelectedLayer(null);
   }
   trainOnly(e) {
@@ -165,7 +174,8 @@ SetParams.propTypes = {
   trainOnly: React.PropTypes.func,
   selectedPhase: React.PropTypes.number,
   copyTrain: React.PropTypes.func,
-  changeSelectedLayer: React.PropTypes.func
+  changeSelectedLayer: React.PropTypes.func,
+  updateLayerWithShape: React.PropTypes.func
 };
 
 export default SetParams;
