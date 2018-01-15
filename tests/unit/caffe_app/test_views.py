@@ -53,6 +53,21 @@ class ImportPrototxtTest(unittest.TestCase):
         self.assertEqual(response['error'], 'Invalid Prototxt\n'
                                             '1:1 : Expected identifier or number, got {.')
 
+    def test_caffe_import_by_url(self):
+        url = 'https://github.com/Cloud-CV/Fabrik/blob/master/example/caffe/All_CNN.prototxt'
+        # Test 1
+        response = self.client.post(reverse('caffe-import'),
+                                    {'url': url})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        url = 'https://github.com/Cloud-CV/Fabrik/blob/master/some_typo_here'
+        response = self.client.post(reverse('caffe-import'),
+                                    {'url': url})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'error')
+        self.assertEqual(response['error'], 'Invalid URL\nHTTP Error 404: Not Found')
+
     def test_caffe_import_by_sample_id(self):
         response = self.client.post(reverse('caffe-import'),
                                     {'sample_id': 'GoogleNet'})

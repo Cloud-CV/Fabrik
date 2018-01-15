@@ -1,5 +1,7 @@
 import json
 import os
+import urllib2
+from urlparse import urlparse
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -27,6 +29,15 @@ def import_json(request):
                                          'error': 'No JSON model file found'})
         elif 'config' in request.POST:
             loadFromText = True
+        elif 'url' in request.POST:
+            try:
+                url = urlparse(request.POST['url'])
+                if url.netloc == 'github.com':
+                    url = url._replace(netloc='raw.githubusercontent.com')
+                    url = url._replace(path=url.path.replace('blob/', ''))
+                f = urllib2.urlopen(url.geturl())
+            except Exception as ex:
+                return JsonResponse({'result': 'error', 'error': 'Invalid URL\n'+str(ex)})
         try:
             if loadFromText is True:
                 model = json.loads(request.POST['config'])

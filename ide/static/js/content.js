@@ -10,6 +10,7 @@ import netLayout from './netLayout_vertical';
 import Modal from 'react-modal';
 import ModelZoo from './modelZoo';
 import ImportTextbox from './importTextbox';
+import UrlImportModal from './urlImportModal';
 import $ from 'jquery'
 
 const infoStyle = {
@@ -74,8 +75,11 @@ class Content extends React.Component {
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.zooModal = this.zooModal.bind(this);
     this.textboxModal = this.textboxModal.bind(this);
+    this.urlModal = this.urlModal.bind(this);
     this.setModelConfig = this.setModelConfig.bind(this);
     this.setModelFramework = this.setModelFramework.bind(this);
+    this.setModelUrl = this.setModelUrl.bind(this);
+    this.setModelFrameworkUrl = this.setModelFrameworkUrl.bind(this);
     this.loadLayerShapes = this.loadLayerShapes.bind(this);
     this.calculateParameters = this.calculateParameters.bind(this);
     this.getLayerParameters = this.getLayerParameters.bind(this);
@@ -439,6 +443,10 @@ class Content extends React.Component {
     else if (framework == 'input') {
       framework = this.state.modelFramework;
       formData.append('config', this.state.modelConfig);
+    }
+    else if (framework == 'url') {
+      framework = this.state.modelFramework;
+      formData.append('url', this.state.modelUrl);
     }
     else
       formData.append('file', $('#inputFile'+framework)[0].files[0]);
@@ -857,9 +865,19 @@ class Content extends React.Component {
     $('.import-textbox-tab.selected').removeClass('selected');
     $(el).addClass('selected');
   }
+  setModelFrameworkUrl(e) {
+    const el = e.target;
+    const modelFramework = el.dataset.framework;
+    this.setState({modelFramework});
+    $('.url-import-modal-tab.selected').removeClass('selected');
+    $(el).addClass('selected');
+  }
   setModelConfig(e) {
     const modelConfig = e.target.value;
     this.setState({modelConfig});
+  }
+  setModelUrl(url) {
+    this.setState({ modelUrl: url});
   }
   textboxModal() {
     this.modalHeader = null;
@@ -868,6 +886,17 @@ class Content extends React.Component {
                           modelFramework={this.state.modelFramework}
                           setModelConfig={this.setModelConfig}
                           setModelFramework={this.setModelFramework}
+                          importNet={this.importNet}
+                          addError={this.addError}
+                        />;
+    this.openModal();
+  }
+  urlModal() {
+    this.modalHeader = null;
+    this.modalContent = <UrlImportModal
+                          modelFramework={this.state.modelFramework}
+                          setModelFramework={this.setModelFrameworkUrl}
+                          setModelUrl={this.setModelUrl}
                           importNet={this.importNet}
                           addError={this.addError}
                         />;
@@ -961,6 +990,7 @@ class Content extends React.Component {
               saveDb={this.saveDb}
               zooModal={this.zooModal}
               textboxModal={this.textboxModal}
+              urlModal={this.urlModal}
              />
              <h5 className="sidebar-heading">INSERT LAYER</h5>
              <Pane 

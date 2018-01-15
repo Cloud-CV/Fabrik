@@ -75,6 +75,21 @@ class ImportJsonTest(unittest.TestCase):
         self.assertEqual(response['result'], 'error')
         self.assertEqual(response['error'], 'Invalid JSON')
 
+    def test_keras_import_by_url(self):
+        url = 'https://github.com/Cloud-CV/Fabrik/blob/master/example/keras/resnet50.json'
+        # Test 1
+        response = self.client.post(reverse('keras-import'),
+                                    {'url': url})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+        # Test 2
+        url = 'https://github.com/Cloud-CV/Fabrik/blob/master/some_typo_here'
+        response = self.client.post(reverse('keras-import'),
+                                    {'url': url})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'error')
+        self.assertEqual(response['error'], 'Invalid URL\nHTTP Error 404: Not Found')
+
     def test_keras_import_sample_id(self):
         # Test 1
         response = self.client.post(
