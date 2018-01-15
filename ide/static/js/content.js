@@ -360,6 +360,11 @@ class Content extends React.Component {
     const error = [];
     const netObj = JSON.parse(JSON.stringify(this.state.net));
 
+    if (Object.keys(netObj).length == 0) {
+      this.addError("No model available for export");
+      return;
+    }
+
     Object.keys(netObj).forEach(layerId => {
       const layer = netObj[layerId];
       Object.keys(layer.params).forEach(param => {
