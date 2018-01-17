@@ -43,6 +43,10 @@
 * VQA2 [\[Source\]](https://github.com/anantzoid/VQA-Keras-Visual-Question-Answering)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180105045732jmyeu)
 * VQS [\[Source\]](https://github.com/Cold-Winter/vqs) [\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180110074224tzbmz)
 
+## Segmentation
+* Image Segmentation CRF-RNN [\[Source\]](https://github.com/torrvision/crfasrnn/tree/master/python-scripts)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180111183110okaux)
+* UNET [\[Source\]](https://github.com/ZFTurbo/ZF_UNET_224_Pretrained_Model)[\[Visualise]](http://fabrik.cloudcv.org/caffe/load?id=20180116070834rggzh)
+
 ### Miscellaneous
 
 * Ranking CNN [\[Source\]](https://github.com/RankingCNN/Using-Ranking-CNN-for-Age-Estimation)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20171208121544acjpu)
