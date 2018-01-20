@@ -248,6 +248,10 @@ input#netName.hidden {
   background-color: #f44336;
 }
 
+#wrapperLayers{
+  background-color: #f00000;
+}
+
 #pythonLayer{
   background-color: #f44336;
 }

@@ -9,8 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 from layers_import import Input, Convolution, Deconvolution, Pooling, Dense, Dropout, Embed,\
     Recurrent, BatchNorm, Activation, LeakyReLU, PReLU, ELU, Scale, Flatten, Reshape, Concat, \
     Eltwise, Padding, Upsample, LocallyConnected, ThresholdedReLU, Permute, RepeatVector,\
-    ActivityRegularization, Masking, GaussianNoise, GaussianDropout, AlphaDropout
+    ActivityRegularization, Masking, GaussianNoise, GaussianDropout, AlphaDropout, \
+    TimeDistributed, Bidirectional
 from keras.models import model_from_json, Sequential
+from keras.layers import deserialize
 
 
 @csrf_exempt
@@ -20,13 +22,13 @@ def import_json(request):
         if ('file' in request.FILES):
             f = request.FILES['file']
         elif 'sample_id' in request.POST:
-                try:
-                    f = open(os.path.join(settings.BASE_DIR,
-                                          'example', 'keras',
-                                          request.POST['sample_id'] + '.json'), 'r')
-                except Exception:
-                    return JsonResponse({'result': 'error',
-                                         'error': 'No JSON model file found'})
+            try:
+                f = open(os.path.join(settings.BASE_DIR,
+                                      'example', 'keras',
+                                      request.POST['sample_id'] + '.json'), 'r')
+            except Exception:
+                return JsonResponse({'result': 'error',
+                                     'error': 'No JSON model file found'})
         elif 'config' in request.POST:
             loadFromText = True
         elif 'url' in request.POST:
@@ -37,7 +39,7 @@ def import_json(request):
                     url = url._replace(path=url.path.replace('blob/', ''))
                 f = urllib2.urlopen(url.geturl())
             except Exception as ex:
-                return JsonResponse({'result': 'error', 'error': 'Invalid URL\n'+str(ex)})
+                return JsonResponse({'result': 'error', 'error': 'Invalid URL\n' + str(ex)})
         try:
             if loadFromText is True:
                 model = json.loads(request.POST['config'])
@@ -106,7 +108,9 @@ def import_json(request):
         'BatchNormalization': BatchNorm,
         'GaussianNoise': GaussianNoise,
         'GaussianDropout': GaussianDropout,
-        'AlphaDropout': AlphaDropout
+        'AlphaDropout': AlphaDropout,
+        'TimeDistributed': TimeDistributed,
+        'Bidirectional': Bidirectional
     }
 
     hasActivation = ['Conv1D', 'Conv2D', 'Conv3D', 'Conv2DTranspose', 'Dense', 'LocallyConnected1D',
@@ -120,33 +124,87 @@ def import_json(request):
         if (model.layers[0].__class__.__name__ == 'Embedding'):
             input_layer.batch_input_shape = (None, model.layers[0].input_dim)
         net[input_layer.name] = Input(input_layer)
+        net[input_layer.name]['connection']['output'] = [model.layers[0].name]
     for idx, layer in enumerate(model.layers):
         name = ''
         class_name = layer.__class__.__name__
+        wrapped = False
         if (class_name in layer_map):
+            # This is to handle wrappers and the wrapped layers.
+            if class_name == 'InputLayer':
+                found = 0
+                for find_layer in model.layers:
+                    if len(find_layer.inbound_nodes[0].inbound_layers):
+                        if find_layer.inbound_nodes[0].inbound_layers[0].__class__.__name__ == 'InputLayer':
+                            net[layer.name] = Input(layer)
+                            if find_layer.__class__.__name__ in ['Bidirectional', 'TimeDistributed']:
+                                net[layer.name]['connection']['output'] = [
+                                    find_layer.name]
+                                found = 1
+                                break
+                if not found:
+                    net[layer.name] = Input(layer)
+
+            elif class_name in ['Bidirectional', 'TimeDistributed']:
+                net[layer.name] = layer_map[class_name](layer)
+                wrapped_layer = layer.get_config()['layer']
+                name = wrapped_layer['config']['name']
+                new_layer = deserialize({
+                    'class_name': wrapped_layer['class_name'],
+                    'config': wrapped_layer['config']
+                })
+                new_layer.wrapped = True
+                new_layer.wrapper = [layer.name]
+                if new_layer.activation.func_name != 'linear':
+                    net[name + wrapped_layer['class_name']
+                        ] = layer_map[wrapped_layer['class_name']](new_layer)
+                    net[name] = layer_map[new_layer.activation.func_name](
+                        new_layer)
+                    net[name + wrapped_layer['class_name']
+                        ]['connection']['output'].append(name)
+                    net[name]['connection']['input'] = [
+                        name + wrapped_layer['class_name']]
+                    net[layer.name]['connection']['output'] = [
+                        name + wrapped_layer['class_name']]
+                else:
+                    net[name] = layer_map[wrapped_layer['class_name']](
+                        new_layer)
+                    net[name]['connection']['input'] = [layer.name]
+                    net[layer.name]['connection']['output'] = [name]
+                if len(model.layers) >= idx + 2:
+                    net[name]['connection']['output'] = [
+                        model.layers[idx + 1].name]
+                    model.layers[idx +
+                                 1].inbound_nodes[0].inbound_layers = [new_layer]
+                else:
+                    net[name]['connection']['output'] = []
+                wrapped = True
             # This extra logic is to handle connections if the layer has an Activation
-            if (class_name in hasActivation and layer.activation.func_name != 'linear'):
-                net[layer.name+class_name] = layer_map[class_name](layer)
+            elif (class_name in hasActivation and layer.activation.func_name != 'linear'):
+                net[layer.name + class_name] = layer_map[class_name](layer)
                 net[layer.name] = layer_map[layer.activation.func_name](layer)
-                net[layer.name+class_name]['connection']['output'].append(layer.name)
-                name = layer.name+class_name
+                net[layer.name +
+                    class_name]['connection']['output'].append(layer.name)
+                name = layer.name + class_name
             # To check if a Scale layer is required
             elif (class_name == 'BatchNormalization' and (
                     layer.center or layer.scale)):
-                net[layer.name+class_name] = layer_map[class_name](layer)
+                net[layer.name + class_name] = layer_map[class_name](layer)
                 net[layer.name] = Scale(layer)
-                net[layer.name+class_name]['connection']['output'].append(layer.name)
-                name = layer.name+class_name
+                net[layer.name +
+                    class_name]['connection']['output'].append(layer.name)
+                name = layer.name + class_name
             else:
                 net[layer.name] = layer_map[class_name](layer)
                 name = layer.name
-            if (layer.inbound_nodes[0].inbound_layers):
+            if (layer.inbound_nodes[0].inbound_layers) and not wrapped:
                 for node in layer.inbound_nodes[0].inbound_layers:
                     net[node.name]['connection']['output'].append(name)
         else:
             return JsonResponse({'result': 'error',
-                                'error': 'Cannot import layer of '+layer.__class__.__name__+' type'})
-            raise Exception('Cannot import layer of '+layer.__class__.__name__+' type')
+                                 'error': 'Cannot import layer of ' + layer.__class__.__name__ + ' type'})
+            raise Exception('Cannot import layer of ' +
+                            layer.__class__.__name__ + ' type')
     # collect names of all zeroPad layers
     zeroPad = []
     # Transfer parameters and connections from zero pad

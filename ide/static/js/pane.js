@@ -15,7 +15,8 @@ class Pane extends React.Component {
             normalization: false,
             common: false,
             noise: false,
-            loss: false
+            loss: false,
+            wrapper: false
         };
     }
     toggleClass() {
@@ -377,6 +378,27 @@ class Pane extends React.Component {
                     <PaneElement setDraggingLayer={this.props.setDraggingLayer}
                       handleClick={this.props.handleClick}
                       id="Python">Python</PaneElement>
+                  </div>
+                </div>
+              </div>
+              <div className="panel panel-default">
+                <div className="panel-heading" role="tab" data-toggle="collapse" href="#wrapper" aria-expanded="false" 
+                aria-controls="wrapper" onClick={() => this.toggleClass('wrapper')}>
+                    <a  data-parent="#menu">
+                    <span className="badge sidebar-badge" id="wrapperLayers"> </span>
+                      Wrapper
+                      <span className={this.state.wrapper ? 'glyphicon sidebar-dropdown glyphicon-menu-down': 
+                      'glyphicon sidebar-dropdown glyphicon-menu-right'} ></span>
+                    </a>
+                </div>
+                <div id="wrapper" className="panel-collapse collapse" role="tabpanel">
+                  <div className="panel-body">
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="TimeDistributed">Time Distributed</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Bidirectional">Bidirectional</PaneElement>
                   </div>
                 </div>
               </div>
