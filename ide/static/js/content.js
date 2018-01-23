@@ -842,7 +842,7 @@ class Content extends React.Component {
   }
   infoModal() {
     this.modalHeader = "About"
-    this.modalContent = `Fabrik is an online collaborative platform to build, visualize and train deep\
+    this.modalContent = `Fabrik is an online collaborative platform to build and visualize deep\
                          learning models via a simple drag-and-drop interface. It allows researchers to\ 
                          collaboratively develop and debug models using a web GUI that supports importing,\
                          editing and exporting networks written in widely popular frameworks like Caffe,\
