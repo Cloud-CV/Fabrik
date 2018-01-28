@@ -18,7 +18,7 @@
   "dependencies": {
     "babel-polyfill": "^6.9.1",
     "bootstrap": "^3.3.6",
-    "jquery": "^2.2.4",
+    "jquery": "^3.0.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-modal": "^2.2.2",
