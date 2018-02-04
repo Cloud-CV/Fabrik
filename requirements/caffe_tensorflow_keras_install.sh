@@ -24,7 +24,7 @@ if [ ! -d $HOME/caffe/caffe ]; then
 		echo "Installing caffe"
 		mkdir build
 		cd build
-		cmake -DCPU_ONLY=1 -DWITH_PYTHON_LAYER=1 ..
+		cmake -DCPU_ONLY=1 -DBUILD_python_layer=1 ..
 		make -j"$(nproc)"
 		
 		echo "export PYTHONPATH=$PYTHONPATH:$HOME/caffe/caffe/python" > ~/.bash_profile
