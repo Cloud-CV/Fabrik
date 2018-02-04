@@ -245,9 +245,19 @@ def import_graph_def(request):
                 pass
 
             elif layer['type'][0] == 'Concat':
+                if 'axis' in node.node_def.attr:
+                    layer['params']['axis'] = node.get_attr('axis')
                 pass
 
             elif layer['type'][0] == 'LRN':
+                if ('alpha' in node.node_def.attr):
+                    layer['params']['alpha'] = node.get_attr('alpha')
+                if ('beta' in node.node_def.attr):
+                    layer['params']['beta'] = node.get_attr('beta')
+                if ('local_size' in node.node_def.attr):
+                    layer['params']['local_size'] = node.get_attr('depth_radius')
+                if ('bias' in node.node_def.attr):
+                    layer['params']['k'] = node.get_attr('bias')
                 pass
 
             elif layer['type'][0] == 'Softmax':
@@ -257,6 +267,12 @@ def import_graph_def(request):
                 pass
 
             elif layer['type'][0] == 'Dropout':
+                if ('rate' in node.node_def.attr):
+                    layer['params']['rate'] = node.get_attr('rate')
+                if ('seed' in node.node_def.attr):
+                    layer['params']['seed'] = node.get_attr('seed')
+                if ('training' in node.node_def.attr):
+                    layer['params']['trainable'] = node.get_attr('training')
                 pass
         net = {}
         batch_norms = []

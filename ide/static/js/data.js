@@ -1935,6 +1935,24 @@ export default {
         value: true,
         type: 'checkbox',
         required: false
+      },
+      rate: {
+        name: 'Dropout Ratio',
+        value: 0.5,
+        type: 'float',
+        required: false
+      },
+      seed: {
+        name: 'Seed',
+        value: 42,
+        type: 'number',
+        required: false
+      },
+      trainable: {
+        name: 'Trainable',
+        value: false,
+        type: 'checkbox',
+        required: false
       }
     },
     props: {
@@ -3145,6 +3163,12 @@ export default {
         name: 'Available Caffe',
         value: true,
         type: 'checkbox',
+        required: false
+      },
+      axis: {
+        name: 'Axis',
+        value: -1,
+        type: 'number',
         required: false
       }
     },

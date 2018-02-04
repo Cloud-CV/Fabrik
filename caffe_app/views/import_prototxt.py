@@ -469,6 +469,16 @@ def ContrastiveLoss(layer):
     return params
 
 
+def Concat(layer):
+    params = {}
+    if (layer.concat_param.axis is not None):
+        params['axis'] = layer.concat_param.axis
+    else:
+        # default value for axis of concat in caffe
+        params['axis'] = 1
+    return params
+
+
 # ********** Python Layer **********
 def Python(layer):
     params = {}
@@ -541,7 +551,8 @@ layer_dict = {'Accuracy': Accuracy,
               'Python': Python,
               'LRN': LRN,
               'LSTM': Recurrent,
-              'RNN': Recurrent
+              'RNN': Recurrent,
+              'Concat': Concat
               }
 
 
