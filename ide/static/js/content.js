@@ -273,6 +273,11 @@ class Content extends React.Component {
     });
   }
   getLayerParameters(layer, net) {
+    // check for layers with no shape to avoid errors
+    // this can be improved further.
+    if (layer['shape']['input'] == null || layer['shape']['output'] == null) {
+      return 0;
+    }
     // obtain the total parameters of the model
     var weight_params = 0;
     var bias_params = 0;
@@ -337,7 +342,6 @@ class Content extends React.Component {
   }
   loadLayerShapes() {
     this.dismissAllErrors();
-    
     // Making call to endpoint inorder to obtain shape of each layer i.e. input & output shape
     const netData = JSON.parse(JSON.stringify(this.state.net));
     $.ajax({
@@ -830,6 +834,9 @@ class Content extends React.Component {
       success: function (response) {
         if (response.result === 'success'){
           this.initialiseImportedNet(response.net,response.net_name);
+          if (Object.keys(response.net).length){
+            this.calculateParameters(response.net);
+          }
         } else if (response.result === 'error'){
           this.addError(response.error);
         }
