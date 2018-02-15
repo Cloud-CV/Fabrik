@@ -2,3 +2,6 @@ Django==1.9.3
 pyaml==15.8.2
 django-allauth==0.30.0
 psycopg2==2.7.3
+tensorflow==1.4.1
+theano==0.9.0
+keras==2.0.8

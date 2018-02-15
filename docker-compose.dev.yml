@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+
+  reactjs:
+    container_name: reactjs
+    hostname: reactjs
+    build:
+      context: ./
+      dockerfile: docker/dev/reactjs/Dockerfile
+    environment:
+      NODE_ENV: development
+    volumes:
+      - datavolume:/code
+
+  django:
+    container_name: django
+    hostname: django
+    env_file:
+      - docker/dev.env
+    links:
+      - reactjs
+    build:
+      context: ./
+      dockerfile: docker/dev/django/Dockerfile
+    ports:
+      - "8000:8000"
+    command: ["./docker/wait-for-it.sh", "db:5432", "--", "sh", "/code/docker/dev/django/container-start.sh"]
+    depends_on:
+      - "db"
+      - "reactjs"
+    volumes:
+      - datavolume:/code
+volumes:
+  datavolume: {}
