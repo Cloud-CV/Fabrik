@@ -27,7 +27,7 @@ if [ ! -d $HOME/caffe/caffe ]; then
 		cmake -DCPU_ONLY=1 -DBUILD_python_layer=1 ..
 		make -j"$(nproc)"
 		
-		echo "export PYTHONPATH=$PYTHONPATH:$HOME/caffe/caffe/python" > ~/.bash_profile
+		echo "export PYTHONPATH=$PYTHONPATH:$HOME/caffe/caffe/python" >> ~/.bash_profile
 fi
 echo "#################### Caffe Install Complete! ####################"
 
