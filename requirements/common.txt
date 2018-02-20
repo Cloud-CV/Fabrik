@@ -1,4 +1,4 @@
-Django==1.9.3
+django==1.10.2
 pyaml==15.8.2
 django-allauth==0.30.0
 psycopg2==2.7.3

@@ -15,9 +15,10 @@ services:
     environment:
       NODE_ENV: development
     volumes:
-      - datavolume:/code
+      - .:/code
 
   django:
+    restart: always
     container_name: django
     hostname: django
     env_file:
@@ -34,6 +35,4 @@ services:
       - "db"
       - "reactjs"
     volumes:
-      - datavolume:/code
-volumes:
-  datavolume: {}
+      - .:/code
