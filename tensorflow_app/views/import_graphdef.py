@@ -97,6 +97,7 @@ def import_graph_def(request):
         else:
             return JsonResponse({'result': 'error', 'error': 'No GraphDef model found'})
 
+        tf.reset_default_graph()
         graph_def = graph_pb2.GraphDef()
         d = {}
         order = []
@@ -154,9 +155,9 @@ def import_graph_def(request):
             name = get_layer_name(node.name)
             layer = d[name]
             if layer['type'][0] == 'Input':
-                # NCHW to NWHC data format
+                # NHWC data format
                 layer['params']['dim'] = str(map(int, [node.get_attr('shape').dim[i].size
-                                                       for i in [0, 3, 1, 2]]))[1:-1]
+                                                       for i in [0, 1, 2, 3]]))[1:-1]
 
             elif layer['type'][0] == 'Convolution':
                 if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':

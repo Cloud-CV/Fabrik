@@ -32,15 +32,13 @@ fi
 echo "#################### Caffe Install Complete! ####################"
 
 echo "Installing Tensorflow dependencies"
-sudo apt-get install python-pip python-dev
+sudo apt-get install python-pip python-dev google-perftools
+export LD_PRELOAD="/usr/lib/libtcmalloc.so.4" 
 
 echo "Installing Tensorflow"
 pip install tensorflow==1.4.1
 
 echo "#################### Tensorflow Install Complete! ####################"
-
-echo "Installing Theano"
-pip install theano==0.9.0
 
 echo "Installing Keras"
 pip install keras==2.0.8

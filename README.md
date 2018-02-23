@@ -80,7 +80,7 @@ webpack --progress --watch --colors
 
 ### Usage
 ```
-KERAS_BACKEND=theano python manage.py runserver
+python manage.py runserver
 ```
 
 ### Example
