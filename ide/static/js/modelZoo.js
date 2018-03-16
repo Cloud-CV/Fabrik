@@ -26,6 +26,8 @@ class ModelZoo extends React.Component {
               <br/>
               <ModelElement importNet={this.props.importNet} framework="keras" id="v3">Inception V3</ModelElement>
               <br/>
+              <ModelElement importNet={this.props.importNet} framework="keras" id="v4">Inception V4</ModelElement>
+              <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="Squeezenet">Squeezenet</ModelElement>
               <br/>
               <ModelElement importNet={this.props.importNet} framework="caffe" id="SENet">SENet</ModelElement>
