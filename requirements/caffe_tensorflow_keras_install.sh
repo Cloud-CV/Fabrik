@@ -27,20 +27,18 @@ if [ ! -d $HOME/caffe/caffe ]; then
 		cmake -DCPU_ONLY=1 -DBUILD_python_layer=1 ..
 		make -j"$(nproc)"
 		
-		echo "export PYTHONPATH=$PYTHONPATH:$HOME/caffe/caffe/python" > ~/.bash_profile
+		echo "export PYTHONPATH=$PYTHONPATH:$HOME/caffe/caffe/python" >> ~/.bash_profile
 fi
 echo "#################### Caffe Install Complete! ####################"
 
 echo "Installing Tensorflow dependencies"
-apt-get install python-pip python-dev
+sudo apt-get install python-pip python-dev google-perftools
+export LD_PRELOAD="/usr/lib/libtcmalloc.so.4" 
 
 echo "Installing Tensorflow"
 pip install tensorflow==1.4.1
 
 echo "#################### Tensorflow Install Complete! ####################"
-
-echo "Installing Theano"
-pip install theano==0.9.0
 
 echo "Installing Keras"
 pip install keras==2.0.8

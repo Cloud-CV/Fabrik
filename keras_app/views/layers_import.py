@@ -496,8 +496,8 @@ def get_padding(params, input_shape, output_shape, pad_type, type):
         if (pad_type == 'valid'):
             return 0
         else:
-            pad_h = ((output_shape[2] - 1) * s_h + k_h - input_shape[2]) / 2
-            return pad_h
+            pad_w = ((output_shape[1] - 1) * s_w + k_w - input_shape[1]) / 2
+            return pad_w
     elif (type == '2D'):
         if (pad_type == 'valid'):
             return [0, 0]

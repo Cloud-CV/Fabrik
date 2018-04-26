@@ -8,6 +8,9 @@ def data(layer):
             Output = [3] + [layer['params']['crop_size']]*2
         elif (('new_height' in layer['params']) and ('new_width' in layer['params'])):
             Output = [3, layer['params']['new_height'], layer['params']['new_width']]
+        else:
+            # When a new layer is created with default parameters
+            Output = []
     elif (layer['info']['type'] in ['Input', 'DummyData']):
         Output = map(int, layer['params']['dim'].split(','))[1:]
     elif (layer['info']['type'] == 'MemoryData'):
@@ -36,31 +39,40 @@ def filter(layer):
         return [num_out, o_h, o_w]
     else:
         if (layer['params']['layer_type'] == '1D'):
-            _, i_w = layer['shape']['input']
-            k_w = layer['params']['kernel_w']
-            s_w = layer['params']['stride_w']
-            p_w = layer['params']['pad_w']
-            o_w = int((i_w + 2 * p_w - k_w) / float(s_w) + 1)
+            try:
+                _, i_w = layer['shape']['input']
+                k_w = layer['params']['kernel_w']
+                s_w = layer['params']['stride_w']
+                p_w = layer['params']['pad_w']
+                o_w = int((i_w + 2 * p_w - k_w) / float(s_w) + 1)
+            except:
+                return [num_out, 0]
             return [num_out, o_w]
         elif (layer['params']['layer_type'] == '2D'):
-            _, i_h, i_w = layer['shape']['input']
-            k_h, k_w = layer['params']['kernel_h'], layer['params']['kernel_w']
-            s_h, s_w = layer['params']['stride_h'], layer['params']['stride_w']
-            p_h, p_w = layer['params']['pad_h'], layer['params']['pad_w']
-            o_h = int((i_h + 2 * p_h - k_h) / float(s_h) + 1)
-            o_w = int((i_w + 2 * p_w - k_w) / float(s_w) + 1)
+            try:
+                _, i_h, i_w = layer['shape']['input']
+                k_h, k_w = layer['params']['kernel_h'], layer['params']['kernel_w']
+                s_h, s_w = layer['params']['stride_h'], layer['params']['stride_w']
+                p_h, p_w = layer['params']['pad_h'], layer['params']['pad_w']
+                o_h = int((i_h + 2 * p_h - k_h) / float(s_h) + 1)
+                o_w = int((i_w + 2 * p_w - k_w) / float(s_w) + 1)
+            except:
+                return [num_out, 0, 0]
             return [num_out, o_h, o_w]
         else:
-            _, i_d, i_h, i_w = layer['shape']['input']
-            k_h, k_w, k_d = layer['params']['kernel_h'], layer['params']['kernel_w'],\
-                layer['params']['kernel_d']
-            s_h, s_w, s_d = layer['params']['stride_h'], layer['params']['stride_w'],\
-                layer['params']['stride_d']
-            p_h, p_w, p_d = layer['params']['pad_h'], layer['params']['pad_w'],\
-                layer['params']['pad_d']
-            o_h = int((i_h + 2 * p_h - k_h) / float(s_h) + 1)
-            o_w = int((i_w + 2 * p_w - k_w) / float(s_w) + 1)
-            o_d = int((i_d + 2 * p_d - k_d) / float(s_d) + 1)
+            try:
+                _, i_d, i_h, i_w = layer['shape']['input']
+                k_h, k_w, k_d = layer['params']['kernel_h'], layer['params']['kernel_w'],\
+                    layer['params']['kernel_d']
+                s_h, s_w, s_d = layer['params']['stride_h'], layer['params']['stride_w'],\
+                    layer['params']['stride_d']
+                p_h, p_w, p_d = layer['params']['pad_h'], layer['params']['pad_w'],\
+                    layer['params']['pad_d']
+                o_h = int((i_h + 2 * p_h - k_h) / float(s_h) + 1)
+                o_w = int((i_w + 2 * p_w - k_w) / float(s_w) + 1)
+                o_d = int((i_d + 2 * p_d - k_d) / float(s_d) + 1)
+            except:
+                return [num_out, 0, 0, 0]
             return [num_out, o_d, o_h, o_w]
 
 
