@@ -39,7 +39,12 @@ def fetch_layer_shape(request):
             # Obtain output shape of new layer
             if (net[layerId]['info']['type'] in dataLayers):
                 # handling Data Layers separately
-                if (len(net[layerId]['params']['dim'])):
+                if ('dim' in net[layerId]['params'] and len(net[layerId]['params']['dim'])):
+                    # layers with empty dim parameter can't be passed
+                    net[layerId]['shape']['input'], net[layerId]['shape']['output'] =\
+                            get_layer_shape(net[layerId])
+                elif ('dim' not in net[layerId]['params']):
+                    # shape calculation for layers with no dim param
                     net[layerId]['shape']['input'], net[layerId]['shape']['output'] =\
                             get_layer_shape(net[layerId])
             else:
