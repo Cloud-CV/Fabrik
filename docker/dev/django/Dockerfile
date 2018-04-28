@@ -47,6 +47,8 @@ WORKDIR /code
 
 ADD . /code
 
+RUN cp settings/dev.sample.py settings/dev.py
+
 RUN pip install -r requirements/dev.txt
 
 EXPOSE 8000
