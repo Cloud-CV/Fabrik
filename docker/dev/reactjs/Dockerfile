@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 MAINTAINER CloudCV Team
 
@@ -24,6 +24,6 @@ RUN n stable
 
 RUN npm install
 
-RUN npm install -g webpack
+RUN npm install -g webpack@1.13.1
 
 CMD ["webpack", "--progress", "--watch", "--colors"]

@@ -30,8 +30,9 @@ WORKDIR $CAFFE_ROOT
 
 ENV CLONE_TAG=1.0
 
+RUN pip install --upgrade pip
+
 RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
-    pip install --upgrade pip && \
     cd python && for req in $(cat requirements.txt) pydot; do pip install $req; done && cd .. && \
     mkdir build && cd build && \
     cmake -DCPU_ONLY=1 .. && \
@@ -46,6 +47,6 @@ WORKDIR /code
 
 ADD . /code
 
-RUN pip install -r requirements/dev.txt
+RUN /usr/local/bin/pip install -r requirements/dev.txt
 
 EXPOSE 8000
