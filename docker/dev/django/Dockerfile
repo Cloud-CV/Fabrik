@@ -47,6 +47,6 @@ WORKDIR /code
 
 ADD . /code
 
-RUN /usr/local/bin/pip install -r requirements/dev.txt
+RUN pip install -r requirements/dev.txt
 
 EXPOSE 8000
