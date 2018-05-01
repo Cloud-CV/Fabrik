@@ -2,9 +2,12 @@ version: '2'
 
 services:
   db:
+    hostname: db
     image: postgres
     ports:
       - "5432:5432"
+    networks:
+      - fabrik
 
   reactjs:
     container_name: reactjs
@@ -16,6 +19,8 @@ services:
       NODE_ENV: development
     volumes:
       - .:/code
+    networks:
+      - fabrik
 
   django:
     restart: always
@@ -32,7 +37,12 @@ services:
       - "8000:8000"
     command: ["./docker/wait-for-it.sh", "db:5432", "--", "sh", "/code/docker/dev/django/container-start.sh"]
     depends_on:
-      - "db"
-      - "reactjs"
+      - db
+      - reactjs
     volumes:
       - .:/code
+    networks:
+      - fabrik
+
+networks:
+  fabrik:
