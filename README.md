@@ -23,13 +23,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     git clone https://github.com/Cloud-CV/Fabrik.git && cd Fabrik
     ```
 
-2. Rename `docker-compose.dev.yml` as `docker-compose.yml`.
-
-    ```
-    cp docker-compose.dev.yml docker-compose.yml
-    ```
-
-3. Build and run the Docker containers. This might take a while. You should be able to access Fabrik at `0.0.0.0:8000`.
+2. Build and run the Docker containers. This might take a while. You should be able to access Fabrik at `0.0.0.0:8000`.
 
     ```
     docker-compose up --build
