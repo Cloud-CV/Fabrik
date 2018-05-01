@@ -10,7 +10,32 @@ Fabrik is an online collaborative platform to build, visualize and train deep le
 
 This app is presently under active development and we welcome contributions. Please check out our [issues thread](https://github.com/Cloud-CV/IDE/issues) to find things to work on, or ping us on [Gitter](https://gitter.im/Cloud-CV/IDE). 
 
-### How to setup
+
+## Installation Instructions
+
+Setting up Fabrik on your local machine is really easy. You can setup Fabrik using two methods:
+
+### Using Docker
+
+1. Get the source code on to your machine via git.
+
+    ```shell
+    git clone https://github.com/Cloud-CV/Fabrik.git && cd Fabrik
+    ```
+
+2. Rename `docker-compose.dev.yml` as `docker-compose.yml`.
+
+    ```
+    cp docker-compose.dev.yml docker-compose.yml
+    ```
+
+3. Build and run the Docker containers. This might take a while. You should be able to access Fabrik at `0.0.0.0:8000`.
+
+    ```
+    docker-compose up --build
+    ```
+
+### Using Virtual Environment
 1. First set up a virtualenv
     ```
     sudo apt-get install python-pip python-dev python-virtualenv 
