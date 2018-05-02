@@ -19,6 +19,7 @@ services:
       NODE_ENV: development
     volumes:
       - .:/code
+      - /code/node_modules
     networks:
       - fabrik
 
