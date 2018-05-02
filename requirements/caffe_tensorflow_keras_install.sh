@@ -1,12 +1,12 @@
 # Generic dependencies
 echo "Installing generic dependencies"
-sudo apt-get install git libatlas-base-dev python-protobuf python-numpy python-scipy python-h5py unzip make libblas-dev liblapack-dev libatlas-base-dev gfortran python-pip python-dev
+apt-get install git libatlas-base-dev python-protobuf python-numpy python-scipy python-h5py unzip make libblas-dev liblapack-dev libatlas-base-dev gfortran python-pip python-dev
 pip install numpy scipy scikit-image
 
 #Caffe specific dependencies
 echo "Installing caffe specific dependencies"
-sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev libgflags-dev libgoogle-glog-dev liblmdb-dev protobuf-compiler cmake
-sudo apt-get install --no-install-recommends libboost-all-dev
+apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev libgflags-dev libgoogle-glog-dev liblmdb-dev protobuf-compiler cmake
+apt-get install --no-install-recommends libboost-all-dev
 
 if [ ! -d $HOME/caffe/caffe ]; then
 		#Download caffe

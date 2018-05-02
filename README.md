@@ -10,7 +10,26 @@ Fabrik is an online collaborative platform to build, visualize and train deep le
 
 This app is presently under active development and we welcome contributions. Please check out our [issues thread](https://github.com/Cloud-CV/IDE/issues) to find things to work on, or ping us on [Gitter](https://gitter.im/Cloud-CV/IDE). 
 
-### How to setup
+
+## Installation Instructions
+
+Setting up Fabrik on your local machine is really easy. You can setup Fabrik using two methods:
+
+### Using Docker
+
+1. Get the source code on to your machine via git.
+
+    ```shell
+    git clone https://github.com/Cloud-CV/Fabrik.git && cd Fabrik
+    ```
+
+2. Build and run the Docker containers. This might take a while. You should be able to access Fabrik at `0.0.0.0:8000`.
+
+    ```
+    docker-compose up --build
+    ```
+
+### Using Virtual Environment
 1. First set up a virtualenv
     ```
     sudo apt-get install python-pip python-dev python-virtualenv 
@@ -22,8 +41,13 @@ This app is presently under active development and we welcome contributions. Ple
     ```
     git clone --recursive https://github.com/Cloud-CV/Fabrik.git
     ```
+
+3. Rename settings/dev.sample.py as settings/dev.py and change credential in settings/dev.py
+    ```
+    cp settings/dev.sample.py settings/dev.py
+    ```
     
-3. If you have Caffe, Keras and Tensorflow already installed on your computer, skip this step
+4. If you have Caffe, Keras and Tensorflow already installed on your computer, skip this step
     * For Linux users
         ```
         cd Fabrik/requirements
@@ -42,7 +66,7 @@ This app is presently under active development and we welcome contributions. Ple
         * [Install Caffe](http://caffe.berkeleyvision.org/install_osx.html)
         * [Install Tensorflow](https://www.tensorflow.org/install/install_mac)
         * [Install Keras](https://keras.io/#installation)
-4. Install dependencies
+5. Install dependencies
 * For developers:
     ```
     pip install -r requirements/dev.txt
@@ -51,7 +75,7 @@ This app is presently under active development and we welcome contributions. Ple
     ```
     pip install -r requirements/common.txt
     ```
-5. [Install postgres >= 9.5](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+6. [Install postgres >= 9.5](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
 * Setup postgres database
     * Start postgresql by typing ```sudo service postgresql start```
     * Now login as user postgres by running ```sudo -u postgres psql``` and type the commands below
@@ -71,7 +95,7 @@ This app is presently under active development and we welcome contributions. Ple
     python manage.py makemigrations caffe_app
     python manage.py migrate
     ```
-6. Install node modules
+7. Install node modules
 ```
 npm install
 sudo npm install -g webpack
