@@ -27,7 +27,9 @@ install:
 
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$HOME/caffe/caffe/python
-  - export LD_PRELOAD="/usr/lib/libtcmalloc.so.4"
+  - export LD_PRELOAD=/usr/lib/libtcmalloc.so.4
+  - export PYCAFFE_ROOT=$HOME/caffe/caffe/python
+  - export PATH=$HOME/caffe/caffe/build/tools:$PYCAFFE_ROOT:$PATH
   - psql -c "CREATE DATABASE fabrik" -U postgres
   - psql -c "CREATE USER admin WITH PASSWORD 'fabrik'" -U postgres
   - psql -c "ALTER ROLE admin SET client_encoding TO 'utf8'" -U postgres

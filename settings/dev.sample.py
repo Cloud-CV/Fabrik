@@ -1,5 +1,5 @@
+from .common import * # noqa: ignore=F405
 import os
-from .common import *
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
