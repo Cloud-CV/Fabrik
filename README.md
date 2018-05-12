@@ -118,6 +118,26 @@ python manage.py runserver
 * Use `example/caffe/GoogleNet.prototxt` for caffe import
 * Use `example/keras/vgg16.json` for keras import
 
+### Tested models
+
+The model conversion between currently supported frameworks is tested on some models.
+
+Models                                                                      | Caffe | Keras | Tensorflow |
+:--------------------------------------------------------------------------:|:-----:|:-----:|:----------:|
+[Inception V3](http://arxiv.org/abs/1512.00567)                             |   √   |   √   |     √      |
+[Inception V4](http://arxiv.org/abs/1512.00567)                             |   √   |   √   |     √      |
+[ResNet 101](https://arxiv.org/abs/1512.03385)                              |   √   |   √   |     √      |
+[VGG 16](http://arxiv.org/abs/1409.1556.pdf)                                |   √   |   √   |     √      |
+[GoogLeNet](https://arxiv.org/pdf/1610.02357.pdf)                           |   √   |   ×   |     ×      |
+[SqueezeNet](https://arxiv.org/pdf/1602.07360)                              |   √   |   ×   |     ×      |
+[DenseNet](https://arxiv.org/abs/1608.06993)                                |   √   |   ×   |     ×      |
+[AllCNN](https://arxiv.org/abs/1412.6806)                                   |   √   |   ×   |     ×      |
+[AlexNet](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks)                                 |   √   |   ×   |     ×      |
+[FCN32 Pascal](https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Long_Fully_Convolutional_Networks_2015_CVPR_paper.html) |   √   |   ×   |     ×      |
+[YoloNet](https://arxiv.org/abs/1506.02640)                                 |   √   |   √   |     √      |
+[Pix2Pix](https://github.com/phillipi/pix2pix)                              |   √   |   ×   |     ×      |
+[VQA](https://github.com/iamaaditya/VQA_Demo)                               |   √   |   √   |     √      |
+
 ### Documentation
 * [Using a Keras model exported from Fabrik](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/keras_json_usage_1.md)
 * [Loading a Keras model exported from Fabrik and printing its summary](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/keras_json_usage_2.md)
