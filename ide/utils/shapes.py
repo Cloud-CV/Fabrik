@@ -1,4 +1,5 @@
 import numpy as np
+from collections import deque
 
 
 def data(layer):
@@ -168,13 +169,16 @@ def get_layer_shape(layer):
 
 
 def get_shapes(net):
-    stack = []
+    queue = deque([])
     dataLayers = ['ImageData', 'Data', 'HDF5Data', 'Input', 'WindowData', 'MemoryData', 'DummyData']
     processedLayer = {}
+    layer_indegree = {}
 
     # Finding the data layer
     for layerId in net:
         processedLayer[layerId] = False
+        # store indegree of every layer for Topological sort
+        layer_indegree[layerId] = len(net[layerId]['connection']['input'])
         net[layerId]['shape'] = {}
         if (net[layerId]['info']['type'] == 'Python'):
             if ('endPoint' not in net[layerId]['params'].keys()):
@@ -184,11 +188,10 @@ def get_shapes(net):
                 if (net[layerId]['params']['endPoint'] == "1, 0"):
                     raise Exception('Cannot determine shape of Python layer.')
         if(net[layerId]['info']['type'] in dataLayers):
-            stack.append(layerId)
+            queue.append(layerId)
 
-    while(len(stack)):
-        layerId = stack[0]
-        stack.remove(layerId)
+    while(len(queue)):
+        layerId = queue.popleft()
 
         if(net[layerId]['info']['type'] in dataLayers):
             net[layerId]['shape']['input'], net[layerId]['shape']['output'] = get_layer_shape(net[layerId])
@@ -203,14 +206,11 @@ def get_shapes(net):
                 else:
                     net[outputId]['shape']['input'] = net[layerId]['shape']['output'][:]
 
-                # Implement topo sort check
-                flag = True
-                for parentLayerId in net[outputId]['connection']['input']:
-                    if ((not processedLayer[parentLayerId]) and parentLayerId != layerId):
-                        flag = False
-                        break
-                if flag:
-                    stack.append(outputId)
+                # Decrement indegree of every output node of current layer
+                layer_indegree[outputId] -= 1
+
+                if layer_indegree[outputId] == 0:
+                    queue.append(outputId)
             else:
                 if (net[outputId]['info']['type'] == "Concat"):
                     net[outputId]['shape']['input'] = handle_concat_layer(net[outputId], net[layerId])
