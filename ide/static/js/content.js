@@ -224,7 +224,7 @@ class Content extends React.Component {
     const input = net[layerId].connection.input;
     const output = net[layerId].connection.output;
     const layerIdNum = parseInt(layerId.substring(1,layerId.length)); //numeric value of the layerId
-    const nextLayerId = this.state.nextLayerId - 1 == layerIdNum ? layerIdNum : this.state.nextLayerId; 
+    const nextLayerId = this.state.nextLayerId - 1 == layerIdNum ? layerIdNum : this.state.nextLayerId;
        //if last layer was deleted nextLayerId is replaced by deleted layer's id
     var totalParameters = this.state.totalParameters;
     let index;
@@ -287,7 +287,7 @@ class Content extends React.Component {
 
     if(filter_layers.includes(layer.info.type)) {
       // if layer is Conv or DeConv calculating total parameter of the layer using:
-      // N_Input * K_H * K_W * N_Output 
+      // N_Input * K_H * K_W * N_Output
       var kernel_params = 1;
       if(layer.params['kernel_h'][0] != '')
         kernel_params *= layer.params['kernel_h'][0];
@@ -326,7 +326,7 @@ class Content extends React.Component {
       if (layer.params['use_bias'][0] == false)
         bias_params = 0;
     }
-    
+
     // Update the total parameters of model after considering this layer.
     return (weight_params + bias_params);
   }
@@ -356,7 +356,7 @@ class Content extends React.Component {
         // call to intermediate method which will iterate over layers & calculate the parameters separately
         this.calculateParameters(net);
         // update the net object with shape attributes added
-        this.setState({ net });  
+        this.setState({ net });
       }.bind(this),
       error() {
         //console.log('error'+response.error);
@@ -502,10 +502,6 @@ class Content extends React.Component {
     // this line will unmount all the layers
     // so that the new imported layers will all be mounted again
     const tempError = {};
-    // maintaining height & width in integers for use of map in order to
-    // reduce the search space for overlapping layers & plotting.
-    const height = Math.round(0.05*window.innerHeight, 0);
-    const width = Math.round(0.35*window.innerWidth, 0);
     // Initialize Python layer parameters to be empty
     data['Python']['params'] = {}
     this.setState({ net: {}, selectedLayer: null, hoveredLayer: null, nextLayerId: 0, selectedPhase: 0, error: [] });
@@ -543,80 +539,9 @@ class Content extends React.Component {
       }
     });
     // initialize the position of layers
-    let positions = tempError.length ? {} : netLayout(net);
-    // use map for maintaining top,left coordinates of layers
-    // in order to avoid overlapping layers
-    let map = {}
-    // Layers which are not used alone
-    let combined_layers = ['ReLU', 'PReLU', 'LRN', 'TanH', 'BatchNorm', 'Dropout', 'Scale'];
-    Object.keys(positions).forEach(layerId => {
-      const layer = net[layerId];
-      // Checking if the layer is one of the combined ones
-      // and deciding vertical spacing accordingly
-      var parentX = positions[layer.connection.input[0]];
-      var currentX = positions[layerId][0];
-      if (parentX){
-        parentX = parentX[0];
-      }
-      if ($.inArray(layer.info.type, combined_layers) != -1 && parentX==currentX){
-        var y_space = 0;
-      }
-      else {
-        y_space = 40;
-      }
-      var prev_top = 0;
-
-      // Finding the position of the last(deepest) connected layer
-      if (net[layer.connection.input[0]] != undefined){
-        prev_top = 0;
-        for (var i=0; i<layer.connection.input.length; i++){
-          var temp = net[layer.connection.input[i]].state.top;
-          temp = parseInt(temp.substring(0,temp.length-2));
-          if (temp > prev_top){
-            prev_top = temp;
-          }
-        }
-      }
-      // Graph does not centre properly on higher resolution screens
-      var top = height + prev_top + y_space + Math.ceil(41-height);
-      var left = width + 80 * positions[layerId][0];
-      var layerOverlaps = true;
-
-      // Checking for Overlapping layers based on their X-Coordinates
-      // if any layer overlaps then adjust the position else keep
-      // the preferred positions.
-      while (layerOverlaps) {
-        var overlapFlag = false;
-        // checking for overlapping layer div's by use of there height & width.
-        for(var topC = Math.max(0,top - 40);topC<(top+80);topC++) {
-          if(map.hasOwnProperty(topC)){
-            var xPositions = map[topC].slice();
-            for(var j=0;j<xPositions.length;j++) {
-              if(xPositions[j]>=(left-130) && xPositions[j]<=(left+260)) {
-                overlapFlag = true;
-                break;
-              }
-            }
-          }
-        }
-        if(!overlapFlag) {
-          layerOverlaps = false;
-          break;
-        }
-        top += y_space;
-      }
-
-      layer.state = {
-          top: `${top}px`,
-          left: `${left}px`,
-          class: ''
-      };
-      // keeping a map of layer's top,left coordinates.
-      if(!map.hasOwnProperty(top)) {
-        map[top]=[];
-      }
-      map[top].push(left);
-    });
+    if (tempError.length == undefined) {
+      netLayout(net);
+    }
 
     if (Object.keys(tempError).length) {
       const errorLayers = Object.keys(tempError).join(', ');
@@ -850,7 +775,7 @@ class Content extends React.Component {
   infoModal() {
     this.modalHeader = "About"
     this.modalContent = `Fabrik is an online collaborative platform to build and visualize deep\
-                         learning models via a simple drag-and-drop interface. It allows researchers to\ 
+                         learning models via a simple drag-and-drop interface. It allows researchers to\
                          collaboratively develop and debug models using a web GUI that supports importing,\
                          editing and exporting networks written in widely popular frameworks like Caffe,\
                          Keras, and TensorFlow.`;
@@ -917,11 +842,11 @@ class Content extends React.Component {
     const id = event.target.id;
     const prev = net[`l${this.state.nextLayerId-1}`];
     const next = data[id];
-    const zoom = instance.getZoom();    
+    const zoom = instance.getZoom();
     const layer = {};
     let phase = this.state.selectedPhase;
-    
-    if (this.state.nextLayerId>0 //makes sure that there are other layers 
+
+    if (this.state.nextLayerId>0 //makes sure that there are other layers
       &&data[prev.info.type].endpoint.src == "Bottom" //makes sure that the source has a bottom
       &&next.endpoint.trg == "Top") { //makes sure that the target has a top
         layer.connection = { input: [], output: [] };
@@ -932,17 +857,17 @@ class Content extends React.Component {
         }
         layer.params = {
           'endPoint' : [next['endpoint'], false] //This key is endpoint in data.js, but endPoint in everywhere else.
-        }          
+        }
         Object.keys(next.params).forEach(j => {
           layer.params[j] = [next.params[j].value, false]; //copys all params from data.js
-        });    
+        });
         layer.props = JSON.parse(JSON.stringify(next.props)) //copys all props rom data.js
         layer.state = {
           top: `${(parseInt(prev.state.top.split('px')[0])/zoom + 80)}px`, // This makes the new layer is exactly 80px under the previous one.
           left: `${(parseInt(prev.state.left.split('px')[0])/zoom)}px`, // This aligns the new layer with the previous one.
-          class: '' 
+          class: ''
         }
-        layer.props.name = `${next.name}${this.state.nextLayerId}`;          
+        layer.props.name = `${next.name}${this.state.nextLayerId}`;
         prev.connection.output.push(`l${this.state.nextLayerId}`);
         layer.connection.input.push(`l${this.state.nextLayerId-1}`);
         this.addNewLayer(layer);
@@ -957,10 +882,10 @@ class Content extends React.Component {
           }
       layer.params = {
         'endPoint' : [next['endpoint'], false] //This key is endpoint in data.js, but endPoint in everywhere else.
-      }          
+      }
       Object.keys(next.params).forEach(j => {
         layer.params[j] = [next.params[j].value, false];  //copys all params from data.js
-      });    
+      });
       layer.props = JSON.parse(JSON.stringify(next.props)) //copys all props from data.js
       const height = Math.round(0.05*window.innerHeight, 0); // 5% of screen height, rounded to zero decimals
       const width = Math.round(0.35*window.innerWidth, 0); // 35% of screen width, rounded to zero decimals
@@ -969,10 +894,10 @@ class Content extends React.Component {
       layer.state = {
             top: `${top}px`,
             left: `${left}px`,
-            class: '' 
+            class: ''
           }
-      layer.props.name = `${next.name}${this.state.nextLayerId}`;          
-      this.addNewLayer(layer); 
+      layer.props.name = `${next.name}${this.state.nextLayerId}`;
+      this.addNewLayer(layer);
     }
   }
   render() {
@@ -1000,7 +925,7 @@ class Content extends React.Component {
               urlModal={this.urlModal}
              />
              <h5 className="sidebar-heading">INSERT LAYER</h5>
-             <Pane 
+             <Pane
              handleClick = {this.handleClick}
              setDraggingLayer = {this.setDraggingLayer}
              />
@@ -1014,12 +939,12 @@ class Content extends React.Component {
           </div>
         </div>
       <div id="main">
-          <input type="text" 
+          <input type="text"
             className={$.isEmptyObject(this.state.net) ? "hidden": ""}
-            id="netName" 
-            placeholder="Net name" 
-            value={this.state.net_name} 
-            onChange={this.changeNetName} 
+            id="netName"
+            placeholder="Net name"
+            value={this.state.net_name}
+            onChange={this.changeNetName}
             spellCheck="false"
           />
           {loader}
