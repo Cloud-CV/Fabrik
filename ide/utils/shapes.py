@@ -191,7 +191,8 @@ def get_shapes(net):
             queue.append(layerId)
 
     while(len(queue)):
-        layerId = queue.popleft()
+        # using deque as stack
+        layerId = queue.pop()
 
         if(net[layerId]['info']['type'] in dataLayers):
             net[layerId]['shape']['input'], net[layerId]['shape']['output'] = get_layer_shape(net[layerId])

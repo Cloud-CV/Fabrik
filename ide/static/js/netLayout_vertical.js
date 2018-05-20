@@ -65,7 +65,7 @@ export default function(net) {
     }
   }
 
-  let queue = [];
+  let stack = [];
   let parentMap = {};
   let i = null, layerId = null, parentId =  null, inputLength = null, outputLength = null;
   const dataLayers = ['ImageData', 'Data', 'HDF5Data', 'Input', 'WindowData', 'MemoryData', 'DummyData'];
@@ -75,12 +75,12 @@ export default function(net) {
     if (net[layerId].info.type == 'Python'){
       // This is to check if the Python layer is a data layer
       if (net[layerId].params.endPoint[0] == "1, 0"){
-        queue.push(layerId);
+        stack.push(layerId);
         parentMap[layerId] = null;
       }
     }
     if (dataLayers.includes(net[layerId].info.type)) {
-      queue.push(layerId);
+      stack.push(layerId);
       parentMap[layerId] = null;
     }
   });
@@ -91,8 +91,8 @@ export default function(net) {
   // Layers which are not used alone
   let combined_layers = ['ReLU', 'PReLU', 'LRN', 'TanH', 'BatchNorm', 'Dropout', 'Scale'];
 
-  while (queue.length) {
-    i = queue.shift();
+  while (stack.length) {
+    i = stack.pop();
     layerId = i;
 
     parentId = parentMap[layerId];
@@ -124,7 +124,7 @@ export default function(net) {
 
     net[layerId].connection.output.forEach(outputId => {
       if ((layer_indegree[outputId] - 1) == 0) {
-        queue.push(outputId);
+        stack.push(outputId);
         parentMap[outputId] = layerId;
       }
       layer_indegree[outputId] = layer_indegree[outputId] - 1;
