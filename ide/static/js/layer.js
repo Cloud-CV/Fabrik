@@ -45,4 +45,3 @@ Layer.propTypes = {
 };
 
 export default Layer;
-

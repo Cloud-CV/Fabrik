@@ -289,11 +289,11 @@ class Content extends React.Component {
       // if layer is Conv or DeConv calculating total parameter of the layer using:
       // N_Input * K_H * K_W * N_Output
       var kernel_params = 1;
-      if(layer.params['kernel_h'][0] != '')
+      if('kernel_h' in layer.params && layer.params['kernel_h'][0] != '')
         kernel_params *= layer.params['kernel_h'][0];
-      if(layer.params['kernel_w'][0] != '')
+      if('kernel_w' in layer.params && layer.params['kernel_w'][0] != '')
         kernel_params *= layer.params['kernel_w'][0];
-      if(layer.params['kernel_d'][0] != '')
+      if('kernel_d' in layer.params && layer.params['kernel_d'][0] != '')
         kernel_params *= layer.params['kernel_d'][0];
 
       weight_params = layer.shape['input'][0] * kernel_params * layer.params['num_output'][0];
@@ -367,7 +367,6 @@ class Content extends React.Component {
     this.dismissAllErrors();
     const error = [];
     const netObj = JSON.parse(JSON.stringify(this.state.net));
-
     if (Object.keys(netObj).length == 0) {
       this.addError("No model available for export");
       return;
@@ -508,6 +507,9 @@ class Content extends React.Component {
     Object.keys(net).forEach(layerId => {
       var layer = net[layerId];
       const type = layer.info.type;
+      // extract unique input & output nodes
+      net[layerId]['connection']['input'] = net[layerId]['connection']['input'].filter((val,id,array) => array.indexOf(val) == id);
+      net[layerId]['connection']['output'] = net[layerId]['connection']['output'].filter((val,id,array) => array.indexOf(val) == id);
       // const index = +layerId.substring(1);
       if (type == 'Python'){
         Object.keys(layer.params).forEach(param => {

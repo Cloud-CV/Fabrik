@@ -23,7 +23,7 @@ class Canvas extends React.Component {
     this.disableZoom = true;
   }
   /* this function returns the layers between a specified output y and input y
-  it also sneaks in another functionallity of determining which direction is most crowded. this is specifically 
+  it also sneaks in another functionallity of determining which direction is most crowded. this is specifically
   implemented in this function becuase performance will be very low if implemented in another loop.  */
   getBetween(net, output, input, x) {
     var toReturn = [];
@@ -42,11 +42,11 @@ class Canvas extends React.Component {
       }
     });
     var dir = 0;
-    if (neg>pos) dir = -1; else dir = 1; 
+    if (neg>pos) dir = -1; else dir = 1;
     return [dir, toReturn];
   }
   /* this function takes in a var of net and pos
-  net has an array of all the nodes, and pos is a array of x and y coordinates that this 
+  net has an array of all the nodes, and pos is a array of x and y coordinates that this
   function checks to see whether a line will cut through nodes in the pathway.
   */
   checkIfCuttingLine(net, pos) {
@@ -64,7 +64,7 @@ class Canvas extends React.Component {
         var xcalc = ((y - pos[1][1]) / slope) + pos[1][0];
         if (Math.abs(x - xcalc) < 100) {
           var extend = x - xcalc;
-          //the following code is used for positioning the direction of the line and the while loop controling the function iteslf. 
+          //the following code is used for positioning the direction of the line and the while loop controling the function iteslf.
           if (extend < 0) {
             return 1;
           }
@@ -123,7 +123,7 @@ class Canvas extends React.Component {
   componentWillUpdate() {
     this.placeholder = false;
     const net = this.props.net;
-    if (Object.keys(net).length > 0) { //enable zoom buttons if there are layers 
+    if (Object.keys(net).length > 0) { //enable zoom buttons if there are layers
       this.disableZoom = false;
     }
   }
@@ -188,7 +188,7 @@ class Canvas extends React.Component {
       lastLayerId = `l${lastLayerId}`; //add 'l' ahead of the index
       prevLayerId = `l${prevLayerId}`;
       const x1 = parseInt(net[prevLayerId].state.top.split('px'));
-      const x2 = parseInt(net[lastLayerId].state.top.split('px')); 
+      const x2 = parseInt(net[lastLayerId].state.top.split('px'));
       const s = instance.getEndpoints(prevLayerId)[0];
       var t = instance.getEndpoints(lastLayerId);
       // To handle case of loss layer being target
@@ -202,7 +202,7 @@ class Canvas extends React.Component {
         instance.connect({
           source: s,
           target: t});
-      } 
+      }
     }
   }
   allowDrop(event) {
@@ -231,7 +231,7 @@ class Canvas extends React.Component {
     this.placeholder = false;
     event.preventDefault();
     if (event.target.id === 'panZoomContainer' && !this.mouseState.pan) {
-      if (this.props.selectedLayer!=null) 
+      if (this.props.selectedLayer!=null)
         this.props.modifyLayer(this.props.net[this.props.selectedLayer], this.props.selectedLayer);
       this.props.changeSelectedLayer(null);
     }
@@ -248,8 +248,8 @@ class Canvas extends React.Component {
     layer.state.left = `${event.pos['0']}px`;
     layer.state.top = `${event.pos['1']}px`;
     this.props.modifyLayer(layer, layerId);
-    let net = this.props.net  
-    this.checkCutting(net);  
+    let net = this.props.net
+    this.checkCutting(net);
   }
   connectionEvent(connInfo, originalEvent) {
     if (originalEvent != null) { // user manually makes a connection
