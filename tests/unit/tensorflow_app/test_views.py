@@ -41,3 +41,51 @@ class PoolLayerTest(unittest.TestCase):
         response = self.client.post(reverse('tf-import'), {'file': model_file})
         response = json.loads(response.content)
         self.assertEqual(response['result'], 'success')
+
+
+class RepeatLayerTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_tf_import(self):
+        model_file = open(os.path.join(settings.BASE_DIR, 'example/tensorflow', 'Conv2DRepeat.pbtxt'),
+                          'r')
+        response = self.client.post(reverse('tf-import'), {'file': model_file})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+
+
+class StackLayerTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_tf_import(self):
+        model_file = open(os.path.join(settings.BASE_DIR, 'example/tensorflow', 'FCStack.pbtxt'),
+                          'r')
+        response = self.client.post(reverse('tf-import'), {'file': model_file})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+
+
+class DepthwiseConvLayerTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_tf_import(self):
+        model_file = open(os.path.join(settings.BASE_DIR, 'example/tensorflow', 'DepthwiseConv.pbtxt'),
+                          'r')
+        response = self.client.post(reverse('tf-import'), {'file': model_file})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+
+
+class BatchNormLayerTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_tf_import(self):
+        model_file = open(os.path.join(settings.BASE_DIR, 'example/tensorflow', 'BatchNorm.pbtxt'),
+                          'r')
+        response = self.client.post(reverse('tf-import'), {'file': model_file})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')

@@ -1,0 +1,110 @@
+{
+    "class_name": "Sequential", 
+    "keras_version": "2.0.8", 
+    "config": [
+        {
+            "class_name": "SeparableConv2D", 
+            "config": {
+                "pointwise_initializer": {
+                    "class_name": "VarianceScaling", 
+                    "config": {
+                        "distribution": "uniform", 
+                        "scale": 1.0, 
+                        "seed": null, 
+                        "mode": "fan_avg"
+                    }
+                }, 
+                "dtype": "float32", 
+                "trainable": true, 
+                "pointwise_regularizer": {
+                    "class_name": "L1L2", 
+                    "config": {
+                        "l2": 0.009999999776482582, 
+                        "l1": 0.0
+                    }
+                }, 
+                "filters": 32, 
+                "depthwise_regularizer": {
+                    "class_name": "L1L2", 
+                    "config": {
+                        "l2": 0.009999999776482582, 
+                        "l1": 0.0
+                    }
+                }, 
+                "use_bias": true, 
+                "bias_regularizer": {
+                    "class_name": "L1L2", 
+                    "config": {
+                        "l2": 0.009999999776482582, 
+                        "l1": 0.0
+                    }
+                }, 
+                "bias_initializer": {
+                    "class_name": "Zeros", 
+                    "config": {}
+                }, 
+                "batch_input_shape": [
+                    null, 
+                    16, 
+                    16, 
+                    1
+                ], 
+                "activity_regularizer": {
+                    "class_name": "L1L2", 
+                    "config": {
+                        "l2": 0.009999999776482582, 
+                        "l1": 0.0
+                    }
+                }, 
+                "depthwise_constraint": {
+                    "class_name": "MaxNorm", 
+                    "config": {
+                        "max_value": 2, 
+                        "axis": 0
+                    }
+                }, 
+                "activation": "relu", 
+                "depthwise_initializer": {
+                    "class_name": "VarianceScaling", 
+                    "config": {
+                        "distribution": "uniform", 
+                        "scale": 1.0, 
+                        "seed": null, 
+                        "mode": "fan_avg"
+                    }
+                }, 
+                "padding": "valid", 
+                "strides": [
+                    1, 
+                    1
+                ], 
+                "name": "separable_conv2d_1", 
+                "bias_constraint": {
+                    "class_name": "MaxNorm", 
+                    "config": {
+                        "max_value": 2, 
+                        "axis": 0
+                    }
+                }, 
+                "depth_multiplier": 1, 
+                "pointwise_constraint": {
+                    "class_name": "MaxNorm", 
+                    "config": {
+                        "max_value": 2, 
+                        "axis": 0
+                    }
+                }, 
+                "data_format": "channels_last", 
+                "dilation_rate": [
+                    1, 
+                    1
+                ], 
+                "kernel_size": [
+                    3, 
+                    3
+                ]
+            }
+        }
+    ], 
+    "backend": "tensorflow"
+}

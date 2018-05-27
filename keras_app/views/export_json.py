@@ -10,7 +10,7 @@ from keras.models import Model
 from layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
     recurrent, batch_norm, activation, flatten, reshape, eltwise, concat, upsample, locally_connected,\
     permute, repeat_vector, regularization, masking, gaussian_noise, gaussian_dropout, alpha_dropout, \
-    bidirectional, time_distributed
+    bidirectional, time_distributed, depthwiseConv
 BASE_DIR = os.path.dirname(
     os.path.dirname(
         os.path.dirname(
@@ -54,6 +54,7 @@ def export_json(request, is_tf=False):
             'Masking': masking,
             'Convolution': convolution,
             'Deconvolution': deconvolution,
+            'DepthwiseConv': depthwiseConv,
             'Upsample': upsample,
             'Pooling': pooling,
             'LocallyConnected': locally_connected,

@@ -10,7 +10,7 @@ from layers_import import Input, Convolution, Deconvolution, Pooling, Dense, Dro
     Recurrent, BatchNorm, Activation, LeakyReLU, PReLU, ELU, Scale, Flatten, Reshape, Concat, \
     Eltwise, Padding, Upsample, LocallyConnected, ThresholdedReLU, Permute, RepeatVector,\
     ActivityRegularization, Masking, GaussianNoise, GaussianDropout, AlphaDropout, \
-    TimeDistributed, Bidirectional
+    TimeDistributed, Bidirectional, DepthwiseConv
 from keras.models import model_from_json, Sequential
 from keras.layers import deserialize
 
@@ -72,6 +72,7 @@ def import_json(request):
         'Conv2D': Convolution,
         'Conv2DTranspose': Deconvolution,
         'Conv3D': Convolution,
+        'SeparableConv2D': DepthwiseConv,
         'UpSampling1D': Upsample,
         'UpSampling2D': Upsample,
         'UpSampling3D': Upsample,

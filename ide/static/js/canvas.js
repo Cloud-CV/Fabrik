@@ -334,7 +334,8 @@ class Canvas extends React.Component {
     const canvas = document.getElementById('jsplumbContainer');
     const zoom = instance.getZoom();
 
-    const type = this.props.draggingLayer;
+    // extracting layerId from Pane id which is in form LayerName_Button
+    const type = this.props.draggingLayer.split('_')[0];
     if (data[type].learn && (this.props.selectedPhase === 1)) {
       this.props.addError(`Error: you can not add a "${type}" layer in test phase`);
     } else {

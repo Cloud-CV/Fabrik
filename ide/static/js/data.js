@@ -1171,14 +1171,14 @@ export default {
     learn: true
   },
   DepthwiseConv: { // Only Keras
-    name: 'depthwise convolution',
+    name: 'depth conv',
     color: '#3f51b5',
     endpoint: {
       src: ['Bottom'],
       trg: ['Top']
     },
     params: {
-      filters: {
+      num_output: {
         name: 'No of outputs',
         value: '',
         type: 'number',
@@ -1220,7 +1220,14 @@ export default {
         type: 'number',
         required: false
       },
-      depth_mult: {
+      padding: {
+        name: 'Padding Type',
+        value: 'SAME',
+        type: 'select',
+        options: ['SAME', 'VALID'],
+        required: false
+      },
+      depth_multiplier: {
         name: 'Depth multiplier',
         value: 1,
         type: 'number',

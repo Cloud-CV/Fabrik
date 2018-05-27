@@ -152,10 +152,10 @@ def Convolution(layer):
 
 
 # Separable Convolution is currently not supported with Theano backend
-'''
+
 def DepthwiseConv(layer):
     params = {}
-    params['filters'] = layer.filters
+    params['num_output'] = layer.filters
     params['kernel_h'], params['kernel_w'] = layer.kernel_size
     params['stride_h'], params['stride_w'] = layer.strides
     params['pad_h'], params['pad_w'] = get_padding([params['kernel_w'], params['kernel_h'], -1,
@@ -181,7 +181,7 @@ def DepthwiseConv(layer):
         params['pointwise_constraint'] = layer.pointwise_constraint.__class__.__name__
     if (layer.bias_constraint):
         params['bias_constraint'] = layer.bias_constraint.__class__.__name__
-    return jsonLayer('DepthwiseConv', params, layer)'''
+    return jsonLayer('DepthwiseConv', params, layer)
 
 
 def Deconvolution(layer):

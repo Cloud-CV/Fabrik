@@ -843,7 +843,8 @@ class Content extends React.Component {
     this.clickEvent = true;
 
     const net = this.state.net;
-    const id = event.target.id;
+    // extracting layerId from Pane id which is in form LayerName_Button
+    const id = event.target.id.split('_')[0];
     const prev = net[`l${this.state.nextLayerId-1}`];
     const next = data[id];
     const zoom = instance.getZoom();
@@ -851,8 +852,8 @@ class Content extends React.Component {
     let phase = this.state.selectedPhase;
 
     if (this.state.nextLayerId>0 //makes sure that there are other layers
-      &&data[prev.info.type].endpoint.src == "Bottom" //makes sure that the source has a bottom
-      &&next.endpoint.trg == "Top") { //makes sure that the target has a top
+      && data[prev.info.type].endpoint.src == "Bottom" //makes sure that the source has a bottom
+      && next.endpoint.trg == "Top") { //makes sure that the target has a top
         layer.connection = { input: [], output: [] };
         layer.info = {
           type: id.toString(),

@@ -2,7 +2,7 @@ import numpy as np
 
 from keras.layers import Dense, Activation, Dropout, Flatten, Reshape, Permute, RepeatVector
 from keras.layers import ActivityRegularization, Masking
-from keras.layers import Conv1D, Conv2D, Conv3D, Conv2DTranspose
+from keras.layers import Conv1D, Conv2D, Conv3D, Conv2DTranspose, SeparableConv2D
 from keras.layers import UpSampling1D, UpSampling2D, UpSampling3D
 from keras.layers import MaxPooling1D, MaxPooling2D, MaxPooling3D
 from keras.layers import AveragePooling1D, AveragePooling2D, AveragePooling3D
@@ -87,7 +87,7 @@ def dense(layer, layer_in, layerId, tensor=True):
 def activation(layer, layer_in, layerId, tensor=True):
     out = {}
     if (layer['info']['type'] == 'ReLU'):
-        if (layer['params']['negative_slope'] != 0):
+        if ('negative_slope' in layer['params'] and layer['params']['negative_slope'] != 0):
             out[layerId] = LeakyReLU(alpha=layer['params']['negative_slope'])
         else:
             out[layerId] = Activation('relu')
@@ -242,11 +242,11 @@ def convolution(layer, layer_in, layerId, tensor=True):
 
 
 # Separable Convolution is currently not supported with Theano backend
-'''
+
 def depthwiseConv(layer, layer_in, layerId, tensor=True):
     out = {}
     padding = get_padding(layer)
-    filters = layer['params']['filters']
+    filters = layer['params']['num_output']
     k_h, k_w = layer['params']['kernel_h'], layer['params']['kernel_w']
     s_h, s_w = layer['params']['stride_h'], layer['params']['stride_w']
     depth_multiplier = layer['params']['depth_multiplier']
@@ -278,7 +278,7 @@ def depthwiseConv(layer, layer_in, layerId, tensor=True):
                                    depthwise_constraint=depthwise_constraint,
                                    pointwise_constraint=pointwise_constraint,
                                    bias_constraint=bias_constraint,)(*layer_in)
-    return out'''
+    return out
 
 
 def deconvolution(layer, layer_in, layerId, tensor=True):
@@ -648,7 +648,7 @@ def time_distributed(layerId, idNext, net, layer_in, layer_map):
 # logic as used in caffe-tensorflow
 # https://github.com/ethereon/caffe-tensorflow/blob/master/kaffe/tensorflow/transformer.py
 def get_padding(layer):
-    if (layer['info']['type'] == 'Deconvolution'):
+    if (layer['info']['type'] in ['Deconvolution', 'DepthwiseConv']):
         _, i_h, i_w = layer['shape']['output']
         _, o_h, o_w = layer['shape']['input']
         k_h, k_w = layer['params']['kernel_h'], layer['params']['kernel_w']
