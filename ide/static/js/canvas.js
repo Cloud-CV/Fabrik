@@ -137,35 +137,61 @@ class Canvas extends React.Component {
     );
     const net = this.props.net;
     if (this.props.rebuildNet) {
-      let combined_layers = ['ReLU', 'PReLU', 'LRN', 'TanH', 'BatchNorm', 'Dropout', 'Scale'];
+      //let combined_layers = ['ReLU', 'PReLU', 'LRN', 'TanH', 'BatchNorm', 'Dropout', 'Scale'];
       this.checkCutting(net);
       Object.keys(net).forEach(inputId => {
         const layer = net[inputId];
         if ((layer.info.phase === this.props.selectedPhase) || (layer.info.phase === null)) {
           const outputs = layer.connection.output;
+          const inputs = layer.connection.input;
+          var topFlag = 0;
+          var bottomFlag = 0;
+          var parentTop, currentTop, parentLayerId, childLayerId;
           outputs.forEach(outputId => {
             if ((net[outputId].info.phase === this.props.selectedPhase) || (net[outputId].info.phase === null)) {
               instance.connect({
                 uuids: [`${inputId}-s0`, `${outputId}-t0`],
                 editable: true
               });
-              /* The following code is to identify layers that are part of a group
-              and modify their border radius */
-              if ($.inArray(net[outputId].info.type, combined_layers) != -1 &&net[inputId].connection.output.length==1){
-                if ($.inArray(net[inputId].info.type, combined_layers) == -1){
-                  $('#'+inputId).css('border-radius', '10px 10px 0px 0px')
-                }
-                else {
-                  $('#'+inputId).css('border-radius', '0px 0px 0px 0px')
-                }
-              }
-              else if (net[inputId].connection.input.length==1){
-                if ($.inArray(net[inputId].info.type, combined_layers) != -1){
-                  $('#'+inputId).css('border-radius', '0px 0px 10px 10px')
-                }
-              }
             }
           });
+          /* The following code is to identify layers that are part of a group
+          and modify their border radius */
+          /* If layer has only one child & is a combined layer it will have a constant
+          difference between there position, using that information to update border radius*/
+          if(outputs.length == 1 && net[outputs[0]]['connection']['input'].length == 1) {
+            childLayerId = outputs[0];
+            parentTop = parseInt(net[childLayerId]['state']['top'].slice(0, net[childLayerId]['state']['top'].length - 2));
+            currentTop = parseInt(net[inputId]['state']['top'].slice(0, net[inputId]['state']['top'].length - 2));
+            //console.log(parentTop + " " + currentTop+ " " + Math.abs(parentTop - currentTop));
+            if(Math.abs(parentTop - currentTop) == 41) {
+              topFlag = 1;
+            }
+          }
+          /* If layer has only one parent & is a combined layer it will have a constant
+          difference between there position, using that information to update border radius*/
+          if(inputs.length == 1) {
+            parentLayerId = inputs[0];
+            parentTop = parseInt(net[parentLayerId]['state']['top'].slice(0, net[parentLayerId]['state']['top'].length - 2));
+            currentTop = parseInt(net[inputId]['state']['top'].slice(0, net[inputId]['state']['top'].length - 2));
+            //console.log("::"+parentTop + " " + currentTop+ " " + Math.abs(parentTop - currentTop));
+            if(Math.abs(parentTop - currentTop) == 41) {
+              bottomFlag = 1;
+            }
+          }
+          /* Assigning border radius based on the location of layer, all four cases considered*/
+          if(topFlag == 1 && bottomFlag == 1) {
+            $('#'+inputId).css('border-radius', '0px 0px 0px 0px')
+          }
+          else if(topFlag == 1 && bottomFlag == 0) {
+            $('#'+inputId).css('border-radius', '10px 10px 0px 0px')
+          }
+          else if(topFlag == 0 && bottomFlag == 1) {
+            $('#'+inputId).css('border-radius', '0px 0px 10px 10px')
+          }
+          else {
+            $('#'+inputId).css('border-radius', '10px 10px 10px 10px')
+          }
         }
       });
       this.props.changeNetStatus(false);
