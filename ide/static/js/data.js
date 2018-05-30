@@ -1038,6 +1038,13 @@ export default {
       trg: ['Top']
     },
     params: {
+      layer_type: { // Only Tensorflow
+        name: 'Type',
+        value: '2D',
+        type: 'select',
+        options: ['2D'],
+        required: false
+      },
       num_output: { // Maps to: filters(Keras)
         name: 'No of outputs',
         value: '',
@@ -1079,7 +1086,15 @@ export default {
         value: 0,
         type: 'number',
         required: false
-      },dilation_h: {
+      },
+      padding: {
+        name: 'Padding type',
+        value: 'SAME',
+        type: 'select',
+        options: ['SAME', 'VALID'],
+        required: false
+      },
+      dilation_h: {
         name: 'Dilation height',
         value: 1,
         type: 'number',

@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 from google.protobuf import text_format
 from tensorflow.core.framework import graph_pb2
@@ -12,10 +13,13 @@ from urlparse import urlparse
 op_layer_map = {'Placeholder': 'Input', 'Conv2D': 'Convolution', 'Conv3D': 'Convolution',
                 'MaxPool': 'Pooling', 'MaxPool3D': 'Pooling', 'AvgPool3D': 'Pooling',
                 'DepthwiseConv2dNative': 'DepthwiseConv', 'MatMul': 'InnerProduct',
-                'Prod': 'InnerProduct', 'Relu': 'ReLU', 'Softplus': 'Softplus',
-                'Softmax': 'Softmax', 'LRN': 'LRN', 'Concat': 'Concat',
-                'AvgPool': 'Pooling', 'Reshape': 'Flatten', 'LeakyRelu': 'ReLU',
-                'Elu': 'ELU', 'Softsign': 'Softsign', 'FusedBatchNorm': 'BatchNorm'}
+                'Prod': 'InnerProduct', 'LRN': 'LRN', 'Concat': 'Concat',
+                'AvgPool': 'Pooling', 'Reshape': 'Flatten', 'FusedBatchNorm': 'BatchNorm',
+                'Conv2DBackpropInput': 'Deconvolution'}
+
+activation_map = {'Sigmoid': 'Sigmoid', 'Softplus': 'Softplus', 'Softsign': 'Softsign',
+                  'Elu': 'ELU', 'LeakyRelu': 'ReLU', 'Softmax': 'Softmax',
+                  'Relu': 'ReLU', 'Tanh': 'TanH', 'SELU': 'SELU'}
 
 name_map = {'flatten': 'Flatten', 'dropout': 'Dropout',
             'batch': 'BatchNorm', 'add': 'Eltwise', 'mul': 'Eltwise'}
@@ -45,15 +49,29 @@ def get_layer_type(node_name):
     return name
 
 
-def get_padding(node, layer):
+def get_padding(node, layer, session, input_layer_name, input_layer_dim):
     layer_name = get_layer_name(node.name)
     input_shape = None
     output_shape = None
     for input_tensor in node.inputs:
         if get_layer_name(input_tensor.op.name) != layer_name:
             input_shape = input_tensor.get_shape()
+            try:
+                # check to see if dimensions are present in shape
+                temp = [int(i) for i in input_shape[1:]]
+            except:
+                input_shape = (session.run(input_tensor,
+                               feed_dict={session.graph.get_tensor_by_name(input_layer_name + ':0'):
+                                          np.zeros(input_layer_dim)})).shape
     for output_tensor in node.outputs:
         output_shape = output_tensor.get_shape()
+        try:
+            # check to see if dimensions are present in shape
+            temp = [int(i) for i in output_shape[1:]] # noqa
+        except:
+            output_shape = (session.run(output_tensor,
+                            feed_dict={session.graph.get_tensor_by_name(input_layer_name + ':0'):
+                                       np.zeros(input_layer_dim)})).shape
 
     '''
     Use this link: https://www.tensorflow.org/versions/r0.10/api_docs/python/nn.html
@@ -83,6 +101,14 @@ def get_padding(node, layer):
             pad_w = math.floor(pad_w)
 
         return int(pad_d), int(pad_h), int(pad_w)
+    elif node.type == "Conv2DBackpropInput":
+        # if deconvolution layer padding calculation logic changes
+        if ('padding' in node.node_def.attr):
+            pad_h = ((int(input_shape[1]) - 1) * layer['params']['stride_h'] +
+                     layer['params']['kernel_h'] - int(output_shape[1])) / float(2)
+            pad_w = ((int(input_shape[2]) - 1) * layer['params']['stride_w'] +
+                     layer['params']['kernel_w'] - int(output_shape[2])) / float(2)
+            return int(math.floor(pad_h)), int(math.floor(pad_w))
     else:
         pad_h = ((int(output_shape[1]) - 1) * layer['params']['stride_h'] +
                  layer['params']['kernel_h'] - int(input_shape[1])) / float(2)
@@ -128,6 +154,8 @@ def import_graph_def(request):
         graph_def = graph_pb2.GraphDef()
         d = {}
         order = []
+        input_layer_name = ''
+        input_layer_dim = []
 
         try:
             text_format.Merge(config, graph_def)
@@ -136,10 +164,14 @@ def import_graph_def(request):
 
         tf.import_graph_def(graph_def, name='')
         graph = tf.get_default_graph()
+        session = tf.Session(graph=graph)
 
         for node in graph.get_operations():
             name = get_layer_name(node.name)
             if node.type == 'NoOp':
+                # if init ops is found initialize graph_def
+                init_op = session.graph.get_operation_by_name(node.name)
+                session.run(init_op)
                 continue
             if name not in d:
                 d[name] = {'type': [], 'input': [], 'output': [], 'params': {}}
@@ -148,11 +180,14 @@ def import_graph_def(request):
                 if (node.type == "FusedBatchNorm"):
                     d[name]['type'] = []
                 d[name]['type'].append(op_layer_map[node.type])
+            elif node.type in activation_map:
+                d[name]['type'].append(activation_map[node.type])
             else:  # For cases where the ops are composed of only basic ops
                 layer_type = get_layer_type(node.name)
                 if layer_type in name_map:
                     if name_map[layer_type] not in d[name]['type']:
                         d[name]['type'].append(name_map[layer_type])
+
             for input_tensor in node.inputs:
                 input_layer_name = get_layer_name(input_tensor.op.name)
                 if input_layer_name != name:
@@ -183,11 +218,15 @@ def import_graph_def(request):
                 continue
             name = get_layer_name(node.name)
             layer = d[name]
+
             if layer['type'][0] == 'Input':
                 input_dim = [int(dim.size) for dim in node.get_attr('shape').dim]
                 # Swapping channel value to convert NCHW/NCDHW format
                 if input_dim[0] == -1:
                     input_dim[0] = 1
+                # preserving input shape to calculate deconv output shape
+                input_layer_name = node.name
+                input_layer_dim = input_dim[:]
                 temp = input_dim[1]
                 input_dim[1] = input_dim[len(input_dim) - 1]
                 input_dim[len(input_dim) - 1] = temp
@@ -227,7 +266,7 @@ def import_graph_def(request):
                     layer['params']['layer_type'] = '2D'
                     try:
                         layer['params']['pad_h'], layer['params']['pad_w'] = \
-                            get_padding(node, layer)
+                            get_padding(node, layer, session, input_layer_name, input_layer_dim)
                     except TypeError:
                         return JsonResponse({'result': 'error', 'error':
                                              'Missing shape info in GraphDef'})
@@ -241,7 +280,41 @@ def import_graph_def(request):
                     layer['params']['layer_type'] = '3D'
                     try:
                         layer['params']['pad_h'], layer['params']['pad_w'],\
-                            layer['params']['pad_d'] = get_padding(node, layer)
+                            layer['params']['pad_d'] = \
+                            get_padding(node, layer, session, input_layer_name, input_layer_dim)
+                    except TypeError:
+                        return JsonResponse({'result': 'error', 'error':
+                                             'Missing shape info in GraphDef'})
+
+            elif layer['type'][0] == 'Deconvolution':
+                if str(node.name) == name + '/weights' or str(node.name) == name + '/kernel':
+                    # since conv takes weights as input, this node will be processed first
+                    # acquired parameters are then required in get_padding function
+                    layer['params']['kernel_h'] = int(
+                        node.get_attr('shape').dim[0].size)
+                    layer['params']['kernel_w'] = int(
+                        node.get_attr('shape').dim[1].size)
+                    layer['params']['num_output'] = int(
+                        node.get_attr('shape').dim[3].size)
+                # extracting weight initializer
+                if re.match('.*/kernel/Initializer.*', str(node.name)):
+                    w_filler = str(node.name).split('/')[3]
+                    layer['params']['weight_filler'] = initializer_map[w_filler]
+                # extracting bias initializer
+                if re.match('.*/bias/Initializer.*', str(node.name)):
+                    b_filler = str(node.name).split('/')[3]
+                    layer['params']['bias_filler'] = initializer_map[b_filler]
+                # extracting stride height & width
+                if str(node.type) == 'Conv2DBackpropInput':
+                    layer['params']['stride_h'] = int(
+                        node.get_attr('strides')[1])
+                    layer['params']['stride_w'] = int(
+                        node.get_attr('strides')[2])
+                    layer['params']['layer_type'] = '2D'
+                    layer['params']['layer_type'] = node.get_attr('padding')
+                    try:
+                        layer['params']['pad_h'], layer['params']['pad_w'] = \
+                            get_padding(node, layer, session, input_layer_name, input_layer_dim)
                     except TypeError:
                         return JsonResponse({'result': 'error', 'error':
                                              'Missing shape info in GraphDef'})
@@ -291,7 +364,7 @@ def import_graph_def(request):
                             node.get_attr('strides')[2])
                         try:
                             layer['params']['pad_h'], layer['params']['pad_w'] = \
-                                get_padding(node, layer)
+                                get_padding(node, layer, session, input_layer_name, input_layer_dim)
                             pass
                         except TypeError:
                             return JsonResponse({'result': 'error', 'error':
@@ -321,7 +394,8 @@ def import_graph_def(request):
                     layer['params']['layer_type'] = '3D'
                     try:
                         layer['params']['pad_d'], layer['params']['pad_h'], \
-                            layer['params']['pad_w'] = get_padding(node, layer)
+                            layer['params']['pad_w'] = \
+                            get_padding(node, layer, session, input_layer_name, input_layer_dim)
                     except TypeError:
                         return JsonResponse({'result': 'error', 'error':
                                              'Missing shape info in GraphDef'})
@@ -344,7 +418,7 @@ def import_graph_def(request):
                     layer['params']['layer_type'] = '2D'
                     try:
                         layer['params']['pad_h'], layer['params']['pad_w'] = \
-                            get_padding(node, layer)
+                            get_padding(node, layer, session, input_layer_name, input_layer_dim)
                     except TypeError:
                         return JsonResponse({'result': 'error', 'error':
                                              'Missing shape info in GraphDef'})
@@ -405,6 +479,12 @@ def import_graph_def(request):
                 pass
 
             elif layer['type'][0] == 'Softsign':
+                pass
+
+            elif layer['type'][0] == 'SELU':
+                pass
+
+            elif layer['type'][0] == 'TanH':
                 pass
 
             elif layer['type'][0] == 'Concat':

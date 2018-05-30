@@ -193,6 +193,7 @@ def Deconvolution(layer):
                                                     params['stride_w'], params['stride_h'], -1],
                                                    layer.input_shape, layer.output_shape,
                                                    layer.padding.lower(), '2D')
+    params['padding'] = layer.padding.upper()
     params['weight_filler'] = layer.kernel_initializer.__class__.__name__
     params['bias_filler'] = layer.bias_initializer.__class__.__name__
     params['num_output'] = layer.filters
