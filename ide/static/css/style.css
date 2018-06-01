@@ -593,7 +593,7 @@ button.url-import-modal-button {
 
 
 .tooltipField{
-  border: none; 
+  border: none;
   box-shadow: none;
   margin: 0px;
   background: transparent;
@@ -692,6 +692,30 @@ button.url-import-modal-button {
     left:30%;
     border-radius: 5px;
     white-space: pre-line;
+}
+
+.info{
+    padding: 10px;
+    width:40%;
+    padding-left: 10px;
+    color: white;
+    background-color: #23b827;
+    border: none;
+    z-index: 120;
+    position: absolute;
+    top: 3%;
+    left:30%;
+    border-radius: 5px;
+    white-space: pre-line;
+}
+
+.info a{
+    color: white !important;
+    text-decoration:underline;
+    cursor: default;
+}
+.info a:hover{
+    cursor: pointer;
 }
 
 .alert-dismissible .close {
@@ -916,7 +940,7 @@ input[type="file"] {
   left:40%;
   top:45%;
   position: absolute;
-  z-index: 5;  
+  z-index: 5;
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);

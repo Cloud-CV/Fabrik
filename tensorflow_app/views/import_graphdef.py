@@ -21,7 +21,7 @@ activation_map = {'Sigmoid': 'Sigmoid', 'Softplus': 'Softplus', 'Softsign': 'Sof
                   'Elu': 'ELU', 'LeakyRelu': 'ReLU', 'Softmax': 'Softmax',
                   'Relu': 'ReLU', 'Tanh': 'TanH', 'SELU': 'SELU'}
 
-name_map = {'flatten': 'Flatten', 'dropout': 'Dropout',
+name_map = {'flatten': 'Flatten', 'dropout': 'Dropout', 'lrn': 'LRN', 'concatenate': 'Concat',
             'batch': 'BatchNorm', 'add': 'Eltwise', 'mul': 'Eltwise'}
 
 initializer_map = {'random_uniform': 'RandomUniform', 'random_normal': 'RandomNormal',

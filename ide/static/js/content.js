@@ -41,6 +41,7 @@ class Content extends React.Component {
       rebuildNet: false,
       selectedPhase: 0,
       error: [],
+      info: [],
       load: false,
       modalIsOpen: false,
       totalParameters: 0,
@@ -65,6 +66,8 @@ class Content extends React.Component {
     this.dismissError = this.dismissError.bind(this);
     this.addError = this.addError.bind(this);
     this.dismissAllErrors = this.dismissAllErrors.bind(this);
+    this.addInfo = this.addInfo.bind(this);
+    this.dismissInfo = this.dismissInfo.bind(this);
     this.copyTrain = this.copyTrain.bind(this);
     this.trainOnly = this.trainOnly.bind(this);
     this.openModal = this.openModal.bind(this);
@@ -416,6 +419,27 @@ class Content extends React.Component {
             downloadAnchor.download = response.name;
             downloadAnchor.href = response.url;
             downloadAnchor.click();
+            if ('customLayers' in response && response.customLayers.length !== 0) {
+              this.addInfo(
+                <span>
+                  <span>This network uses custom layers, to download click on: </span>
+                  {response.customLayers.map((layer, index) => {
+                    return (
+                      <span key={index}>
+                        <a onClick={function() {
+                          downloadAnchor.download = layer.filename;
+                          downloadAnchor.href = layer.url;
+                          downloadAnchor.click();
+                        }} style={{fontWeight: 'bold'}}>
+                          {layer.name}
+                        </a>
+                        {index != response.customLayers.length-1 && <span>, </span>}
+                      </span>
+                    );
+                  })}
+                </span>
+              );
+            }
           } else if (response.result == 'error') {
             this.addError(response.error);
           }
@@ -653,7 +677,7 @@ class Content extends React.Component {
   dismissError(errorIndex) {
     const error = this.state.error;
     error.splice(errorIndex, 1);
-    this.setState({ error });
+    this.setState({ error, info: []});
   }
   addError(errorText) {
     const error = this.state.error;
@@ -662,6 +686,17 @@ class Content extends React.Component {
   }
   dismissAllErrors() {
     this.setState({ error: [] });
+    this.setState({ info: [] });
+  }
+  addInfo(infoContent) {
+    const info = this.state.info;
+    info.push(infoContent)
+    this.setState({ info, error: [] })
+  }
+  dismissInfo(infoIndex) {
+    const info = this.state.info;
+    info.splice(infoIndex, 1);
+    this.setState({ info });
   }
   copyTrain() {
     const net = this.state.net;
@@ -965,6 +1000,9 @@ class Content extends React.Component {
             error={this.state.error}
             dismissError={this.dismissError}
             addError={this.addError}
+            info={this.state.info}
+            dismissInfo={this.dismissInfo}
+            addInfo={this.addInfo}
             clickEvent={this.clickEvent}
             totalParameters={this.state.totalParameters}
             selectedPhase={this.state.selectedPhase}

@@ -3,6 +3,7 @@ import tensorflow as tf
 from keras import backend as K
 import argparse
 import os
+import imp
 
 parser = argparse.ArgumentParser(description='set input arguments')
 parser.add_argument('-input_file', action="store",
@@ -26,7 +27,8 @@ with open(output_fld + input_file, 'r') as f:
     json_str = f.read()
 
 json_str = json_str.strip("'<>() ").replace('\'', '\"')
-model = model_from_json(json_str)
+lrn = imp.load_source('LRN', BASE_DIR + '/keras_app/custom_layers/lrn.py')
+model = model_from_json(json_str, {'LRN': lrn.LRN})
 
 sess = K.get_session()
 tf.train.write_graph(sess.graph.as_graph_def(add_shapes=True), output_fld,

@@ -17,6 +17,7 @@ from keras.layers import GaussianNoise, GaussianDropout, AlphaDropout
 from keras.layers import Input
 from keras.layers import TimeDistributed, Bidirectional
 from keras import regularizers
+from ..custom_layers.lrn import LRN
 
 fillerMap = {
     'constant': 'Constant',
@@ -67,12 +68,23 @@ def dense(layer, layer_in, layerId, tensor=True):
         bias_initializer = fillerMap[layer['params']['bias_filler']]
     else:
         bias_initializer = layer['params']['bias_filler']
-    kernel_regularizer = regularizerMap[layer['params']['kernel_regularizer']]
-    bias_regularizer = regularizerMap[layer['params']['bias_regularizer']]
-    activity_regularizer = regularizerMap[layer['params']
-                                          ['activity_regularizer']]
-    kernel_constraint = constraintMap[layer['params']['kernel_constraint']]
-    bias_constraint = constraintMap[layer['params']['bias_constraint']]
+    # safety checks to avoid runtime errors
+    kernel_regularizer = None
+    bias_regularizer = None
+    activity_regularizer = None
+    kernel_constraint = None
+    bias_constraint = None
+    if 'kernel_regularizer' in layer['params']:
+        kernel_regularizer = regularizerMap[layer['params']['kernel_regularizer']]
+    if 'bias_regularizer' in layer['params']:
+        bias_regularizer = regularizerMap[layer['params']['bias_regularizer']]
+    if 'activity_regularizer' in layer['params']:
+        activity_regularizer = regularizerMap[layer['params']
+                                              ['activity_regularizer']]
+    if 'kernel_constraint' in layer['params']:
+        kernel_constraint = constraintMap[layer['params']['kernel_constraint']]
+    if 'bias_constraint' in layer['params']:
+        bias_constraint = constraintMap[layer['params']['bias_constraint']]
     use_bias = layer['params']['use_bias']
     out[layerId] = Dense(units=units, kernel_initializer=kernel_initializer,
                          kernel_regularizer=kernel_regularizer, bias_regularizer=bias_regularizer,
@@ -185,13 +197,24 @@ def convolution(layer, layer_in, layerId, tensor=True):
         bias_initializer = fillerMap[layer['params']['bias_filler']]
     else:
         bias_initializer = layer['params']['bias_filler']
+    # safety checks to avoid runtime errors
     filters = layer['params']['num_output']
-    kernel_regularizer = regularizerMap[layer['params']['kernel_regularizer']]
-    bias_regularizer = regularizerMap[layer['params']['bias_regularizer']]
-    activity_regularizer = regularizerMap[layer['params']
-                                          ['activity_regularizer']]
-    kernel_constraint = constraintMap[layer['params']['kernel_constraint']]
-    bias_constraint = constraintMap[layer['params']['bias_constraint']]
+    kernel_regularizer = None
+    bias_regularizer = None
+    activity_regularizer = None
+    kernel_constraint = None
+    bias_constraint = None
+    if 'kernel_regularizer' in layer['params']:
+        kernel_regularizer = regularizerMap[layer['params']['kernel_regularizer']]
+    if 'bias_regularizer' in layer['params']:
+        bias_regularizer = regularizerMap[layer['params']['bias_regularizer']]
+    if 'activity_regularizer' in layer['params']:
+        activity_regularizer = regularizerMap[layer['params']
+                                              ['activity_regularizer']]
+    if 'kernel_constraint' in layer['params']:
+        kernel_constraint = constraintMap[layer['params']['kernel_constraint']]
+    if 'bias_constraint' in layer['params']:
+        bias_constraint = constraintMap[layer['params']['bias_constraint']]
     use_bias = layer['params']['use_bias']
     layer_type = layer['params']['layer_type']
     if (layer_type == '1D'):
@@ -385,6 +408,9 @@ def pooling(layer, layer_in, layerId, tensor=True):
                 'Pad'] = ZeroPadding3D(padding=(p_h, p_w, p_d))(*layer_in)
             padding = 'valid'
             layer_in = [out[layerId + 'Pad']]
+    # in case padding is given in layer attributes
+    if ('padding' in layer['params']):
+        padding = layer['params']['padding']
     out[layerId] = poolMap[(layer_type, pool_type)](
         pool_size=kernel, strides=strides, padding=padding)
     if tensor:
@@ -642,6 +668,16 @@ def time_distributed(layerId, idNext, net, layer_in, layer_map):
     out = {}
     out[layerId] = TimeDistributed(
         layer_map[net[idNext]['info']['type']](net[idNext], layer_in, idNext, False)[idNext])(*layer_in)
+
+
+# Custom LRN for Tensorflow export and Keras export
+def lrn(layer, layer_in, layerId):
+    alpha = layer['params']['alpha']
+    beta = layer['params']['beta']
+    k = layer['params']['beta']
+    n = layer['params']['local_size']
+    out = {}
+    out[layerId] = LRN(alpha=alpha, beta=beta, k=k, n=n)(*layer_in)
     return out
 
 

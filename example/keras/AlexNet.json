@@ -1,0 +1,750 @@
+{
+    "class_name": "Model", 
+    "keras_version": "2.0.8", 
+    "config": {
+        "layers": [
+            {
+                "class_name": "InputLayer", 
+                "inbound_nodes": [], 
+                "config": {
+                    "dtype": "float32", 
+                    "batch_input_shape": [
+                        null, 
+                        227, 
+                        227, 
+                        3
+                    ], 
+                    "name": "input_1", 
+                    "sparse": false
+                }, 
+                "name": "input_1"
+            }, 
+            {
+                "class_name": "Conv2D", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "input_1", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "kernel_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "name": "conv2d_1", 
+                    "kernel_constraint": null, 
+                    "bias_regularizer": null, 
+                    "bias_constraint": null, 
+                    "activation": "linear", 
+                    "trainable": true, 
+                    "data_format": "channels_last", 
+                    "padding": "valid", 
+                    "strides": [
+                        4, 
+                        4
+                    ], 
+                    "dilation_rate": [
+                        1, 
+                        1
+                    ], 
+                    "kernel_regularizer": null, 
+                    "filters": 96, 
+                    "bias_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "use_bias": true, 
+                    "activity_regularizer": null, 
+                    "kernel_size": [
+                        11, 
+                        11
+                    ]
+                }, 
+                "name": "conv2d_1"
+            }, 
+            {
+                "class_name": "Activation", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_1", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "activation": "relu", 
+                    "trainable": true, 
+                    "name": "activation_1"
+                }, 
+                "name": "activation_1"
+            }, 
+            {
+                "class_name": "LRN", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "activation_1", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "name": "lrn_1", 
+                    "k": 0.75, 
+                    "trainable": true, 
+                    "n": 5, 
+                    "beta": 0.75, 
+                    "alpha": 9.999999747378752e-05
+                }, 
+                "name": "lrn_1"
+            }, 
+            {
+                "class_name": "MaxPooling2D", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "lrn_1", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "name": "max_pooling2d_1", 
+                    "trainable": true, 
+                    "data_format": "channels_last", 
+                    "pool_size": [
+                        3, 
+                        3
+                    ], 
+                    "padding": "valid", 
+                    "strides": [
+                        2, 
+                        2
+                    ]
+                }, 
+                "name": "max_pooling2d_1"
+            }, 
+            {
+                "class_name": "Conv2D", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "max_pooling2d_1", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "kernel_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "name": "conv2d_2", 
+                    "kernel_constraint": null, 
+                    "bias_regularizer": null, 
+                    "bias_constraint": null, 
+                    "activation": "linear", 
+                    "trainable": true, 
+                    "data_format": "channels_last", 
+                    "padding": "same", 
+                    "strides": [
+                        1, 
+                        1
+                    ], 
+                    "dilation_rate": [
+                        1, 
+                        1
+                    ], 
+                    "kernel_regularizer": null, 
+                    "filters": 256, 
+                    "bias_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "use_bias": true, 
+                    "activity_regularizer": null, 
+                    "kernel_size": [
+                        5, 
+                        5
+                    ]
+                }, 
+                "name": "conv2d_2"
+            }, 
+            {
+                "class_name": "Activation", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_2", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "activation": "relu", 
+                    "trainable": true, 
+                    "name": "activation_2"
+                }, 
+                "name": "activation_2"
+            }, 
+            {
+                "class_name": "LRN", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "activation_2", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "name": "lrn_2", 
+                    "k": 0.75, 
+                    "trainable": true, 
+                    "n": 5, 
+                    "beta": 0.75, 
+                    "alpha": 1
+                }, 
+                "name": "lrn_2"
+            }, 
+            {
+                "class_name": "MaxPooling2D", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "lrn_2", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "name": "max_pooling2d_2", 
+                    "trainable": true, 
+                    "data_format": "channels_last", 
+                    "pool_size": [
+                        3, 
+                        3
+                    ], 
+                    "padding": "valid", 
+                    "strides": [
+                        2, 
+                        2
+                    ]
+                }, 
+                "name": "max_pooling2d_2"
+            }, 
+            {
+                "class_name": "Conv2D", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "max_pooling2d_2", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "kernel_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "name": "conv2d_3", 
+                    "kernel_constraint": null, 
+                    "bias_regularizer": null, 
+                    "bias_constraint": null, 
+                    "activation": "linear", 
+                    "trainable": true, 
+                    "data_format": "channels_last", 
+                    "padding": "same", 
+                    "strides": [
+                        1, 
+                        1
+                    ], 
+                    "dilation_rate": [
+                        1, 
+                        1
+                    ], 
+                    "kernel_regularizer": null, 
+                    "filters": 384, 
+                    "bias_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "use_bias": true, 
+                    "activity_regularizer": null, 
+                    "kernel_size": [
+                        3, 
+                        3
+                    ]
+                }, 
+                "name": "conv2d_3"
+            }, 
+            {
+                "class_name": "Activation", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_3", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "activation": "relu", 
+                    "trainable": true, 
+                    "name": "activation_3"
+                }, 
+                "name": "activation_3"
+            }, 
+            {
+                "class_name": "Conv2D", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "activation_3", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "kernel_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "name": "conv2d_4", 
+                    "kernel_constraint": null, 
+                    "bias_regularizer": null, 
+                    "bias_constraint": null, 
+                    "activation": "linear", 
+                    "trainable": true, 
+                    "data_format": "channels_last", 
+                    "padding": "same", 
+                    "strides": [
+                        1, 
+                        1
+                    ], 
+                    "dilation_rate": [
+                        1, 
+                        1
+                    ], 
+                    "kernel_regularizer": null, 
+                    "filters": 384, 
+                    "bias_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "use_bias": true, 
+                    "activity_regularizer": null, 
+                    "kernel_size": [
+                        3, 
+                        3
+                    ]
+                }, 
+                "name": "conv2d_4"
+            }, 
+            {
+                "class_name": "Activation", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_4", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "activation": "relu", 
+                    "trainable": true, 
+                    "name": "activation_4"
+                }, 
+                "name": "activation_4"
+            }, 
+            {
+                "class_name": "Conv2D", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "activation_4", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "kernel_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "name": "conv2d_5", 
+                    "kernel_constraint": null, 
+                    "bias_regularizer": null, 
+                    "bias_constraint": null, 
+                    "activation": "linear", 
+                    "trainable": true, 
+                    "data_format": "channels_last", 
+                    "padding": "same", 
+                    "strides": [
+                        1, 
+                        1
+                    ], 
+                    "dilation_rate": [
+                        1, 
+                        1
+                    ], 
+                    "kernel_regularizer": null, 
+                    "filters": 256, 
+                    "bias_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "use_bias": true, 
+                    "activity_regularizer": null, 
+                    "kernel_size": [
+                        3, 
+                        3
+                    ]
+                }, 
+                "name": "conv2d_5"
+            }, 
+            {
+                "class_name": "Activation", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_5", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "activation": "relu", 
+                    "trainable": true, 
+                    "name": "activation_5"
+                }, 
+                "name": "activation_5"
+            }, 
+            {
+                "class_name": "MaxPooling2D", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "activation_5", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "name": "max_pooling2d_3", 
+                    "trainable": true, 
+                    "data_format": "channels_last", 
+                    "pool_size": [
+                        3, 
+                        3
+                    ], 
+                    "padding": "valid", 
+                    "strides": [
+                        2, 
+                        2
+                    ]
+                }, 
+                "name": "max_pooling2d_3"
+            }, 
+            {
+                "class_name": "Flatten", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "max_pooling2d_3", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "trainable": true, 
+                    "name": "flatten_1"
+                }, 
+                "name": "flatten_1"
+            }, 
+            {
+                "class_name": "Dense", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "flatten_1", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "kernel_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "name": "dense_1", 
+                    "kernel_constraint": null, 
+                    "bias_regularizer": null, 
+                    "bias_constraint": null, 
+                    "activation": "linear", 
+                    "trainable": true, 
+                    "kernel_regularizer": null, 
+                    "bias_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "units": 4096, 
+                    "use_bias": true, 
+                    "activity_regularizer": null
+                }, 
+                "name": "dense_1"
+            }, 
+            {
+                "class_name": "Activation", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "dense_1", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "activation": "relu", 
+                    "trainable": true, 
+                    "name": "activation_6"
+                }, 
+                "name": "activation_6"
+            }, 
+            {
+                "class_name": "Dropout", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "activation_6", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "rate": 0.5, 
+                    "trainable": true, 
+                    "name": "dropout_1"
+                }, 
+                "name": "dropout_1"
+            }, 
+            {
+                "class_name": "Dense", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "dropout_1", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "kernel_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "name": "dense_2", 
+                    "kernel_constraint": null, 
+                    "bias_regularizer": null, 
+                    "bias_constraint": null, 
+                    "activation": "linear", 
+                    "trainable": true, 
+                    "kernel_regularizer": null, 
+                    "bias_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "units": 4096, 
+                    "use_bias": true, 
+                    "activity_regularizer": null
+                }, 
+                "name": "dense_2"
+            }, 
+            {
+                "class_name": "Activation", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "dense_2", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "activation": "relu", 
+                    "trainable": true, 
+                    "name": "activation_7"
+                }, 
+                "name": "activation_7"
+            }, 
+            {
+                "class_name": "Dropout", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "activation_7", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "rate": 0.5, 
+                    "trainable": true, 
+                    "name": "dropout_2"
+                }, 
+                "name": "dropout_2"
+            }, 
+            {
+                "class_name": "Dense", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "dropout_2", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "kernel_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "name": "dense_3", 
+                    "kernel_constraint": null, 
+                    "bias_regularizer": null, 
+                    "bias_constraint": null, 
+                    "activation": "linear", 
+                    "trainable": true, 
+                    "kernel_regularizer": null, 
+                    "bias_initializer": {
+                        "class_name": "Constant", 
+                        "config": {
+                            "value": 0
+                        }
+                    }, 
+                    "units": 1000, 
+                    "use_bias": true, 
+                    "activity_regularizer": null
+                }, 
+                "name": "dense_3"
+            }, 
+            {
+                "class_name": "Activation", 
+                "inbound_nodes": [
+                    [
+                        [
+                            "dense_3", 
+                            0, 
+                            0, 
+                            {}
+                        ]
+                    ]
+                ], 
+                "config": {
+                    "activation": "softmax", 
+                    "trainable": true, 
+                    "name": "activation_8"
+                }, 
+                "name": "activation_8"
+            }
+        ], 
+        "input_layers": [
+            [
+                "input_1", 
+                0, 
+                0
+            ]
+        ], 
+        "name": "AlexNet", 
+        "output_layers": [
+            [
+                "activation_8", 
+                0, 
+                0
+            ]
+        ]
+    }, 
+    "backend": "tensorflow"
+}

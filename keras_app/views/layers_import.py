@@ -487,6 +487,15 @@ def Bidirectional(layer):
     return jsonLayer('Bidirectional', params, layer)
 
 
+def lrn(layer):
+    params = {}
+    params['k'] = layer.k
+    params['beta'] = layer.beta
+    params['alpha'] = layer.alpha
+    params['local_size'] = layer.n
+    return jsonLayer('LRN', params, layer)
+
+
 # ********** Helper functions **********
 
 # padding logic following

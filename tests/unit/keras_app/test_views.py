@@ -422,6 +422,22 @@ class DepthwiseConvolutionImportTest(unittest.TestCase, HelperFunctions):
         self.assertEqual(response['result'], 'success')
 
 
+class LRNImportTest(unittest.TestCase, HelperFunctions):
+    def setUp(self):
+        self.client = Client()
+
+    def test_keras_import_export(self):
+        model_file = open(os.path.join(settings.BASE_DIR, 'example/keras',
+                                       'AlexNet.json'), 'r')
+        response = self.client.post(reverse('keras-import'), {'file': model_file})
+        response = json.loads(response.content)
+        net = get_shapes(response['net'])
+        response = self.client.post(reverse('keras-export'), {'net': json.dumps(net),
+                                                              'net_name': ''})
+        response = json.loads(response.content)
+        self.assertEqual(response['result'], 'success')
+
+
 class DeconvolutionImportTest(unittest.TestCase, HelperFunctions):
     def setUp(self):
         self.client = Client()
