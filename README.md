@@ -8,7 +8,7 @@ Fabrik is an online collaborative platform to build, visualize and train deep le
 
 <img src="/example/fabrik_demo.gif?raw=true">
 
-This app is presently under active development and we welcome contributions. Please check out our [issues thread](https://github.com/Cloud-CV/IDE/issues) to find things to work on, or ping us on [Gitter](https://gitter.im/Cloud-CV/IDE). 
+This app is presently under active development and we welcome contributions. Please check out our [issues thread](https://github.com/Cloud-CV/IDE/issues) to find things to work on, or ping us on [Gitter](https://gitter.im/Cloud-CV/IDE).
 
 
 ## Installation Instructions
@@ -38,11 +38,11 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 ### Using Virtual Environment
 1. First set up a virtualenv
     ```
-    sudo apt-get install python-pip python-dev python-virtualenv 
+    sudo apt-get install python-pip python-dev python-virtualenv
     virtualenv --system-site-packages ~/Fabrik
     source ~/Fabrik/bin/activate
     ```
-    
+
 2. Clone the repository
     ```
     git clone --recursive https://github.com/Cloud-CV/Fabrik.git
@@ -52,8 +52,13 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     ```
     cp settings/dev.sample.py settings/dev.py
     ```
-    
-4. If you have Caffe, Keras and Tensorflow already installed on your computer, skip this step
+
+4. Install redis server and replace the hostname to 'localhost' in settings/common.py line 99.
+    ```
+    sudo apt-get install redis-server
+    ```
+
+5. If you have Caffe, Keras and Tensorflow already installed on your computer, skip this step
     * For Linux users
         ```
         cd Fabrik/requirements
@@ -66,13 +71,13 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
         Save, exit and then run
         ```
         source ~/.bash_profile
-        cd .. 
+        cd ..
         ```
     * For Mac users
         * [Install Caffe](http://caffe.berkeleyvision.org/install_osx.html)
         * [Install Tensorflow](https://www.tensorflow.org/install/install_mac)
         * [Install Keras](https://keras.io/#installation)
-5. Install dependencies
+6. Install dependencies
 * For developers:
     ```
     pip install -r requirements/dev.txt
@@ -81,11 +86,11 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     ```
     pip install -r requirements/common.txt
     ```
-6. [Install postgres >= 9.5](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+7. [Install postgres >= 9.5](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
 * Setup postgres database
     * Start postgresql by typing ```sudo service postgresql start```
     * Now login as user postgres by running ```sudo -u postgres psql``` and type the commands below
-    
+
     ```
       CREATE DATABASE fabrik;
       CREATE USER admin WITH PASSWORD 'fabrik';
@@ -94,14 +99,14 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
       ALTER ROLE admin SET timezone TO 'UTC';
       ALTER USER admin CREATEDB;
     ```
-    * Exit psql by typing in \q and hitting enter. 
+    * Exit psql by typing in \q and hitting enter.
 * Migrate
     ```
-    
+
     python manage.py makemigrations caffe_app
     python manage.py migrate
     ```
-7. Install node modules
+8. Install node modules
 ```
 npm install
 sudo npm install -g webpack

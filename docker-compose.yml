@@ -23,6 +23,14 @@ services:
     networks:
       - fabrik
 
+  redis:
+    hostname: redis
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - fabrik
+
   django:
     restart: always
     container_name: django
@@ -40,6 +48,7 @@ services:
     depends_on:
       - db
       - reactjs
+      - redis
     volumes:
       - .:/code
     networks:

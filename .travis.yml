@@ -18,6 +18,7 @@ cache:
     - rm -f $HOME/.cache/pip/log/debug.log
 
 install:
+  - pip install pathlib
   - pip install -r requirements/dev.txt
   - . $HOME/.nvm/nvm.sh
   - sh requirements/caffe_tensorflow_keras_install.sh

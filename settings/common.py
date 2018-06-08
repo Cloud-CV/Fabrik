@@ -19,6 +19,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'caffe_app.apps.CaffeAppConfig',
     'keras_app.apps.KerasAppConfig',
     'tensorflow_app.apps.TensorflowAppConfig',
@@ -89,3 +90,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            # replace redis hostname to localhost if running on local system
+            "hosts": [("redis", 6379)],
+            "prefix": u'fabrik:',
+        },
+        "ROUTING": "ide.routing.channel_routing",
+    },
+}
