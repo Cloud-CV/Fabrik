@@ -104,6 +104,9 @@ class Pane extends React.Component {
                     <PaneElement setDraggingLayer={this.props.setDraggingLayer}
                       handleClick={this.props.handleClick}
                       id="Deconvolution_Button">Deconvolution</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="DepthwiseConv_Button">Depthwise Convolution</PaneElement>
                   </div>
                 </div>
               </div>
