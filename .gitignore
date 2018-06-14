@@ -24,3 +24,5 @@ node_modules/
 */migrations/
 
 ide/static/bundle/
+
+celerybeat-schedule
