@@ -962,6 +962,13 @@ input[type="file"] {
   position: absolute;
   top: 0;
 }
+.my-models-list-item {
+  float: left;
+  color: #848a92;
+}
+.my-models-list-item:hover {
+  color: black !important;
+}
 @-webkit-keyframes load7 {
   0%,
   80%,
@@ -989,7 +996,9 @@ input[type="file"] {
     width: 100%;
     z-index: 10;
   }
-
+  .ReactModal__Overlay {
+    z-index: 100;
+  }
   #sidebar {
     width: 240px;
     z-index: 20;

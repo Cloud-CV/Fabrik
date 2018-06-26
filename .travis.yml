@@ -37,6 +37,8 @@ before_script:
   - psql -c "ALTER ROLE admin SET default_transaction_isolation TO 'read committed'" -U postgres
   - psql -c "ALTER ROLE admin SET timezone TO 'UTC'" -U postgres
   - psql -c "ALTER USER admin CREATEDB" -U postgres
+  - python manage.py makemigrations --settings=settings.test
+  - python manage.py migrate --settings=settings.test
 
 script:
   - flake8 ./

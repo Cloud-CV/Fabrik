@@ -9,6 +9,7 @@ import data from './data';
 import netLayout from './netLayout_vertical';
 import Modal from 'react-modal';
 import ModelZoo from './modelZoo';
+import Login from './login';
 import ImportTextbox from './importTextbox';
 import UrlImportModal from './urlImportModal';
 import $ from 'jquery'
@@ -46,7 +47,8 @@ class Content extends React.Component {
       modalIsOpen: false,
       totalParameters: 0,
       modelConfig: null,
-      modelFramework: 'caffe'
+      modelFramework: 'caffe',
+      user_id: null
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
@@ -87,6 +89,7 @@ class Content extends React.Component {
     this.calculateParameters = this.calculateParameters.bind(this);
     this.getLayerParameters = this.getLayerParameters.bind(this);
     this.updateLayerShape = this.updateLayerShape.bind(this);
+    this.setUserId = this.setUserId.bind(this);
     this.modalContent = null;
     this.modalHeader = null;
     // Might need to improve the logic of clickEvent
@@ -94,10 +97,13 @@ class Content extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   openModal() {
-    this.setState({modalIsOpen: true});
+    this.setState({ modalIsOpen: true });
   }
   closeModal() {
-    this.setState({modalIsOpen: false});
+    this.setState({ modalIsOpen: false });
+  }
+  setUserId(user_id) {
+    this.setState({ user_id: user_id });
   }
   addNewLayer(layer) {
     const net = this.state.net;
@@ -826,7 +832,7 @@ class Content extends React.Component {
   }
   zooModal() {
     this.modalHeader = null;
-    this.modalContent = <ModelZoo importNet={this.importNet}/>;
+    this.modalContent = <ModelZoo importNet={this.importNet} />;
     this.openModal();
   }
   setModelFramework(e) {
@@ -964,6 +970,8 @@ class Content extends React.Component {
               textboxModal={this.textboxModal}
               urlModal={this.urlModal}
              />
+             <h5 className="sidebar-heading">LOGIN</h5>
+             <Login setUserId={this.setUserId}></Login>
              <h5 className="sidebar-heading">INSERT LAYER</h5>
              <Pane
              handleClick = {this.handleClick}

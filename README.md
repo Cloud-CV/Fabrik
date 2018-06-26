@@ -35,6 +35,39 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     docker-compose up --build
     ```
 
+### Setup Authenticaton for Docker Environment
+1. Go to Github Developer Applications and create a new application. [here](https://github.com/settings/developers)
+
+2. For local deployments the following is what should be used in the options:
+    * Application name: Fabrik
+    * Homepage URL: http://0.0.0.0:8000
+    * Application description: Fabrik
+    * Authorization callback URL: http://0.0.0.0:8000/accounts/github/login/callback/
+
+3. Github will provide you with a Client ID and Secret Key, save these.
+
+4. Create a superuser in django service of docker container
+
+    ```
+    docker-compose run django python manage.py createsuperuser
+    ```
+    Note: Before creating make sure that django service of docker image is running, it can be done by executing ``` docker-compose up ``` followed by ``` Ctrl + C ``` to save docker configuration.
+
+5. Open http://0.0.0.0:8000/admin and login with credentials from step 4.
+
+6. Setting up Social Accounts in django admin
+
+    * Under the ```Social Accounts``` tab open ``` Socialapplications ```, click on ``` Add Social Application ```.
+
+    * Choose  the ``` Provider ``` of social application as ``` Github ``` &  name it ``` Github ```.
+
+    * Add the sites available to the right side, so github is allowed for the current site.
+
+    * Copy and paste your ``` Client ID ``` and ``` Secret Key ``` into the apppropriate fields and Save.
+
+7. Go to ``` Sites ``` tab and update the ``` Domain name ``` to ``` 0.0.0.0:8000 ```.
+
+
 ### Using Virtual Environment
 1. First set up a virtualenv
     ```
@@ -52,8 +85,9 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     ```
     cp settings/dev.sample.py settings/dev.py
     ```
+    Replace the hostname to ``` localhost ``` in settings/dev.py line 14.
 
-4. Install redis server and replace the hostname to 'localhost' in settings/common.py line 99.
+4. Install redis server and replace the hostname to ``` localhost ``` in settings/common.py line 99.
     ```
     sudo apt-get install redis-server
     ```
@@ -112,6 +146,50 @@ npm install
 sudo npm install -g webpack
 webpack --progress --watch --colors
 ```
+
+
+### Setup Authenticaton for Virtual Environment
+1. Go to Github Developer Applications and create a new application. [here](https://github.com/settings/developers)
+
+2. For local deployments the following is what should be used in the options:
+    * Application name: Fabrik
+    * Homepage URL: http://localhost:8000
+    * Application description: Fabrik
+    * Authorization callback URL: http://localhost:8000/accounts/github/login/callback/
+
+3. Github will provide you with a client ID and secret, save these.
+
+4. Create a superuser in django
+
+    ```
+    python manage.py createsuperuser
+    ```
+
+5. Start the application
+
+    ```
+    python manage.py runserver
+    ```
+
+6. Open http://localhost:8000/admin
+
+7. Login with credentials from step
+
+8. Setting up Social Accounts in django admin
+
+    * Under the ```Social Accounts``` tab open ``` Socialapplications ```, click on ``` Add Social Application ```.
+
+    * Choose  the ``` Provider ``` of social application as ``` Github ``` &  name it ``` Github ```.
+
+    * Add the sites available to the right side, so github is allowed for the current site.
+
+    * Copy and paste your ``` Client ID ``` and ``` Secret Key ``` into the apppropriate fields and Save.
+
+9. Go to ``` Sites ``` tab and update the ``` Domain name ``` to ``` localhost:8000 ```.
+
+Note: For testing, you will only need one authentication backend. However, if you want to try out Google's authentication
+then, you will need to follow the same steps as above, but switch out the Github for google.
+
 
 ### Usage
 ```
