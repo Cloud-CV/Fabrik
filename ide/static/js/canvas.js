@@ -435,7 +435,7 @@ class Canvas extends React.Component {
         />
       );
     });
-    
+
     info.forEach((infoContent, infoIndex) => {
       infos.push(
         <Info

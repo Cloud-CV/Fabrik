@@ -23,8 +23,8 @@ class SetParams extends React.Component {
     let layer = net[this.props.selectedLayer];
     layer = JSON.parse(JSON.stringify(layer));
     var intParams = ["crop_size", "num_output", "new_height", "new_width", "height", "width", "kernel_h", "kernel_w",
-                      "kernel_d", "stride_h", "stride_w", "stride_d", "pad_h", "pad_w", "pad_d", "size_h", "size_w",
-                      "size_d", "n"];
+                     "kernel_d", "stride_h", "stride_w", "stride_d", "pad_h", "pad_w", "pad_d", "size_h", "size_w",
+                     "size_d", "n"];
     if (intParams.includes(para)){
       value = parseInt(value);
       if(isNaN(value))
@@ -86,7 +86,7 @@ class SetParams extends React.Component {
               key={param}
               data={data[layer.info.type].params[param]}
               value={layer.params[param][0]}
-              disabled={((layer.info.phase === null) && (this.props.selectedPhase === 1) && (data[layer.info.type].learn)) || 
+              disabled={((layer.info.phase === null) && (this.props.selectedPhase === 1) && (data[layer.info.type].learn)) ||
                 (layer.params[param][1])}
               changeField={this.changeParams}
             />

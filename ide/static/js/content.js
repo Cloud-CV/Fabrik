@@ -12,6 +12,7 @@ import ModelZoo from './modelZoo';
 import Login from './login';
 import ImportTextbox from './importTextbox';
 import UrlImportModal from './urlImportModal';
+import UserProfile from './UserProfile';
 import $ from 'jquery'
 
 const infoStyle = {
@@ -48,7 +49,8 @@ class Content extends React.Component {
       totalParameters: 0,
       modelConfig: null,
       modelFramework: 'caffe',
-      user_id: null
+      isShared: false,
+      socket: null
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
@@ -89,12 +91,85 @@ class Content extends React.Component {
     this.calculateParameters = this.calculateParameters.bind(this);
     this.getLayerParameters = this.getLayerParameters.bind(this);
     this.updateLayerShape = this.updateLayerShape.bind(this);
+    this.createSocket = this.createSocket.bind(this);
+    this.onSocketConnect = this.onSocketConnect.bind(this);
+    this.sendSocketMessage = this.sendSocketMessage.bind(this);
+    this.onSocketMessage = this.onSocketMessage.bind(this);
+    this.onSocketOpen = this.onSocketOpen.bind(this);
+    this.onSocketError = this.onSocketError.bind(this);
+    this.waitForConnection = this.waitForConnection.bind(this);
     this.setUserId = this.setUserId.bind(this);
     this.modalContent = null;
     this.modalHeader = null;
     // Might need to improve the logic of clickEvent
     this.clickEvent = false;
     this.handleClick = this.handleClick.bind(this);
+    this.performSharedUpdate = this.performSharedUpdate.bind(this);
+  }
+  createSocket(url) {
+    return new WebSocket(url);
+  }
+  onSocketConnect() {
+    // binder for socket
+    const socket = this.state.socket;
+    socket.onopen = this.onSocketOpen;
+    socket.onmessage = this.onSocketMessage;
+    socket.onerror = this.onSocketError;
+  }
+  onSocketOpen() {
+    // socket opening goes here
+    // console.log('socket opened for RTC....');
+  }
+  onSocketMessage(message) {
+    // message received on socket
+    let data = JSON.parse(message['data']);
+    let rebuildNet = false;
+    let nextLayerId = data['nextLayerId'];
+
+    if (data['action'] == 'AddLayer') {
+      rebuildNet = true;
+    }
+
+    this.setState({
+      net: data['net'],
+      rebuildNet: rebuildNet,
+      nextLayerId: nextLayerId
+    });
+  }
+  sendSocketMessage(message) {
+    // generalized method to send message to socket
+    const socket = this.state.socket;
+    socket.send(JSON.stringify(message));
+  }
+  onSocketError(error) {
+    // socket error handling goes here
+    //console.log('Socket error, disconnected....' + error);
+    this.addError(error);
+  }
+  waitForConnection(callback, interval=100) {
+    // delay hook used while creating a new socket
+    const socket = this.state.socket;
+    if (socket != null && socket.readyState === 1) {
+      callback();
+    }
+    else {
+      var that = this;
+      setTimeout(function () {
+          that.waitForConnection(callback, interval);
+      }, interval);
+    }
+  }
+  performSharedUpdate(net, action='UpdateParam', nextLayerId) {
+    // method to handle pre-processing of message before sending
+    // through a socket based on type of action, will be extended further
+    // as per requirement of message types.
+    if (action == 'UpdateParam' || action == 'DeleteLayer' || action == 'AddLayer') {
+      this.sendSocketMessage({
+        net: net,
+        nextLayerId: nextLayerId,
+        action: action
+      });
+    }
   }
   openModal() {
     this.setState({ modalIsOpen: true });
@@ -103,7 +178,7 @@ class Content extends React.Component {
     this.setState({ modalIsOpen: false });
   }
   setUserId(user_id) {
-    this.setState({ user_id: user_id });
+    UserProfile.setUserId(user_id);
   }
   addNewLayer(layer) {
     const net = this.state.net;
@@ -129,6 +204,10 @@ class Content extends React.Component {
       totalParameters += net[layerId]['info']['parameters'];
     }
     this.setState({ net, nextLayerId: this.state.nextLayerId + 1, totalParameters: totalParameters });
+    // if model is in RTC mode send updates to respective sockets
+    if (this.state.isShared) {
+      this.performSharedUpdate(net, 'AddLayer', (this.state.nextLayerId + 1));
+    }
   }
   changeSelectedLayer(layerId) {
     const net = this.state.net;
@@ -167,6 +246,10 @@ class Content extends React.Component {
       oldLayerParams += net[layerId]['info']['parameters'];
     }
     this.setState({ net: net, totalParameters: oldLayerParams });
+    // if model is in RTC mode send updates to respective sockets
+    if (this.state.isShared) {
+      this.performSharedUpdate(net, 'UpdateParam', this.state.nextLayerId);
+    }
   }
   modifyLayerParams(layer, layerId = this.state.selectedLayer) {
     const net = this.state.net;
@@ -223,9 +306,14 @@ class Content extends React.Component {
       });
 
       this.addNewLayer(trainLayer);
+      // if model is in RTC mode addNewLayer will send updates to respective sockets
     } else {
       net[layerId] = layer;
       this.setState({ net });
+      // if model is in RTC mode send updates to respective sockets
+      if (this.state.isShared) {
+        this.performSharedUpdate(net, 'UpdateParam', this.state.nextLayerId);
+      }
     }
   }
   deleteLayer(layerId) {
@@ -248,6 +336,10 @@ class Content extends React.Component {
       net[outputId].connection.input.splice(index, 1);
     });
     this.setState({ net, selectedLayer: null, nextLayerId: nextLayerId, totalParameters: totalParameters });
+    // if model is in RTC mode send updates to respective sockets
+    if (this.state.isShared) {
+      this.performSharedUpdate(net, 'DeleteLayer', nextLayerId);
+    }
   }
 
   updateLayerShape(net, layerId) {
@@ -543,33 +635,37 @@ class Content extends React.Component {
       net[layerId]['connection']['input'] = net[layerId]['connection']['input'].filter((val,id,array) => array.indexOf(val) == id);
       net[layerId]['connection']['output'] = net[layerId]['connection']['output'].filter((val,id,array) => array.indexOf(val) == id);
       // const index = +layerId.substring(1);
-      if (type == 'Python'){
-        Object.keys(layer.params).forEach(param => {
-          layer.params[param] = [layer.params[param], false];
-        });
-        layer.params['caffe'] = [true, false];
-      }
-      if (data.hasOwnProperty(type)) {
-        // add the missing params with default values
-        Object.keys(data[type].params).forEach(param => {
-          if (!layer.params.hasOwnProperty(param)) {
-            // The initial value is a list with the first element being the actual value, and the second being a flag which
-            // controls whether the parameter is disabled or not on the frontend.
-            layer.params[param] = [data[type].params[param].value, false];
-          }
-          else {
+      if (this.state.isShared == false) {
+        // if network object is being loaded from db avoid reinitializing the frontend part
+        if (type == 'Python') {
+          Object.keys(layer.params).forEach(param => {
             layer.params[param] = [layer.params[param], false];
-          }
-        });
-        if (type == 'Convolution' || type == 'Pooling' || type == 'Upsample' || type == 'LocallyConnected' || type == 'Eltwise'){
-          layer = this.adjustParameters(layer, 'layer_type', layer.params['layer_type'][0]);
+          });
+          layer.params['caffe'] = [true, false];
         }
-        // layer.props = JSON.parse(JSON.stringify(data[type].props));
-        layer.props = {};
-        // default name
-        layer.props.name = layerId;
-      } else {
-        tempError[type] = null;
+        if (data.hasOwnProperty(type)) {
+          // add the missing params with default values
+          Object.keys(data[type].params).forEach(param => {
+            if (!layer.params.hasOwnProperty(param)) {
+              // The initial value is a list with the first element being the actual value, and the second being a flag which
+              // controls whether the parameter is disabled or not on the frontend.
+              layer.params[param] = [data[type].params[param].value, false];
+            }
+            else {
+              layer.params[param] = [layer.params[param], false];
+            }
+          });
+          if (type == 'Convolution' || type == 'Pooling' || type == 'Upsample' || type == 'LocallyConnected' || type == 'Eltwise'){
+            layer = this.adjustParameters(layer, 'layer_type', layer.params['layer_type'][0]);
+          }
+          // layer.props = JSON.parse(JSON.stringify(data[type].props));
+          layer.props = {};
+          // default name
+          layer.props.name = layerId;
+        }
+        else {
+          tempError[type] = null;
+        }
       }
     });
     // initialize the position of layers
@@ -746,35 +842,34 @@ class Content extends React.Component {
     this.setState({ net });
   }
   saveDb(){
-    this.exportPrep(function(netData) {
-      Object.keys(netData).forEach(layerId => {
-        delete netData[layerId].state;
-      });
-      this.setState({ load: true });
-      $.ajax({
-        url: '/caffe/save',
-        dataType: 'json',
-        type: 'POST',
-        data: {
-          net: JSON.stringify(netData),
-          net_name: this.state.net_name
-        },
-        success : function (response) {
-          if (response.result == 'success'){
-            var url = 'http://fabrik.cloudcv.org/caffe/load?id='+response.id;
-            this.modalHeader = 'Your model url is:';
-            this.modalContent = (<a href={url}>{url}</a>);
-            this.openModal();
-          } else if (response.result == 'error') {
-            this.addError(response.error);
-          }
-          this.setState({ load: false });
-        }.bind(this),
-        error() {
-          this.setState({ load: false });
+    let netData = this.state.net;
+    this.setState({ load: true });
+
+    $.ajax({
+      url: '/save',
+      dataType: 'json',
+      type: 'POST',
+      data: {
+        net: JSON.stringify(netData),
+        net_name: this.state.net_name,
+        user_id: UserProfile.getUserId()
+      },
+      success : function (response) {
+        if (response.result == 'success') {
+          var url = 'http://localhost:8000/load?id=' + response.id;
+          this.modalHeader = 'Your model url is';
+          this.modalContent = (<a href={url}>{url}</a>);
+          this.openModal();
         }
-      });
-    }.bind(this));
+        else if (response.result == 'error') {
+          this.addError(response.error);
+        }
+        this.setState({ load: false });
+      }.bind(this),
+      error() {
+        this.setState({ load: false });
+      }
+    });
   }
   componentWillMount(){
     var url = window.location.href;
@@ -788,29 +883,42 @@ class Content extends React.Component {
     );
     if ('id' in urlParams){
       this.loadDb(urlParams['id']);
+      this.waitForConnection (this.onSocketConnect, 1000);
+      this.setState({
+        isShared: true,
+        networkId: urlParams['id']
+      })
     }
   }
   loadDb(id) {
+    const socket = this.createSocket('ws://' + window.location.host + '/ws/connect/?id=' + id);
+    this.setState({
+      socket: socket ,
+      load: true
+    });
+
     this.dismissAllErrors();
-    const formData = new FormData();
-    formData.append('proto_id', id);
     $.ajax({
-      url: '/caffe/load',
+      url: '/load',
       dataType: 'json',
       type: 'POST',
-      data: formData,
-      processData: false,  // tell jQuery not to process the data
-      contentType: false,
+      data: {
+        proto_id: id
+      },
       success: function (response) {
         if (response.result === 'success'){
           this.initialiseImportedNet(response.net,response.net_name);
           if (Object.keys(response.net).length){
             this.calculateParameters(response.net);
           }
-        } else if (response.result === 'error'){
+        }
+        else if (response.result === 'error') {
           this.addError(response.error);
         }
-        this.setState({ load: false });
+        this.setState({
+          load: false,
+          isShared: true
+        });
       }.bind(this),
       error() {
         this.setState({ load: false });

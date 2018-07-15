@@ -5,13 +5,29 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 
 
-class ModelExport(models.Model):
+class Network(models.Model):
     name = models.CharField(max_length=100)
-    id = models.CharField(max_length=20, primary_key=True)
     network = JSONField()
-    createdOn = models.DateField(auto_now_add=True)
-    updatedOn = models.DateField(auto_now_add=True)
-    user = models.ForeignKey(User, blank=True, null=True)
+    author = models.ForeignKey(User, blank=True, null=True)
+    public_sharing = models.BooleanField(default=False)
+    created_on = models.DateField(auto_now_add=True)
+    updated_on = models.DateField(auto_now_add=True)
 
     def __unicode__(self):
-        return self.id
+        return self.name
+
+
+class SharedWith(models.Model):
+    ACCESS_PRIVILEGE = (
+        ('E', 'Can Edit'),
+        ('V', 'Can View'),
+        ('C', 'Can Comment')
+    )
+    network = models.ForeignKey(Network)
+    user = models.ForeignKey(User)
+    access_privilege = models.CharField(max_length=1, choices=ACCESS_PRIVILEGE)
+    created_on = models.DateField(auto_now_add=True)
+    updated_on = models.DateField(auto_now_add=True)
+
+    def __unicode__(self):
+        return self.user.username

@@ -24,7 +24,6 @@ class Login extends React.Component {
       }.bind(this),
       error: function () {
         this.setState({ loginState: false });
-        this.addError("Error occurred while logging in");
       }.bind(this)
     });
   }
