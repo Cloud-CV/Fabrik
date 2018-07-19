@@ -7,7 +7,6 @@ from django.contrib.postgres.fields import JSONField
 
 class Network(models.Model):
     name = models.CharField(max_length=100)
-    network = JSONField()
     author = models.ForeignKey(User, blank=True, null=True)
     public_sharing = models.BooleanField(default=False)
     created_on = models.DateField(auto_now_add=True)
@@ -15,6 +14,15 @@ class Network(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class NetworkVersion(models.Model):
+    network = models.ForeignKey(Network)
+    network_def = JSONField()
+    tag = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.id
 
 
 class SharedWith(models.Model):

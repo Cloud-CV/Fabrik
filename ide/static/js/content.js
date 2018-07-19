@@ -13,6 +13,7 @@ import Login from './login';
 import ImportTextbox from './importTextbox';
 import UrlImportModal from './urlImportModal';
 import UserProfile from './UserProfile';
+import UpdateHistoryModal from './updateHistoryModal';
 import $ from 'jquery'
 
 const infoStyle = {
@@ -36,6 +37,7 @@ class Content extends React.Component {
     this.state = {
       net: {},
       net_name: 'Untitled',
+      networkId: 0,
       draggingLayer: null,
       selectedLayer: null,
       hoveredLayer: null,
@@ -83,6 +85,7 @@ class Content extends React.Component {
     this.zooModal = this.zooModal.bind(this);
     this.textboxModal = this.textboxModal.bind(this);
     this.urlModal = this.urlModal.bind(this);
+    this.updateHistoryModal =this.updateHistoryModal.bind(this);
     this.setModelConfig = this.setModelConfig.bind(this);
     this.setModelFramework = this.setModelFramework.bind(this);
     this.setModelUrl = this.setModelUrl.bind(this);
@@ -124,11 +127,12 @@ class Content extends React.Component {
     // message received on socket
     let data = JSON.parse(message['data']);
     let rebuildNet = false;
-    let nextLayerId = data['nextLayerId'];
+    let nextLayerId = this.state.nextLayerId;
 
     if (data['action'] == 'AddLayer') {
       rebuildNet = true;
     }
+    nextLayerId = data['nextLayerId'];
 
     this.setState({
       net: data['net'],
@@ -159,17 +163,30 @@ class Content extends React.Component {
       }, interval);
     }
   }
-  performSharedUpdate(net, action='UpdateParam', nextLayerId) {
+  performSharedUpdate(net, action='UpdateParam', nextLayerId=this.state.nextLayerId) {
     // method to handle pre-processing of message before sending
     // through a socket based on type of action, will be extended further
     // as per requirement of message types.
-    if (action == 'UpdateParam' || action == 'DeleteLayer' || action == 'AddLayer') {
-      this.sendSocketMessage({
-        net: net,
-        nextLayerId: nextLayerId,
-        action: action
-      });
+    let msg = '';
+    if(action == 'UpdateParam') {
+      msg = 'Layer parameter updated';
     }
+    else if (action == 'AddLayer') {
+      msg = 'New layer added'
+    }
+    else if (action == 'DeleteLayer') {
+      msg = 'Existing layer deleted'
+    }
+    else {
+      msg = 'Add a new comment'
+    }
+
+    this.sendSocketMessage({
+      net: net,
+      nextLayerId: nextLayerId,
+      action: action,
+      message: msg
+    });
   }
   openModal() {
     this.setState({ modalIsOpen: true });
@@ -436,6 +453,7 @@ class Content extends React.Component {
   calculateParameters(net) {
     // Iterate over model's each layer & separately add the contribution of each layer
     var totalParameters = 0;
+
     Object.keys(net).sort().forEach(layerId => {
       const layer = net[layerId];
       net[layerId]['info']['parameters'] = this.getLayerParameters(layer, net);
@@ -498,6 +516,10 @@ class Content extends React.Component {
     this.exportPrep(function(netData) {
       Object.keys(netData).forEach(layerId => {
         delete netData[layerId].state;
+        if (netData[layerId]['comments']) {
+          // not adding comments as part of export parameters of net
+          delete netData[layerId].comments;
+        }
       });
 
       const url = {'caffe': '/caffe/export', 'keras': '/keras/export', 'tensorflow': '/tensorflow/export'}
@@ -881,17 +903,33 @@ class Content extends React.Component {
       urlParams[$1] = $3;
       }
     );
+
     if ('id' in urlParams){
-      this.loadDb(urlParams['id']);
-      this.waitForConnection (this.onSocketConnect, 1000);
-      this.setState({
-        isShared: true,
-        networkId: urlParams['id']
-      })
+      if ('version' in urlParams) {
+        this.loadDb(urlParams['id'], urlParams['version']);
+        this.setState({
+          isShared: true,
+          networkId: parseInt(urlParams['id'])
+        });
+      }
+      else {
+        this.loadDb(urlParams['id']);
+        this.waitForConnection (this.onSocketConnect, 1000);
+        this.setState({
+          isShared: true,
+          networkId: parseInt(urlParams['id'])
+        });
+      }
     }
   }
-  loadDb(id) {
-    const socket = this.createSocket('ws://' + window.location.host + '/ws/connect/?id=' + id);
+  loadDb(id, version_id = null) {
+    // in case model is getting loaded from history disable sending updates
+    // Note: this needs to be improved when handling conflict resolution to avoid
+    // inconsistent states of model
+    let socket = null;
+    if (version_id == null) {
+      socket = this.createSocket('ws://' + window.location.host + '/ws/connect/?id=' + id);
+    }
     this.setState({
       socket: socket ,
       load: true
@@ -903,10 +941,14 @@ class Content extends React.Component {
       dataType: 'json',
       type: 'POST',
       data: {
-        proto_id: id
+        proto_id: id,
+        version_id: version_id
       },
       success: function (response) {
         if (response.result === 'success'){
+          // while loading a model ensure paramete intialisation
+          // for UI show/hide is not executed, it leads to inconsistent
+          // data which cannot be used further
           this.initialiseImportedNet(response.net,response.net_name);
           if (Object.keys(response.net).length){
             this.calculateParameters(response.net);
@@ -986,6 +1028,34 @@ class Content extends React.Component {
                           addError={this.addError}
                         />;
     this.openModal();
+  }
+  updateHistoryModal() {
+    $.ajax({
+      url: '/model_history',
+      dataType: 'json',
+      type: 'POST',
+      data: {
+        net_id: this.state.networkId
+      },
+      success : function (response) {
+        if (response.result == 'success') {
+          this.modalHeader = 'Model update history';
+          this.modalContent = <UpdateHistoryModal
+                                networkId={this.state.networkId}
+                                modelHistory={response.data}
+                                addError={this.addError}
+                              />;
+          this.openModal();
+        }
+        else if (response.result == 'error') {
+          this.addError(response.error);
+        }
+        this.setState({ load: false });
+      }.bind(this),
+      error() {
+        this.setState({ load: false });
+      }
+    });
   }
   handleClick(event) {
     event.preventDefault();
@@ -1077,6 +1147,7 @@ class Content extends React.Component {
               zooModal={this.zooModal}
               textboxModal={this.textboxModal}
               urlModal={this.urlModal}
+              updateHistoryModal={this.updateHistoryModal}
              />
              <h5 className="sidebar-heading">LOGIN</h5>
              <Login setUserId={this.setUserId}></Login>
@@ -1125,6 +1196,9 @@ class Content extends React.Component {
             draggingLayer={this.state.draggingLayer}
             setDraggingLayer={this.setDraggingLayer}
             selectedLayer={this.state.selectedLayer}
+            socket={this.state.socket}
+            performSharedUpdate={this.performSharedUpdate}
+            isShared={this.state.isShared}
           />
           <SetParams
             net={this.state.net}

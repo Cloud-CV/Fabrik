@@ -236,10 +236,12 @@ class Canvas extends React.Component {
     event.preventDefault();
   }
   clickLayerEvent(event, layerId) { // happens when layer is clicked and also dragged
-    if (this.clickOrDraggedLayer === 0) {
-      this.props.changeSelectedLayer(layerId); // clicked
-    } else if (this.clickOrDraggedLayer === 1) {
-      this.clickOrDraggedLayer = 0; // dragged
+    if (event.target.tagName.toLowerCase() == 'div') {
+      if (this.clickOrDraggedLayer === 0) {
+        this.props.changeSelectedLayer(layerId); // clicked
+      } else if (this.clickOrDraggedLayer === 1) {
+        this.clickOrDraggedLayer = 0; // dragged
+      }
     }
     event.stopPropagation();
   }
@@ -419,7 +421,10 @@ class Canvas extends React.Component {
             left={layer.state.left}
             click={this.clickLayerEvent}
             hover={this.hoverLayerEvent}
-
+            layer={layer}
+            net={this.props.net}
+            performSharedUpdate={this.props.performSharedUpdate}
+            isShared={this.props.isShared}
           />
         );
       }
@@ -511,7 +516,10 @@ Canvas.propTypes = {
   totalParameters: React.PropTypes.number,
   setDraggingLayer: React.PropTypes.func,
   draggingLayer: React.PropTypes.string,
-  selectedLayer: React.PropTypes.string
+  selectedLayer: React.PropTypes.string,
+  socket: React.PropTypes.object,
+  performSharedUpdate: React.PropTypes.func,
+  isShared: React.PropTypes.bool
 };
 
 export default Canvas;

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import Client
 from django.contrib.auth.models import User
-from caffe_app.models import Network
+from caffe_app.models import Network, NetworkVersion
 
 
 class SaveToDBTest(unittest.TestCase):
@@ -28,8 +28,11 @@ class SaveToDBTest(unittest.TestCase):
         u_1.save()
         u_2 = User(id=2, username='user_2')
         u_2.save()
-        model = Network(name='net', network={})
+        model = Network(name='net')
         model.save()
+        model_version = NetworkVersion(network=model, network_def={})
+        model_version.save()
+
         response = self.client.post(
             reverse('saveDB'),
             {'net': '{"net": "testnet"}', 'net_name': 'name'})

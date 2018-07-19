@@ -3,12 +3,13 @@ import sys
 import yaml
 
 from yaml import safe_load
-from caffe_app.models import Network
+from caffe_app.models import Network, NetworkVersion
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from utils.shapes import get_shapes, get_layer_shape, handle_concat_layer
+from django.db.models import Max
 
 
 def index(request):
@@ -88,19 +89,24 @@ def save_to_db(request):
         net = request.POST.get('net')
         net_name = request.POST.get('net_name')
         user_id = request.POST.get('user_id')
+        public_sharing = True
+        user = None
         if net_name == '':
             net_name = 'Net'
         try:
             # making model sharing public by default for now
             # TODO: Prvilege on Sharing
-            public_sharing = True
-            user = None
             if user_id:
                 user_id = int(user_id)
                 user = User.objects.get(id=user_id)
 
-            model = Network(name=net_name, network=net, public_sharing=public_sharing, author=user)
+            # create a new model on share event
+            model = Network(name=net_name, public_sharing=public_sharing, author=user)
             model.save()
+            # create first version of model
+            model_version = NetworkVersion(network=model, network_def=net)
+            model_version.tag = 'Model created'
+            model_version.save()
 
             return JsonResponse({'result': 'success', 'id': model.id})
         except:
@@ -113,7 +119,21 @@ def load_from_db(request):
         if 'proto_id' in request.POST:
             try:
                 model = Network.objects.get(id=int(request.POST['proto_id']))
-                net = safe_load(model.network)
+                version_id = None
+
+                if 'version_id' in request.POST and request.POST['version_id'] != '':
+                    # added for loading any previous version of model
+                    version_id = int(request.POST['version_id'])
+                else:
+                    # find the latest version of model where network id is proto_id
+                    version_id_dict = NetworkVersion.objects.filter(network=model) \
+                                        .values('network').annotate(version_id=Max('id')) \
+                                        .order_by()
+                    version_id = version_id_dict[0]['version_id']
+
+                # fetch the required version of model
+                model_version = NetworkVersion.objects.get(id=version_id)
+                net = safe_load(model_version.network_def)
 
                 # authorizing the user for access to model
                 if not model.public_sharing:
@@ -126,3 +146,26 @@ def load_from_db(request):
 
     if request.method == 'GET':
         return index(request)
+
+
+@csrf_exempt
+def fetch_model_history(request):
+    if request.method == 'POST':
+        try:
+            network_id = int(request.POST['net_id'])
+            network = Network.objects.get(id=network_id)
+            network_versions = NetworkVersion.objects.filter(network=network)
+
+            modelHistory = {}
+            for version in network_versions:
+                modelHistory[version.id] = version.tag
+
+            return JsonResponse({
+                'result': 'success',
+                'data': modelHistory
+            })
+        except Exception:
+            return JsonResponse({
+                'result': 'error',
+                'error': 'Unable to load model history'
+            })

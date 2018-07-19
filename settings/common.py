@@ -112,7 +112,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
             # replace redis hostname to localhost if running on local system
-            "hosts": [("localhost", 6379)],
+            "hosts": [("redis", 6379)],
             "prefix": u'fabrik:',
         },
         "ROUTING": "ide.routing.channel_routing",

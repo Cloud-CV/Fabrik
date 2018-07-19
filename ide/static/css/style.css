@@ -614,6 +614,91 @@ button.url-import-modal-button {
   line-height: 20px;
 }
 
+/* Tooltip text */
+.commentTooltiptext {
+   visibility: hidden;
+   width: 150px;
+   height: 60px;
+   background-color: #555;
+   color: #fff;
+   padding: 5px 0;
+
+   /* Position the tooltip text */
+   position: absolute;
+   right: -170px;
+   margin-left: -60px;
+   z-index: 2;
+   font-size: 12px;
+
+   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+   transition: 0.3s;
+}
+
+.commentTooltiptext:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.commentTooltiptext {
+   visibility: visible;
+   opacity: 1;
+}
+
+
+/* Tooltip text */
+.addCommentTooltiptext {
+   visibility: hidden;
+   width: 250px;
+   height: auto;
+   background-color: #555;
+   color: #fff;
+   padding: 5px 0;
+
+   /* Position the tooltip text */
+   position: absolute;
+   right: -255px;
+   z-index: 9999;
+   font-size: 12px;
+
+   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+   transition: 0.3s;
+}
+
+.addCommentTooltiptext:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+/* Tooltip arrow */
+.addCommentTooltiptext::after {
+   content: "";
+   position: absolute;
+   top: 10%;
+   left: -10px;
+   margin-left: -5px;
+   border-width: 8px;
+   border-style: solid;
+   border-color: transparent #555 transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.addCommentTooltiptext {
+   visibility: visible;
+   opacity: 1;
+}
+
+.CommentTextarea {
+      width: 90%;
+      height: 85px;
+      padding: 7px 14px;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      background-color: #f8f8f8;
+      resize: none;
+  }
+
+
 .layer{
   font-size: 22px;
   width: 130px;
