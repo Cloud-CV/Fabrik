@@ -425,6 +425,7 @@ class Canvas extends React.Component {
             net={this.props.net}
             performSharedUpdate={this.props.performSharedUpdate}
             isShared={this.props.isShared}
+            changeCommentOnLayer={this.props.changeCommentOnLayer}
           />
         );
       }
@@ -519,7 +520,8 @@ Canvas.propTypes = {
   selectedLayer: React.PropTypes.string,
   socket: React.PropTypes.object,
   performSharedUpdate: React.PropTypes.func,
-  isShared: React.PropTypes.bool
+  isShared: React.PropTypes.bool,
+  changeCommentOnLayer: React.PropTypes.func
 };
 
 export default Canvas;

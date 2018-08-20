@@ -2,25 +2,6 @@ import React from 'react';
 import data from './data';
 import CommentTooltip from './commentTooltip'
 import AddCommentModal from './addCommentModal'
-//import Modal from 'react-modal';
-/*
-const infoStyle = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : '60%',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    borderRadius          : '8px',
-    width                 : '500px',
-    height                : '220px',
-    backgroundColor       : '#555'
-  },
-  overlay: {
-    zIndex                : 100
-  }
-};*/
 
 class Layer extends React.Component {
   constructor(props) {
@@ -31,6 +12,7 @@ class Layer extends React.Component {
     this.onAddComment = this.onAddComment.bind(this);
     this.onCloseCommentModal = this.onCloseCommentModal.bind(this);
     this.doSharedUpdate = this.doSharedUpdate.bind(this);
+    this.openCommentSidebar = this.openCommentSidebar.bind(this);
   }
   componentDidMount() {
     instance.addLayerEndpoints(this.props.id,
@@ -54,18 +36,20 @@ class Layer extends React.Component {
   doSharedUpdate() {
     this.props.performSharedUpdate(this.props.net, 'AddComment');
   }
+  openCommentSidebar() {
+    this.props.changeCommentOnLayer(this.props.id);
+  }
   render() {
     let comments = [];
     let addCommentModal = null;
     let commentButton = null;
-    if (this.props.layer['comments']) {
-      for (var i=0;i<this.props.layer['comments'].length;i++) {
-        comments.push(<CommentTooltip
-                          key={i}
-                          comment={this.props.layer['comments'][i]}
+    if ('comments' in this.props.layer && this.props.layer['comments'].length > 0) {
+      comments = (<CommentTooltip
+                          comments={this.props.layer['comments']}
                           top={this.props.top}
-                          index={i}/>);
-      }
+                          doSharedUpdate = {this.doSharedUpdate}
+                          openCommentSidebar = {this.openCommentSidebar}
+                          />);
     }
     if (this.state.addCommentModalIsOpen) {
       addCommentModal = (<AddCommentModal
@@ -74,7 +58,7 @@ class Layer extends React.Component {
                                   doSharedUpdate={this.doSharedUpdate}/>);
     }
 
-    if (this.props.isShared) {
+    if (this.props.isShared && comments.length < 1) {
       commentButton = (<a style={{color: 'white', position: 'absolute', top: '-5px', right: '-1px'}}
                           onClick={(event) => this.onAddComment(event)}>
                             <span className="glyphicon glyphicon-comment"
@@ -99,7 +83,7 @@ class Layer extends React.Component {
       >
           {commentButton}
           {comments}
-          { addCommentModal }
+          {addCommentModal}
         {data[this.props.type].name}
       </div>
     );
@@ -117,7 +101,8 @@ Layer.propTypes = {
   layer: React.PropTypes.object,
   net: React.PropTypes.object,
   performSharedUpdate: React.PropTypes.func,
-  isShared: React.PropTypes.bool
+  isShared: React.PropTypes.bool,
+  changeCommentOnLayer: React.PropTypes.func
 };
 
 export default Layer;

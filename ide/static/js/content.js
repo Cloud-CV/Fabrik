@@ -14,6 +14,7 @@ import ImportTextbox from './importTextbox';
 import UrlImportModal from './urlImportModal';
 import UserProfile from './UserProfile';
 import UpdateHistoryModal from './updateHistoryModal';
+import CommentSidebar from './CommentSidebar';
 import $ from 'jquery'
 
 const infoStyle = {
@@ -40,6 +41,7 @@ class Content extends React.Component {
       networkId: 0,
       draggingLayer: null,
       selectedLayer: null,
+      commentOnLayer: null,
       hoveredLayer: null,
       nextLayerId: 0,
       rebuildNet: false,
@@ -108,6 +110,7 @@ class Content extends React.Component {
     this.clickEvent = false;
     this.handleClick = this.handleClick.bind(this);
     this.performSharedUpdate = this.performSharedUpdate.bind(this);
+    this.changeCommentOnLayer = this.changeCommentOnLayer.bind(this);
   }
   createSocket(url) {
     return new WebSocket(url);
@@ -225,6 +228,11 @@ class Content extends React.Component {
     if (this.state.isShared) {
       this.performSharedUpdate(net, 'AddLayer', (this.state.nextLayerId + 1));
     }
+  }
+  changeCommentOnLayer(layerId) {
+    this.setState({
+      commentOnLayer: layerId
+    });
   }
   changeSelectedLayer(layerId) {
     const net = this.state.net;
@@ -1199,6 +1207,7 @@ class Content extends React.Component {
             socket={this.state.socket}
             performSharedUpdate={this.performSharedUpdate}
             isShared={this.state.isShared}
+            changeCommentOnLayer={this.changeCommentOnLayer}
           />
           <SetParams
             net={this.state.net}
@@ -1211,6 +1220,12 @@ class Content extends React.Component {
             copyTrain={this.copyTrain}
             trainOnly={this.trainOnly}
             updateLayerWithShape={this.modifyLayer}
+          />
+          <CommentSidebar
+            net={this.state.net}
+            commentOnLayer={this.state.commentOnLayer}
+            changeCommentOnLayer={this.changeCommentOnLayer}
+            performSharedUpdate={this.performSharedUpdate}
           />
           <Tooltip
             id={'tooltip_text'}
