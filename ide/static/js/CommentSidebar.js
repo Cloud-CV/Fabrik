@@ -11,7 +11,7 @@ class CommentSidebar extends React.Component {
   }
   addComment() {
     this.props.net[this.props.commentOnLayer]['comments'].push(this.refs.comment_text.value);
-    this.props.performSharedUpdate(this.props.net, 'AddComment');
+    this.props.addSharedComment(this.props.commentOnLayer, this.refs.comment_text.value);
     this.refs.comment_text.value = '';
   }
   render() {
@@ -77,7 +77,7 @@ CommentSidebar.propTypes = {
   changeCommentOnLayer: React.PropTypes.func,
   commentOnLayer: React.PropTypes.string,
   net: React.PropTypes.object,
-  performSharedUpdate: React.PropTypes.func
+  addSharedComment: React.PropTypes.func
 };
 
 export default CommentSidebar;

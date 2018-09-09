@@ -33,8 +33,8 @@ class Layer extends React.Component {
     this.setState({ addCommentModalIsOpen: true })
     event.stopPropagation();
   }
-  doSharedUpdate() {
-    this.props.performSharedUpdate(this.props.net, 'AddComment');
+  doSharedUpdate(comment) {
+    this.props.addSharedComment(this.props.id, comment);
   }
   openCommentSidebar() {
     this.props.changeCommentOnLayer(this.props.id);
@@ -43,6 +43,17 @@ class Layer extends React.Component {
     let comments = [];
     let addCommentModal = null;
     let commentButton = null;
+    let highlightUser = null;
+    let highlightClass = '';
+    let highlightColor = '#000';
+
+    if(this.props.layer.highlight && this.props.layer.highlight.length > 0) {
+      highlightClass = 'highlighted';
+      highlightColor = this.props.layer.highlightColor[this.props.layer.highlightColor.length - 1];
+      highlightUser = (<div className="highlight-style" style={{background: highlightColor}}>
+                            {this.props.layer.highlight[this.props.layer.highlight.length - 1]}
+                        </div>);
+    }
     if ('comments' in this.props.layer && this.props.layer['comments'].length > 0) {
       comments = (<CommentTooltip
                           comments={this.props.layer['comments']}
@@ -68,12 +79,13 @@ class Layer extends React.Component {
     }
     return (
       <div
-        className={`layer ${this.props.class}`}
+        className={`layer ${this.props.class} ${highlightClass}`}
         id={this.props.id}
         style={{
           top:this.props.top,
           left:this.props.left,
-          background: data[this.props.type].color
+          background: data[this.props.type].color,
+          borderColor: highlightColor
         }}
         data-type={this.props.type}
         onClick={(event) => this.props.click(event, this.props.id)}
@@ -81,10 +93,11 @@ class Layer extends React.Component {
         data-tip='tooltip'
         data-for='getContent'
       >
-          {commentButton}
-          {comments}
-          {addCommentModal}
+        {commentButton}
+        {comments}
+        {addCommentModal}
         {data[this.props.type].name}
+        {highlightUser}
       </div>
     );
   }
@@ -100,7 +113,7 @@ Layer.propTypes = {
   hover: React.PropTypes.func,
   layer: React.PropTypes.object,
   net: React.PropTypes.object,
-  performSharedUpdate: React.PropTypes.func,
+  addSharedComment: React.PropTypes.func,
   isShared: React.PropTypes.bool,
   changeCommentOnLayer: React.PropTypes.func
 };

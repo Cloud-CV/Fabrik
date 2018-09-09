@@ -11,7 +11,9 @@ var UserProfile = (function() {
   };
 
   var getUsername = function() {
-    return username;
+    if (username)
+      return username;
+    return 'Kafka';
   };
 
   var setUsername = function(name) {

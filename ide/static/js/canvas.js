@@ -423,7 +423,7 @@ class Canvas extends React.Component {
             hover={this.hoverLayerEvent}
             layer={layer}
             net={this.props.net}
-            performSharedUpdate={this.props.performSharedUpdate}
+            addSharedComment={this.props.addSharedComment}
             isShared={this.props.isShared}
             changeCommentOnLayer={this.props.changeCommentOnLayer}
           />
@@ -519,7 +519,7 @@ Canvas.propTypes = {
   draggingLayer: React.PropTypes.string,
   selectedLayer: React.PropTypes.string,
   socket: React.PropTypes.object,
-  performSharedUpdate: React.PropTypes.func,
+  addSharedComment: React.PropTypes.func,
   isShared: React.PropTypes.bool,
   changeCommentOnLayer: React.PropTypes.func
 };

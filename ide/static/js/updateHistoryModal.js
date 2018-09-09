@@ -9,19 +9,38 @@ class UpdateHistoryModal extends React.Component {
 
     Object.keys(this.props.modelHistory).sort().reverse().forEach((versionId, index) => {
       let url = 'http://localhost:8000/load?id=' + this.props.networkId + '&version=' + versionId;
-      let link = (<tr key={versionId}>
-                    <td>{index + 1}</td>
-                    <td>
-                      {this.props.modelHistory[versionId]}
-                    </td>
-                    <td>
-                      <a id={versionId} href={url}>
-                        <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                      </a>
-                    </td>
-                  </tr>);
+      let msg = '';
 
-      data.push(link);
+      if(this.props.modelHistory[versionId] == 'AddComment') {
+        msg = 'Add a comment on layer';
+      }
+      else if(this.props.modelHistory[versionId] == 'AddLayer') {
+        msg = 'New layer added';
+      }
+      else if(this.props.modelHistory[versionId] == 'DeleteLayer') {
+        msg = 'Deleted existing layer';
+      }
+      else if(this.props.modelHistory[versionId] == 'UpdateParam') {
+        msg = 'Updated value of parameter';
+      }
+      else if(this.props.modelHistory[versionId] == 'ModelShared') {
+        msg = 'Shared Model';
+      }
+
+      if (this.props.modelHistory[versionId] != 'CheckpointCreated') {
+        let link = (<tr key={versionId}>
+                      <td>{index + 1}</td>
+                      <td>
+                        {msg}
+                      </td>
+                      <td>
+                        <a id={versionId} href={url}>
+                          <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </a>
+                      </td>
+                    </tr>);
+        data.push(link);
+      }
     });
 
     return (

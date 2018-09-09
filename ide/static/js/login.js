@@ -20,6 +20,7 @@ class Login extends React.Component {
         if (response.result) {
           this.setState({ loginState: response.result });
           this.props.setUserId(response.user_id);
+          this.props.setUserName(response.username);
         }
       }.bind(this),
       error: function () {
@@ -37,6 +38,7 @@ class Login extends React.Component {
         if (response) {
           this.setState({ loginState: false });
           this.props.setUserId(null);
+          this.props.setUserName(null);
         }
       }.bind(this),
       error: function () {
@@ -74,7 +76,8 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
-  setUserId: React.PropTypes.func
+  setUserId: React.PropTypes.func,
+  setUserName: React.PropTypes.func
 };
 
 export default Login;

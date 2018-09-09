@@ -14,7 +14,7 @@ class CommentTooltip extends React.Component {
   }
   addComment() {
     this.props.comments.push(this.refs.comment_text.value);
-    this.props.doSharedUpdate();
+    this.props.doSharedUpdate(this.refs.comment_text.value);
   }
   render() {
     let top=0;

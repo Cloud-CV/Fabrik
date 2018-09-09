@@ -16,6 +16,7 @@ class SetParams extends React.Component {
     let layer = net[this.props.selectedLayer];
     layer = JSON.parse(JSON.stringify(layer));
     layer.props[prop] = value;
+    this.props.performSharedUpdate(this.props.selectedLayer, prop, value, true);
     this.props.modifyLayer(layer);
   }
   changeParams(para, value) {
@@ -31,6 +32,7 @@ class SetParams extends React.Component {
         value = 0;
     }
     layer.params[para] = [value, false];
+    this.props.performSharedUpdate(this.props.selectedLayer, para, value, false);
     this.props.modifyLayer(this.props.adjustParameters(layer, para, value));
   }
   close() {
@@ -175,7 +177,8 @@ SetParams.propTypes = {
   selectedPhase: React.PropTypes.number,
   copyTrain: React.PropTypes.func,
   changeSelectedLayer: React.PropTypes.func,
-  updateLayerWithShape: React.PropTypes.func
+  updateLayerWithShape: React.PropTypes.func,
+  performSharedUpdate: React.PropTypes.func
 };
 
 export default SetParams;

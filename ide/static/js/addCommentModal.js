@@ -15,7 +15,7 @@ class AddCommentModal extends React.Component {
     }
     this.props.layer['comments'].push(this.refs.comment.value);
     this.props.onCloseCommentModal(event);
-    this.props.doSharedUpdate();
+    this.props.doSharedUpdate(this.refs.comment.value);
   }
 
   render() {
