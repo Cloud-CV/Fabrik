@@ -109,6 +109,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 8. Install node modules
 ```
 npm install
+npm install --save-dev json-loader
 sudo npm install -g webpack
 webpack --progress --watch --colors
 ```

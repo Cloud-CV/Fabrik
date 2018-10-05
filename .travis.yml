@@ -25,6 +25,7 @@ install:
   - nvm install stable
   - nvm use stable
   - npm install
+  - npm install json-loader
 
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$HOME/caffe/caffe/python

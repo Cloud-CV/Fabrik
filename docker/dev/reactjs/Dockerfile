@@ -24,6 +24,8 @@ RUN n stable
 
 RUN npm install
 
+RUN npm install --save-dev json-loader
+
 RUN npm install -g webpack@1.13.1
 
 CMD ["webpack", "--progress", "--watch", "--colors"]
