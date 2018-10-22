@@ -5,11 +5,11 @@ from django.conf import settings
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
-app = Celery('ide')
+app = Celery('app', backend='redis://localhost:6379/0', include=['ide.tasks'])
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.
-app.config_from_object('django.conf:settings')
+app.config_from_object('settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 

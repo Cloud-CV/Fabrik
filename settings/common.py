@@ -118,3 +118,5 @@ CHANNEL_LAYERS = {
         "ROUTING": "ide.routing.channel_routing",
     },
 }
+
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'

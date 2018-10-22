@@ -54,6 +54,7 @@ class Content extends React.Component {
       modelConfig: null,
       modelFramework: 'caffe',
       isShared: false,
+      isForked: false,
       socket: null,
       randomUserId: null,
       highlightColor: '#000000'
@@ -121,6 +122,7 @@ class Content extends React.Component {
     this.addSharedComment = this.addSharedComment.bind(this);
     this.changeCommentOnLayer = this.changeCommentOnLayer.bind(this);
     this.getRandomColor = this.getRandomColor.bind(this);
+    this.downloadModel = this.downloadModel.bind(this);
   }
   getRandomColor() {
     var rint = Math.round(0xffffff * Math.random());
@@ -145,7 +147,15 @@ class Content extends React.Component {
     let data = JSON.parse(message['data']);
     const net = this.state.net;
 
-    if(data['action'] == 'UpdateHighlight' && data['randomId'] != this.state.randomId) {
+    if(data['action'] == 'ExportNet') {
+      if(data['result'] == 'success') {
+        this.downloadModel(data);
+      }
+      else {
+        this.addError(data['error']);
+      }
+    }
+    else if(data['action'] == 'UpdateHighlight' && data['randomId'] != this.state.randomId) {
       let addHighlightToId = data['addHighlightTo'];
       let removeHighlightFromId = data['removeHighlightFrom'];
       let username = data['username'];
@@ -279,6 +289,33 @@ class Content extends React.Component {
       randomId: this.state.randomId
     })
   }
+  downloadModel(response) {
+    const downloadAnchor = document.getElementById('download');
+    downloadAnchor.download = response.name;
+    downloadAnchor.href = response.url;
+    downloadAnchor.click();
+    if ('customLayers' in response && response.customLayers.length !== 0) {
+      this.addInfo(
+        <span>
+          <span>This network uses custom layers, to download click on: </span>
+          {response.customLayers.map((layer, index) => {
+            return (
+              <span key={index}>
+                <a onClick={function() {
+                  downloadAnchor.download = layer.filename;
+                  downloadAnchor.href = layer.url;
+                  downloadAnchor.click();
+                }} style={{fontWeight: 'bold'}}>
+                  {layer.name}
+                </a>
+                {index != response.customLayers.length-1 && <span>, </span>}
+              </span>
+            );
+          })}
+        </span>
+      );
+    }
+  }
   openModal() {
     this.setState({ modalIsOpen: true });
   }
@@ -334,7 +371,7 @@ class Content extends React.Component {
     }
     this.setState({ net, nextLayerId: this.state.nextLayerId + 1, totalParameters: totalParameters });
     // if model is in RTC mode send updates to respective sockets
-    if (this.state.isShared && publishUpdate) {
+    if (this.state.isShared && !this.state.isForked && publishUpdate) {
       this.performSharedAdd(net[layerId], prevLayerId, nextLayerId + 1, layerId);
     }
   }
@@ -353,7 +390,7 @@ class Content extends React.Component {
       // css when layer is selected
       net[layerId].info.class = 'selected';
     }
-    if (this.state.isShared) {
+    if (this.state.isShared && !this.state.isForked) {
       this.addHighlightOnLayer(layerId, this.state.selectedLayer);
     }
     this.setState({ net, selectedLayer: layerId });
@@ -469,7 +506,7 @@ class Content extends React.Component {
     this.setState({ net, selectedLayer: null, nextLayerId: nextLayerId, totalParameters: totalParameters });
     // if model is in RTC mode send updates to respective sockets
     // to avoid infinite loop of deletion over multiple session
-    if (this.state.isShared && publishUpdate == true) {
+    if (this.state.isShared && !this.state.isForked && publishUpdate == true) {
       this.performSharedDelete(net, layerId, nextLayerId);
     }
   }
@@ -637,54 +674,14 @@ class Content extends React.Component {
         }
       });
 
-      const url = {'caffe': '/caffe/export', 'keras': '/keras/export', 'tensorflow': '/tensorflow/export'}
-      this.setState({ load: true });
-      $.ajax({
-        url: url[framework],
-        dataType: 'json',
-        type: 'POST',
-        data: {
-          net: JSON.stringify(netData),
-          net_name: this.state.net_name
-        },
-        success : function (response) {
-
-          if (response.result == 'success') {
-            const downloadAnchor = document.getElementById('download');
-            downloadAnchor.download = response.name;
-            downloadAnchor.href = response.url;
-            downloadAnchor.click();
-            if ('customLayers' in response && response.customLayers.length !== 0) {
-              this.addInfo(
-                <span>
-                  <span>This network uses custom layers, to download click on: </span>
-                  {response.customLayers.map((layer, index) => {
-                    return (
-                      <span key={index}>
-                        <a onClick={function() {
-                          downloadAnchor.download = layer.filename;
-                          downloadAnchor.href = layer.url;
-                          downloadAnchor.click();
-                        }} style={{fontWeight: 'bold'}}>
-                          {layer.name}
-                        </a>
-                        {index != response.customLayers.length-1 && <span>, </span>}
-                      </span>
-                    );
-                  })}
-                </span>
-              );
-            }
-          } else if (response.result == 'error') {
-            this.addError(response.error);
-          }
-          this.setState({ load: false });
-        }.bind(this),
-        error : function () {
-          this.setState({ load: false });
-          this.addError("Error");
-        }.bind(this)
+      this.sendSocketMessage({
+        framework: framework,
+        net: JSON.stringify(netData),
+        action: 'ExportNet',
+        net_name: this.state.net_name,
+        randomId: this.state.randomId
       });
+
     }.bind(this));
   }
   importNet(framework, id) {
@@ -1020,11 +1017,18 @@ class Content extends React.Component {
       urlParams[$1] = $3;
       }
     );
+
+    // setting up socket connection
+    let socket = this.createSocket('ws://' + window.location.host + '/ws/connect/?id=' + urlParams['id']);
+    this.setState({ socket: socket });
+    this.waitForConnection (this.onSocketConnect, 1000);
+
     if ('id' in urlParams){
       if ('version' in urlParams) {
         this.loadDb(urlParams['id'], urlParams['version']);
         this.setState({
           isShared: true,
+          isForked: true,
           networkId: parseInt(urlParams['id']),
           randomId: randomId,
           highlightColor: this.getRandomColor()
@@ -1032,7 +1036,6 @@ class Content extends React.Component {
       }
       else {
         this.loadDb(urlParams['id']);
-        this.waitForConnection (this.onSocketConnect, 1000);
         this.setState({
           isShared: true,
           networkId: parseInt(urlParams['id']),
@@ -1046,15 +1049,9 @@ class Content extends React.Component {
     // in case model is getting loaded from history disable sending updates
     // Note: this needs to be improved when handling conflict resolution to avoid
     // inconsistent states of model
-    let socket = null;
     let nextLayerId = this.state.nextLayerId;
-    if (version_id == null) {
-      socket = this.createSocket('ws://' + window.location.host + '/ws/connect/?id=' + id);
-    }
-    this.setState({
-      socket: socket ,
-      load: true
-    });
+
+    this.setState({ load: true });
 
     this.dismissAllErrors();
     $.ajax({
@@ -1323,6 +1320,7 @@ class Content extends React.Component {
             socket={this.state.socket}
             addSharedComment={this.addSharedComment}
             isShared={this.state.isShared}
+            isForked={this.state.isForked}
             changeCommentOnLayer={this.changeCommentOnLayer}
           />
           <SetParams

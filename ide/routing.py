@@ -7,7 +7,7 @@ from caffe_app.consumers import ws_connect, ws_disconnect, ws_receive
 ws_routing = [
     route('websocket.connect', ws_connect),
     route('websocket.receive', ws_receive),
-    route('websocket.disconnect', ws_disconnect),
+    route('websocket.disconnect', ws_disconnect)
 ]
 
 channel_routing = [

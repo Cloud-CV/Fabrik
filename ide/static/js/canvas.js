@@ -425,6 +425,7 @@ class Canvas extends React.Component {
             net={this.props.net}
             addSharedComment={this.props.addSharedComment}
             isShared={this.props.isShared}
+            isForked={this.props.isForked}
             changeCommentOnLayer={this.props.changeCommentOnLayer}
           />
         );
@@ -521,6 +522,7 @@ Canvas.propTypes = {
   socket: React.PropTypes.object,
   addSharedComment: React.PropTypes.func,
   isShared: React.PropTypes.bool,
+  isForked: React.PropTypes.bool,
   changeCommentOnLayer: React.PropTypes.func
 };
 

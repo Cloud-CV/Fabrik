@@ -5,6 +5,7 @@ from channels import Group
 from channels.auth import channel_session_user, channel_session_user_from_http
 from caffe_app.models import Network, NetworkVersion, NetworkUpdates
 from ide.views import get_network_version
+from ide.tasks import export_caffe_prototxt, export_keras_json
 
 
 def create_network_version(network, netObj):
@@ -67,10 +68,28 @@ def ws_receive(message):
     # param initialization
     data = yaml.safe_load(message['text'])
     action = data['action']
-    randomId = data['randomId']
-    networkId = message.channel_session['networkId']
 
-    if (action == 'UpdateHighlight'):
+    if ('randomId' in data):
+        randomId = data['randomId']
+
+    if ('networkId' in message.channel_session):
+        networkId = message.channel_session['networkId']
+
+    if (action == 'ExportNet'):
+        # async export call
+        framework = data['framework']
+        net = data['net']
+        net_name = data['net_name']
+        reply_channel = message.reply_channel.name
+
+        if (framework == 'caffe'):
+            export_caffe_prototxt.delay(net, net_name, reply_channel)
+        elif (framework == 'keras'):
+            export_keras_json.delay(net, net_name, False, reply_channel)
+        elif (framework == 'tensorflow'):
+            export_keras_json.delay(net, net_name, True, reply_channel)
+
+    elif (action == 'UpdateHighlight'):
         add_highlight_to = data['addHighlightTo']
         remove_highlight_from = data['removeHighlightFrom']
         user_id = data['userId']

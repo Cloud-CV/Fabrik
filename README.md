@@ -147,6 +147,11 @@ sudo npm install -g webpack
 webpack --progress --watch --colors
 ```
 
+9. To start celery worker
+```
+celery -A ide worker --app=ide.celery_app  --loglevel=info
+```
+
 
 ### Setup Authenticaton for Virtual Environment
 1. Go to Github Developer Applications and create a new application. [here](https://github.com/settings/developers)

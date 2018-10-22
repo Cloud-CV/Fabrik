@@ -17,6 +17,7 @@ def randomword(length):
 
 @csrf_exempt
 def export_to_tensorflow(request):
+    # Note : Remove the views for export by adding unittest for celery tasks
     response = export_json(request, is_tf=True)
     if isinstance(response, JsonResponse):
         return response

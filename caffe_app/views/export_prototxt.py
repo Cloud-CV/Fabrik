@@ -16,6 +16,7 @@ def randomword(length):
 
 @csrf_exempt
 def export_to_caffe(request):
+    # Note : Remove the views for export by adding unittest for celery tasks
     if request.method == 'POST':
         net = yaml.safe_load(request.POST.get('net'))
         net_name = request.POST.get('net_name')
