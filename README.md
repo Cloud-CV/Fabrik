@@ -152,6 +152,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 8. Install node modules
 ```
 npm install
+npm install --save-dev json-loader
 sudo npm install -g webpack
 webpack --progress --watch --colors
 ```
@@ -229,11 +230,13 @@ Models                                                                      | Ca
 [SqueezeNet](https://arxiv.org/pdf/1602.07360)                              |   √   |   ×   |     ×      |
 [DenseNet](https://arxiv.org/abs/1608.06993)                                |   √   |   ×   |     ×      |
 [AllCNN](https://arxiv.org/abs/1412.6806)                                   |   √   |   ×   |     ×      |
-[AlexNet](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks)                                 |   √   |   ×   |     ×      |
+[AlexNet](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks)                                 |   √   |   √   |     √      |
 [FCN32 Pascal](https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Long_Fully_Convolutional_Networks_2015_CVPR_paper.html) |   √   |   ×   |     ×      |
 [YoloNet](https://arxiv.org/abs/1506.02640)                                 |   √   |   √   |     √      |
 [Pix2Pix](https://github.com/phillipi/pix2pix)                              |   √   |   ×   |     ×      |
 [VQA](https://github.com/iamaaditya/VQA_Demo)                               |   √   |   √   |     √      |
+
+Note: For models that use a custom LRN layer (Alexnet), Keras expects the custom layer to be passed when it is loaded from json. LRN.py is located in keras_app/custom_layers. [Alexnet import for Keras](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/keras_custom_layer_usage.md)
 
 ### Documentation
 * [Using a Keras model exported from Fabrik](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/keras_json_usage_1.md)
@@ -243,6 +246,7 @@ Models                                                                      | Ca
 * [List of models tested with Fabrik](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/tested_models.md)
 * [Adding model to the Fabrik model zoo](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/adding_new_model.md)
 * [Adding new layers](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/adding_new_layers.md)
+* [Using custom layers with Keras](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/keras_custom_layer_usage.md)
 * [Linux installation walk-through](https://www.youtube.com/watch?v=zPgoben9D1w)
 
 ### License
