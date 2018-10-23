@@ -49,4 +49,9 @@ ADD . /code
 
 RUN pip install -r requirements/dev.txt
 
+RUN apt-get update && apt-get install -y supervisor
+
+COPY docker/prod/django/supervisor.conf /etc/supervisor/conf.d/default.conf
+
 EXPOSE 8000
+EXPOSE 8001

@@ -91,6 +91,15 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     ```
     sudo apt-get install redis-server
     ```
+    Replace celery result backend in settings/common.py line 122 with
+    ```
+    CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+    ```
+    Replace celery broker url and result backend hostname to ``` localhost ``` in ide/celery_app.py line 8 with
+    ```
+    broker='redis://redis:6379/0'
+    backend='redis://redis:6379/0'
+    ```
 
 5. If you have Caffe, Keras and Tensorflow already installed on your computer, skip this step
     * For Linux users

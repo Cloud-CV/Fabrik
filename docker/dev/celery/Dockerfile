@@ -48,5 +48,3 @@ WORKDIR /code
 ADD . /code
 
 RUN pip install -r requirements/dev.txt
-
-EXPOSE 8000

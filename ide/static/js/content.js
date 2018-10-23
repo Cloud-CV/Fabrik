@@ -145,6 +145,8 @@ class Content extends React.Component {
   onSocketMessage(message) {
     // message received on socket
     let data = JSON.parse(message['data']);
+    //let rebuildNet = false;
+    //let nextLayerId = this.state.nextLayerId;
     const net = this.state.net;
 
     if(data['action'] == 'ExportNet') {
@@ -991,7 +993,7 @@ class Content extends React.Component {
       },
       success : function (response) {
         if (response.result == 'success') {
-          var url = 'http://localhost:8000/load?id=' + response.id;
+          var url = 'http://' + window.location.host + ':80/load?id=' + response.id;
           this.modalHeader = 'Your model url is';
           this.modalContent = (<a href={url}>{url}</a>);
           this.openModal();
@@ -1019,6 +1021,7 @@ class Content extends React.Component {
     );
 
     // setting up socket connection
+
     let socket = this.createSocket('ws://' + window.location.host + '/ws/connect/?id=' + urlParams['id']);
     this.setState({ socket: socket });
     this.waitForConnection (this.onSocketConnect, 1000);

@@ -8,7 +8,7 @@ def check_login(request):
     try:
         user = User.objects.get(username=request.user.username)
         user_id = user.id
-        username = 'Kafka'
+        username = 'Anonymous'
 
         is_authenticated = user.is_authenticated()
         if (is_authenticated):

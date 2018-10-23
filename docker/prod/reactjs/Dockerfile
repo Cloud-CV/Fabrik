@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:16.04 as react
 
 RUN apt-get update -qq && apt-get install -y build-essential git curl libfontconfig
 
@@ -26,4 +26,8 @@ RUN npm install --save-dev json-loader
 
 RUN npm install -g webpack@1.13.1
 
-CMD ["webpack", "--progress", "--watch", "--colors"]
+RUN webpack
+
+FROM nginx:1.13-alpine
+COPY docker/prod/reactjs/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=react /code /code

@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^model_history', fetch_model_history, name='model-history'),
     url(r'^model_parameter/', calculate_parameter, name='calculate-parameter'),
     url(r'^layer_parameter/', fetch_layer_shape, name='fetch-layer-shape')
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + \
+    static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

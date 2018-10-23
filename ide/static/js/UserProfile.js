@@ -13,7 +13,7 @@ var UserProfile = (function() {
   var getUsername = function() {
     if (username)
       return username;
-    return 'Kafka';
+    return 'Anonymous';
   };
 
   var setUsername = function(name) {
