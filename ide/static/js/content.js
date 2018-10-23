@@ -9,8 +9,12 @@ import data from './data';
 import netLayout from './netLayout_vertical';
 import Modal from 'react-modal';
 import ModelZoo from './modelZoo';
+import Login from './login';
 import ImportTextbox from './importTextbox';
 import UrlImportModal from './urlImportModal';
+import UserProfile from './UserProfile';
+import UpdateHistoryModal from './updateHistoryModal';
+import CommentSidebar from './CommentSidebar';
 import $ from 'jquery'
 
 const infoStyle = {
@@ -34,8 +38,10 @@ class Content extends React.Component {
     this.state = {
       net: {},
       net_name: 'Untitled',
+      networkId: 0,
       draggingLayer: null,
       selectedLayer: null,
+      commentOnLayer: null,
       hoveredLayer: null,
       nextLayerId: 0,
       rebuildNet: false,
@@ -46,7 +52,12 @@ class Content extends React.Component {
       modalIsOpen: false,
       totalParameters: 0,
       modelConfig: null,
-      modelFramework: 'caffe'
+      modelFramework: 'caffe',
+      isShared: false,
+      isForked: false,
+      socket: null,
+      randomUserId: null,
+      highlightColor: '#000000'
     };
     this.addNewLayer = this.addNewLayer.bind(this);
     this.changeSelectedLayer = this.changeSelectedLayer.bind(this);
@@ -79,6 +90,7 @@ class Content extends React.Component {
     this.zooModal = this.zooModal.bind(this);
     this.textboxModal = this.textboxModal.bind(this);
     this.urlModal = this.urlModal.bind(this);
+    this.updateHistoryModal =this.updateHistoryModal.bind(this);
     this.setModelConfig = this.setModelConfig.bind(this);
     this.setModelFramework = this.setModelFramework.bind(this);
     this.setModelUrl = this.setModelUrl.bind(this);
@@ -87,22 +99,259 @@ class Content extends React.Component {
     this.calculateParameters = this.calculateParameters.bind(this);
     this.getLayerParameters = this.getLayerParameters.bind(this);
     this.updateLayerShape = this.updateLayerShape.bind(this);
+    this.createSocket = this.createSocket.bind(this);
+    this.onSocketConnect = this.onSocketConnect.bind(this);
+    this.sendSocketMessage = this.sendSocketMessage.bind(this);
+    this.onSocketMessage = this.onSocketMessage.bind(this);
+    this.onSocketOpen = this.onSocketOpen.bind(this);
+    this.onSocketError = this.onSocketError.bind(this);
+    this.waitForConnection = this.waitForConnection.bind(this);
+    this.setUserId = this.setUserId.bind(this);
+    this.getUserId = this.getUserId.bind(this);
+    this.getUserName = this.getUserName.bind(this);
+    this.setUserName = this.setUserName.bind(this);
     this.modalContent = null;
     this.modalHeader = null;
     // Might need to improve the logic of clickEvent
     this.clickEvent = false;
     this.handleClick = this.handleClick.bind(this);
+    this.performSharedUpdate = this.performSharedUpdate.bind(this);
+    this.performSharedAdd = this.performSharedAdd.bind(this);
+    this.performSharedDelete = this.performSharedDelete.bind(this);
+    this.addHighlightOnLayer = this.addHighlightOnLayer.bind(this);
+    this.addSharedComment = this.addSharedComment.bind(this);
+    this.changeCommentOnLayer = this.changeCommentOnLayer.bind(this);
+    this.getRandomColor = this.getRandomColor.bind(this);
+    this.downloadModel = this.downloadModel.bind(this);
+  }
+  getRandomColor() {
+    var rint = Math.round(0xffffff * Math.random());
+    return ('#0' + rint.toString(16)).replace(/^#0([0-9a-f]{6})$/i, '#$1');
+  }
+  createSocket(url) {
+    return new WebSocket(url);
+  }
+  onSocketConnect() {
+    // binder for socket
+    const socket = this.state.socket;
+    socket.onopen = this.onSocketOpen;
+    socket.onmessage = this.onSocketMessage;
+    socket.onerror = this.onSocketError;
+  }
+  onSocketOpen() {
+    // socket opening goes here
+    // console.log('socket opened for RTC....');
+  }
+  onSocketMessage(message) {
+    // message received on socket
+    let data = JSON.parse(message['data']);
+    //let rebuildNet = false;
+    //let nextLayerId = this.state.nextLayerId;
+    const net = this.state.net;
+
+    if(data['action'] == 'ExportNet') {
+      if(data['result'] == 'success') {
+        this.downloadModel(data);
+      }
+      else {
+        this.addError(data['error']);
+      }
+    }
+    else if(data['action'] == 'UpdateHighlight' && data['randomId'] != this.state.randomId) {
+      let addHighlightToId = data['addHighlightTo'];
+      let removeHighlightFromId = data['removeHighlightFrom'];
+      let username = data['username'];
+
+      if (addHighlightToId != null) {
+        if (('highlight' in net[addHighlightToId]) == false) {
+            net[addHighlightToId]['highlight'] = [];
+            net[addHighlightToId]['highlightColor'] = [];
+        }
+        net[addHighlightToId]['highlight'].push(username);
+        net[addHighlightToId]['highlightColor'].push(data['highlightColor'])
+      }
+      if (removeHighlightFromId != null) {
+        let index = net[removeHighlightFromId]['highlight'].indexOf(removeHighlightFromId);
+        net[removeHighlightFromId]['highlight'].splice(index, 1);
+        net[removeHighlightFromId]['highlightColor'].splice(index, 1);
+      }
+
+      this.setState({
+        net: net
+      });
+    }
+    else {
+      if (data['randomId'] != this.state.randomId) {
+        if(data['action'] == 'UpdateParam') {
+          if (data['isProp']) {
+            net[data['layerId']]['props'][data['param']] = data['value'];
+          }
+          else {
+            net[data['layerId']]['params'][data['param']][0] = data['value'];
+          }
+          this.setState({ net: net });
+        }
+        else if (data['action'] == 'AddLayer') {
+          this.addNewLayer(data['layer'], data['prevLayerId'], false);
+          this.changeNetStatus(true);
+        }
+        else if(data['action'] == 'DeleteLayer') {
+          this.deleteLayer(data['layerId'], false);
+        }
+        else if(data['action'] == 'AddComment') {
+          if (('comments' in net[data['layerId']]) == false) {
+            net[data['layerId']]['comments'] = [];
+          }
+          net[data['layerId']]['comments'].push(data['comment']);
+          this.setState({ net });
+        }
+      }
+    }
+  }
+  sendSocketMessage(message) {
+    // generalized method to send message to socket
+    const socket = this.state.socket;
+    socket.send(JSON.stringify(message));
+  }
+  onSocketError(error) {
+    // socket error handling goes here
+    this.addError(error);
+  }
+  waitForConnection(callback, interval=100) {
+    // delay hook used while creating a new socket
+    const socket = this.state.socket;
+    if (socket != null && socket.readyState === 1) {
+      callback();
+    }
+    else {
+      var that = this;
+      setTimeout(function () {
+          that.waitForConnection(callback, interval);
+      }, interval);
+    }
+  }
+  performSharedUpdate(layerId, param, value, isProp) {
+    // method to handle pre-processing of message before sending
+    // through a socket based on type of action, will be extended further
+    // as per requirement of message types.
+    let msg = '';
+    msg = 'Layer parameter updated';
+
+    this.sendSocketMessage({
+      layerId: layerId,
+      param: param,
+      value: value,
+      isProp: isProp,
+      action: 'UpdateParam',
+      message: msg,
+      nextLayerId: this.state.nextLayerId,
+      randomId: this.state.randomId
+    });
+  }
+  performSharedAdd(layer, prevLayerId, nextLayerId, layerId) {
+    let  msg = 'New layer added';
+
+    this.sendSocketMessage({
+      layer: layer,
+      prevLayerId: prevLayerId,
+      layerId: layerId,
+      action: 'AddLayer',
+      message: msg,
+      nextLayerId: nextLayerId,
+      randomId: this.state.randomId
+    })
+  }
+  performSharedDelete(net, layerId, nextLayerId) {
+    let  msg = 'Delete existing layer';
+
+    this.sendSocketMessage({
+      layerId: layerId,
+      nextLayerId: nextLayerId,
+      action: 'DeleteLayer',
+      message: msg,
+      randomId: this.state.randomId
+    })
+  }
+  addHighlightOnLayer(layerId, previousLayerId) {
+    this.sendSocketMessage({
+      addHighlightTo: layerId,
+      removeHighlightFrom: previousLayerId,
+      userId: this.getUserId(),
+      action: 'UpdateHighlight',
+      randomId: this.state.randomId,
+      highlightColor: this.state.highlightColor,
+      username: this.getUserName()
+    })
+  }
+  addSharedComment(layerId, comment) {
+    this.sendSocketMessage({
+      layerId: layerId,
+      comment: comment,
+      action: 'AddComment',
+      randomId: this.state.randomId
+    })
+  }
+  downloadModel(response) {
+    const downloadAnchor = document.getElementById('download');
+    downloadAnchor.download = response.name;
+    downloadAnchor.href = response.url;
+    downloadAnchor.click();
+    if ('customLayers' in response && response.customLayers.length !== 0) {
+      this.addInfo(
+        <span>
+          <span>This network uses custom layers, to download click on: </span>
+          {response.customLayers.map((layer, index) => {
+            return (
+              <span key={index}>
+                <a onClick={function() {
+                  downloadAnchor.download = layer.filename;
+                  downloadAnchor.href = layer.url;
+                  downloadAnchor.click();
+                }} style={{fontWeight: 'bold'}}>
+                  {layer.name}
+                </a>
+                {index != response.customLayers.length-1 && <span>, </span>}
+              </span>
+            );
+          })}
+        </span>
+      );
+    }
   }
   openModal() {
-    this.setState({modalIsOpen: true});
+    this.setState({ modalIsOpen: true });
   }
   closeModal() {
-    this.setState({modalIsOpen: false});
+    this.setState({ modalIsOpen: false });
   }
-  addNewLayer(layer) {
+  setUserId(user_id) {
+    UserProfile.setUserId(user_id);
+  }
+  getUserId() {
+    return UserProfile.getUserId();
+  }
+  setUserName(name) {
+    UserProfile.setUsername(name);
+  }
+  getUserName() {
+    return UserProfile.getUsername();
+  }
+  addNewLayer(layer, prevLayerId, publishUpdate=true) {
     const net = this.state.net;
     const layerId = `l${this.state.nextLayerId}`;
+    const nextLayerId = this.state.nextLayerId;
     var totalParameters = this.state.totalParameters;
+    // shared addition of layer connections
+    if (publishUpdate == false) {
+      if (Array.isArray(prevLayerId)) {
+        for (var i=0;i<prevLayerId.length;i++) {
+          net[prevLayerId[i]]['connection']['output'].push(layerId);
+        }
+      }
+      else
+        net[prevLayerId]['connection']['output'].push(layerId);
+    }
+
     net[layerId] = layer;
     // Parsing for integer parameters when new layers are added as by default all params are string
     // In case some parameters are missed please cover them too
@@ -123,6 +372,15 @@ class Content extends React.Component {
       totalParameters += net[layerId]['info']['parameters'];
     }
     this.setState({ net, nextLayerId: this.state.nextLayerId + 1, totalParameters: totalParameters });
+    // if model is in RTC mode send updates to respective sockets
+    if (this.state.isShared && !this.state.isForked && publishUpdate) {
+      this.performSharedAdd(net[layerId], prevLayerId, nextLayerId + 1, layerId);
+    }
+  }
+  changeCommentOnLayer(layerId) {
+    this.setState({
+      commentOnLayer: layerId
+    });
   }
   changeSelectedLayer(layerId) {
     const net = this.state.net;
@@ -133,6 +391,9 @@ class Content extends React.Component {
     if (layerId) {
       // css when layer is selected
       net[layerId].info.class = 'selected';
+    }
+    if (this.state.isShared && !this.state.isForked) {
+      this.addHighlightOnLayer(layerId, this.state.selectedLayer);
     }
     this.setState({ net, selectedLayer: layerId });
   }
@@ -212,23 +473,26 @@ class Content extends React.Component {
         net[outputId].connection.input.push(nextLayerId);
       });
 
+      const inputIds = [];
       (trainLayer.connection.input).forEach(inputId => {
         net[inputId].connection.output.push(nextLayerId);
+        inputIds.push(inputId)
       });
 
-      this.addNewLayer(trainLayer);
+      this.addNewLayer(trainLayer, inputIds);
+      // if model is in RTC mode addNewLayer will send updates to respective sockets
     } else {
       net[layerId] = layer;
       this.setState({ net });
     }
   }
-  deleteLayer(layerId) {
+  deleteLayer(layerId, publishUpdate=true) {
     const net = this.state.net;
     const input = net[layerId].connection.input;
     const output = net[layerId].connection.output;
     const layerIdNum = parseInt(layerId.substring(1,layerId.length)); //numeric value of the layerId
     const nextLayerId = this.state.nextLayerId - 1 == layerIdNum ? layerIdNum : this.state.nextLayerId;
-       //if last layer was deleted nextLayerId is replaced by deleted layer's id
+    //if last layer was deleted nextLayerId is replaced by deleted layer's id
     var totalParameters = this.state.totalParameters;
     let index;
     totalParameters -= this.getLayerParameters(net[layerId], net);
@@ -242,6 +506,11 @@ class Content extends React.Component {
       net[outputId].connection.input.splice(index, 1);
     });
     this.setState({ net, selectedLayer: null, nextLayerId: nextLayerId, totalParameters: totalParameters });
+    // if model is in RTC mode send updates to respective sockets
+    // to avoid infinite loop of deletion over multiple session
+    if (this.state.isShared && !this.state.isForked && publishUpdate == true) {
+      this.performSharedDelete(net, layerId, nextLayerId);
+    }
   }
 
   updateLayerShape(net, layerId) {
@@ -338,6 +607,7 @@ class Content extends React.Component {
   calculateParameters(net) {
     // Iterate over model's each layer & separately add the contribution of each layer
     var totalParameters = 0;
+
     Object.keys(net).sort().forEach(layerId => {
       const layer = net[layerId];
       net[layerId]['info']['parameters'] = this.getLayerParameters(layer, net);
@@ -400,56 +670,20 @@ class Content extends React.Component {
     this.exportPrep(function(netData) {
       Object.keys(netData).forEach(layerId => {
         delete netData[layerId].state;
+        if (netData[layerId]['comments']) {
+          // not adding comments as part of export parameters of net
+          delete netData[layerId].comments;
+        }
       });
 
-      const url = {'caffe': '/caffe/export', 'keras': '/keras/export', 'tensorflow': '/tensorflow/export'}
-      this.setState({ load: true });
-      $.ajax({
-        url: url[framework],
-        dataType: 'json',
-        type: 'POST',
-        data: {
-          net: JSON.stringify(netData),
-          net_name: this.state.net_name
-        },
-        success : function (response) {
-
-          if (response.result == 'success') {
-            const downloadAnchor = document.getElementById('download');
-            downloadAnchor.download = response.name;
-            downloadAnchor.href = response.url;
-            downloadAnchor.click();
-            if ('customLayers' in response && response.customLayers.length !== 0) {
-              this.addInfo(
-                <span>
-                  <span>This network uses custom layers, to download click on: </span>
-                  {response.customLayers.map((layer, index) => {
-                    return (
-                      <span key={index}>
-                        <a onClick={function() {
-                          downloadAnchor.download = layer.filename;
-                          downloadAnchor.href = layer.url;
-                          downloadAnchor.click();
-                        }} style={{fontWeight: 'bold'}}>
-                          {layer.name}
-                        </a>
-                        {index != response.customLayers.length-1 && <span>, </span>}
-                      </span>
-                    );
-                  })}
-                </span>
-              );
-            }
-          } else if (response.result == 'error') {
-            this.addError(response.error);
-          }
-          this.setState({ load: false });
-        }.bind(this),
-        error : function () {
-          this.setState({ load: false });
-          this.addError("Error");
-        }.bind(this)
+      this.sendSocketMessage({
+        framework: framework,
+        net: JSON.stringify(netData),
+        action: 'ExportNet',
+        net_name: this.state.net_name,
+        randomId: this.state.randomId
       });
+
     }.bind(this));
   }
   importNet(framework, id) {
@@ -537,33 +771,37 @@ class Content extends React.Component {
       net[layerId]['connection']['input'] = net[layerId]['connection']['input'].filter((val,id,array) => array.indexOf(val) == id);
       net[layerId]['connection']['output'] = net[layerId]['connection']['output'].filter((val,id,array) => array.indexOf(val) == id);
       // const index = +layerId.substring(1);
-      if (type == 'Python'){
-        Object.keys(layer.params).forEach(param => {
-          layer.params[param] = [layer.params[param], false];
-        });
-        layer.params['caffe'] = [true, false];
-      }
-      if (data.hasOwnProperty(type)) {
-        // add the missing params with default values
-        Object.keys(data[type].params).forEach(param => {
-          if (!layer.params.hasOwnProperty(param)) {
-            // The initial value is a list with the first element being the actual value, and the second being a flag which
-            // controls whether the parameter is disabled or not on the frontend.
-            layer.params[param] = [data[type].params[param].value, false];
-          }
-          else {
+      if (this.state.isShared == false) {
+        // if network object is being loaded from db avoid reinitializing the frontend part
+        if (type == 'Python') {
+          Object.keys(layer.params).forEach(param => {
             layer.params[param] = [layer.params[param], false];
-          }
-        });
-        if (type == 'Convolution' || type == 'Pooling' || type == 'Upsample' || type == 'LocallyConnected' || type == 'Eltwise'){
-          layer = this.adjustParameters(layer, 'layer_type', layer.params['layer_type'][0]);
+          });
+          layer.params['caffe'] = [true, false];
         }
-        // layer.props = JSON.parse(JSON.stringify(data[type].props));
-        layer.props = {};
-        // default name
-        layer.props.name = layerId;
-      } else {
-        tempError[type] = null;
+        if (data.hasOwnProperty(type)) {
+          // add the missing params with default values
+          Object.keys(data[type].params).forEach(param => {
+            if (!layer.params.hasOwnProperty(param)) {
+              // The initial value is a list with the first element being the actual value, and the second being a flag which
+              // controls whether the parameter is disabled or not on the frontend.
+              layer.params[param] = [data[type].params[param].value, false];
+            }
+            else {
+              layer.params[param] = [layer.params[param], false];
+            }
+          });
+          if (type == 'Convolution' || type == 'Pooling' || type == 'Upsample' || type == 'LocallyConnected' || type == 'Eltwise'){
+            layer = this.adjustParameters(layer, 'layer_type', layer.params['layer_type'][0]);
+          }
+          // layer.props = JSON.parse(JSON.stringify(data[type].props));
+          layer.props = {};
+          // default name
+          layer.props.name = layerId;
+        }
+        else {
+          tempError[type] = null;
+        }
       }
     });
     // initialize the position of layers
@@ -740,71 +978,112 @@ class Content extends React.Component {
     this.setState({ net });
   }
   saveDb(){
-    this.exportPrep(function(netData) {
-      Object.keys(netData).forEach(layerId => {
-        delete netData[layerId].state;
-      });
-      this.setState({ load: true });
-      $.ajax({
-        url: '/caffe/save',
-        dataType: 'json',
-        type: 'POST',
-        data: {
-          net: JSON.stringify(netData),
-          net_name: this.state.net_name
-        },
-        success : function (response) {
-          if (response.result == 'success'){
-            var url = 'http://fabrik.cloudcv.org/caffe/load?id='+response.id;
-            this.modalHeader = 'Your model url is:';
-            this.modalContent = (<a href={url}>{url}</a>);
-            this.openModal();
-          } else if (response.result == 'error') {
-            this.addError(response.error);
-          }
-          this.setState({ load: false });
-        }.bind(this),
-        error() {
-          this.setState({ load: false });
+    let netData = this.state.net;
+    this.setState({ load: true });
+
+    $.ajax({
+      url: '/save',
+      dataType: 'json',
+      type: 'POST',
+      data: {
+        net: JSON.stringify(netData),
+        net_name: this.state.net_name,
+        user_id: this.getUserId(),
+        nextLayerId: this.state.nextLayerId
+      },
+      success : function (response) {
+        if (response.result == 'success') {
+          var url = 'http://' + window.location.host + ':80/load?id=' + response.id;
+          this.modalHeader = 'Your model url is';
+          this.modalContent = (<a href={url}>{url}</a>);
+          this.openModal();
         }
-      });
-    }.bind(this));
+        else if (response.result == 'error') {
+          this.addError(response.error);
+        }
+        this.setState({ load: false });
+      }.bind(this),
+      error() {
+        this.setState({ load: false });
+      }
+    });
   }
   componentWillMount(){
-    var url = window.location.href;
+    var url = window.location.href.split('#');
     var urlParams = {};
-    url = url.split('#')[0];
+    let randomId = url[1];
+    url = url[0];
     url.replace(
     new RegExp("([^?=&]+)(=([^&]*))?", "g"),
     function($0, $1, $2, $3) {
       urlParams[$1] = $3;
       }
     );
+
+    // setting up socket connection
+
+    let socket = this.createSocket('ws://' + window.location.host + '/ws/connect/?id=' + urlParams['id']);
+    this.setState({ socket: socket });
+    this.waitForConnection (this.onSocketConnect, 1000);
+
     if ('id' in urlParams){
-      this.loadDb(urlParams['id']);
+      if ('version' in urlParams) {
+        this.loadDb(urlParams['id'], urlParams['version']);
+        this.setState({
+          isShared: true,
+          isForked: true,
+          networkId: parseInt(urlParams['id']),
+          randomId: randomId,
+          highlightColor: this.getRandomColor()
+        });
+      }
+      else {
+        this.loadDb(urlParams['id']);
+        this.setState({
+          isShared: true,
+          networkId: parseInt(urlParams['id']),
+          randomId: randomId,
+          highlightColor: this.getRandomColor()
+        });
+      }
     }
   }
-  loadDb(id) {
+  loadDb(id, version_id = null) {
+    // in case model is getting loaded from history disable sending updates
+    // Note: this needs to be improved when handling conflict resolution to avoid
+    // inconsistent states of model
+    let nextLayerId = this.state.nextLayerId;
+
+    this.setState({ load: true });
+
     this.dismissAllErrors();
-    const formData = new FormData();
-    formData.append('proto_id', id);
     $.ajax({
-      url: '/caffe/load',
+      url: '/load',
       dataType: 'json',
       type: 'POST',
-      data: formData,
-      processData: false,  // tell jQuery not to process the data
-      contentType: false,
+      data: {
+        proto_id: id,
+        version_id: version_id
+      },
       success: function (response) {
         if (response.result === 'success'){
+          // while loading a model ensure paramete intialisation
+          // for UI show/hide is not executed, it leads to inconsistent
+          // data which cannot be used further
+          nextLayerId = response.next_layer_id;
           this.initialiseImportedNet(response.net,response.net_name);
           if (Object.keys(response.net).length){
             this.calculateParameters(response.net);
           }
-        } else if (response.result === 'error'){
+        }
+        else if (response.result === 'error') {
           this.addError(response.error);
         }
-        this.setState({ load: false });
+        this.setState({
+          load: false,
+          isShared: true,
+          nextLayerId: parseInt(nextLayerId)
+        });
       }.bind(this),
       error() {
         this.setState({ load: false });
@@ -826,7 +1105,7 @@ class Content extends React.Component {
   }
   zooModal() {
     this.modalHeader = null;
-    this.modalContent = <ModelZoo importNet={this.importNet}/>;
+    this.modalContent = <ModelZoo importNet={this.importNet} />;
     this.openModal();
   }
   setModelFramework(e) {
@@ -873,6 +1152,34 @@ class Content extends React.Component {
                         />;
     this.openModal();
   }
+  updateHistoryModal() {
+    $.ajax({
+      url: '/model_history',
+      dataType: 'json',
+      type: 'POST',
+      data: {
+        net_id: this.state.networkId
+      },
+      success : function (response) {
+        if (response.result == 'success') {
+          this.modalHeader = 'Model update history';
+          this.modalContent = <UpdateHistoryModal
+                                networkId={this.state.networkId}
+                                modelHistory={response.data}
+                                addError={this.addError}
+                              />;
+          this.openModal();
+        }
+        else if (response.result == 'error') {
+          this.addError(response.error);
+        }
+        this.setState({ load: false });
+      }.bind(this),
+      error() {
+        this.setState({ load: false });
+      }
+    });
+  }
   handleClick(event) {
     event.preventDefault();
     this.clickEvent = true;
@@ -880,7 +1187,8 @@ class Content extends React.Component {
     const net = this.state.net;
     // extracting layerId from Pane id which is in form LayerName_Button
     const id = event.target.id.split('_')[0];
-    const prev = net[`l${this.state.nextLayerId-1}`];
+    const prevLayerId = 'l' + (this.state.nextLayerId - 1);
+    const prev = net[prevLayerId];
     const next = data[id];
     const zoom = instance.getZoom();
     const layer = {};
@@ -910,7 +1218,7 @@ class Content extends React.Component {
         layer.props.name = `${next.name}${this.state.nextLayerId}`;
         prev.connection.output.push(`l${this.state.nextLayerId}`);
         layer.connection.input.push(`l${this.state.nextLayerId-1}`);
-        this.addNewLayer(layer);
+        this.addNewLayer(layer, prevLayerId);
     }
 
     else if (Object.keys(net).length == 0) { // if there are no layers
@@ -963,7 +1271,10 @@ class Content extends React.Component {
               zooModal={this.zooModal}
               textboxModal={this.textboxModal}
               urlModal={this.urlModal}
+              updateHistoryModal={this.updateHistoryModal}
              />
+             <h5 className="sidebar-heading">LOGIN</h5>
+             <Login setUserId={this.setUserId} setUserName={this.setUserName}></Login>
              <h5 className="sidebar-heading">INSERT LAYER</h5>
              <Pane
              handleClick = {this.handleClick}
@@ -1009,6 +1320,11 @@ class Content extends React.Component {
             draggingLayer={this.state.draggingLayer}
             setDraggingLayer={this.setDraggingLayer}
             selectedLayer={this.state.selectedLayer}
+            socket={this.state.socket}
+            addSharedComment={this.addSharedComment}
+            isShared={this.state.isShared}
+            isForked={this.state.isForked}
+            changeCommentOnLayer={this.changeCommentOnLayer}
           />
           <SetParams
             net={this.state.net}
@@ -1021,6 +1337,19 @@ class Content extends React.Component {
             copyTrain={this.copyTrain}
             trainOnly={this.trainOnly}
             updateLayerWithShape={this.modifyLayer}
+            performSharedUpdate={this.performSharedUpdate}
+          />
+          <CommentSidebar
+            net={this.state.net}
+            commentOnLayer={this.state.commentOnLayer}
+            changeCommentOnLayer={this.changeCommentOnLayer}
+            addSharedComment={this.addSharedComment}
+          />
+          <CommentSidebar
+            net={this.state.net}
+            commentOnLayer={this.state.commentOnLayer}
+            changeCommentOnLayer={this.changeCommentOnLayer}
+            performSharedUpdate={this.performSharedUpdate}
           />
           <Tooltip
             id={'tooltip_text'}

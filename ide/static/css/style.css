@@ -614,6 +614,131 @@ button.url-import-modal-button {
   line-height: 20px;
 }
 
+/* Tooltip text */
+.commentTooltiptext {
+   visibility: hidden;
+   width: 175px;
+   background-color: #555;
+   color: #fff;
+   padding: 5px 0;
+
+   /* Position the tooltip text */
+   position: absolute;
+   right: -190px;
+   margin-left: -60px;
+   z-index: 2;
+   font-size: 12px;
+
+   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+   transition: 0.3s;
+}
+
+.commentTooltiptext:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.commentTooltiptext {
+   visibility: visible;
+   opacity: 1;
+}
+
+/* Tooltip Modal */
+.commentTooltipModal {
+   visibility: hidden;
+   width: 250px;
+   background-color: #555;
+   color: #fff;
+   padding: 5px 0;
+
+   /* Position the tooltip text */
+   position: absolute;
+   right: -265px;
+   margin-left: -60px;
+   z-index: 2;
+   font-size: 12px;
+
+   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+   transition: 0.3s;
+}
+
+.commentTooltipModal:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.commentTooltipModal {
+   visibility: visible;
+   opacity: 1;
+}
+
+
+/* Tooltip text */
+.addCommentTooltiptext {
+   visibility: hidden;
+   width: 250px;
+   height: auto;
+   background-color: #555;
+   color: #fff;
+   padding: 5px 0;
+
+   /* Position the tooltip text */
+   position: absolute;
+   right: -255px;
+   z-index: 9999;
+   font-size: 12px;
+
+   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+   transition: 0.3s;
+}
+
+.addCommentTooltiptext:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+/* Tooltip arrow */
+.addCommentTooltiptext::after {
+   content: "";
+   position: absolute;
+   top: 10%;
+   left: -10px;
+   margin-left: -5px;
+   border-width: 8px;
+   border-style: solid;
+   border-color: transparent #555 transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.addCommentTooltiptext {
+   visibility: visible;
+   opacity: 1;
+}
+
+.CommentTextarea {
+      width: 90%;
+      height: 85px;
+      padding: 7px 14px;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      background-color: #f8f8f8;
+      resize: none;
+}
+
+.CommentModalTextarea {
+      width: 90%;
+      height: 75px;
+      padding: 7px 14px;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      background-color: #f8f8f8;
+      resize: none;
+}
+
+
 .layer{
   font-size: 22px;
   width: 130px;
@@ -632,6 +757,24 @@ button.url-import-modal-button {
   -o-box-shadow: 0px 0px 30px #aaa;
   -webkit-box-shadow: 0px 0px 30px #aaa;
   -moz-box-shadow: 0px 0px 30px #aaa;
+}
+
+.highlighted {
+  border: 3px solid black;
+  box-shadow: 0px 0px 30px #aaa;
+  -o-box-shadow: 0px 0px 30px #aaa;
+  -webkit-box-shadow: 0px 0px 30px #aaa;
+  -moz-box-shadow: 0px 0px 30px #aaa;
+}
+
+.highlight-style {
+  background: black;
+  color: white;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 11px;
+  padding: 0px 5px 0px 0px;
 }
 
 .jsplumb-connector {
@@ -962,6 +1105,13 @@ input[type="file"] {
   position: absolute;
   top: 0;
 }
+.my-models-list-item {
+  float: left;
+  color: #848a92;
+}
+.my-models-list-item:hover {
+  color: black !important;
+}
 @-webkit-keyframes load7 {
   0%,
   80%,
@@ -989,7 +1139,9 @@ input[type="file"] {
     width: 100%;
     z-index: 10;
   }
-
+  .ReactModal__Overlay {
+    z-index: 100;
+  }
   #sidebar {
     width: 240px;
     z-index: 20;

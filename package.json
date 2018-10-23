@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "build deep learning models online",
   "scripts": {
-    "ci": "webpack"
+    "ci": "webpack",
+    "build": "webpack --progress --watch --colors"
   },
   "repository": {
     "type": "git",

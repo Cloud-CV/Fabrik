@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  db:
+    hostname: db
+    image: postgres
+    ports:
+      - "5432:5432"
+
+  reactjs:
+    restart: always
+    container_name: reactjs
+    hostname: reactjs
+    build:
+      context: ./
+      dockerfile: docker/prod/reactjs/Dockerfile
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - django
+    ports:
+      - "80:80"
+    volumes:
+      - .:/code
+      - /code/node_modules
+
+  redis:
+    hostname: redis
+    image: redis
+    ports:
+      - "6379:6379"
+
+  celery:
+    restart: always
+    hostname: celery
+    env_file:
+      - docker/prod/docker.env
+    build:
+      context: ./
+      dockerfile: docker/prod/celery/Dockerfile
+    command: celery -A ide worker --app=ide.celery_app --loglevel=info
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/code
+
+  django:
+    restart: always
+    container_name: django
+    hostname: django
+    env_file:
+      - docker/prod/docker.env
+    build:
+      context: ./
+      dockerfile: docker/prod/django/Dockerfile
+    ports:
+      - "8000:8000"
+    command: ["./docker/wait-for-it.sh", "db:5432", "--", "sh", "/code/docker/prod/django/container-start.sh"]
+    depends_on:
+      - db
+      - redis
+      - celery
+    volumes:
+      - .:/code

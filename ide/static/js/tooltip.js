@@ -7,11 +7,11 @@ class Tooltip extends React.Component {
   constructor(props) {
     super(props);
   }
-  
+
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
- 
+
   render() {
     if (this.props.hoveredLayer && this.props.hoveredLayer in this.props.net) {
       const params = [];
@@ -45,7 +45,7 @@ class Tooltip extends React.Component {
       });
 
       return (
-        <ReactTooltip multiline={true} id='getContent' effect='solid' place='right' className='customTooltip'>
+        <ReactTooltip multiline={true} id='getContent' effect='solid' place='left' className='customTooltip'>
           <div style={{display: 'inline-grid'}}>
               {props}
               {params}

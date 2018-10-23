@@ -1,10 +1,11 @@
 django==1.10.2
 channels==1.1.6
 celery==3.1.18
-asgi-redis==1.2.0
+asgi-redis==1.2.1
 pyaml==15.8.2
 django-allauth==0.30.0
 psycopg2==2.7.3
 tensorflow==1.4.1
 theano==0.9.0
 keras==2.0.8
+uWSGI==2.0.17

@@ -408,9 +408,10 @@ def pooling(layer, layer_in, layerId, tensor=True):
                 'Pad'] = ZeroPadding3D(padding=(p_h, p_w, p_d))(*layer_in)
             padding = 'valid'
             layer_in = [out[layerId + 'Pad']]
+    # Note - figure out a permanent fix for padding calculation of layers
     # in case padding is given in layer attributes
-    if ('padding' in layer['params']):
-        padding = layer['params']['padding']
+    # if ('padding' in layer['params']):
+    #    padding = layer['params']['padding']
     out[layerId] = poolMap[(layer_type, pool_type)](
         pool_size=kernel, strides=strides, padding=padding)
     if tensor:

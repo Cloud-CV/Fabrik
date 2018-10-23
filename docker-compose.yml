@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   db:
@@ -6,8 +6,6 @@ services:
     image: postgres
     ports:
       - "5432:5432"
-    networks:
-      - fabrik
 
   reactjs:
     container_name: reactjs
@@ -20,25 +18,34 @@ services:
     volumes:
       - .:/code
       - /code/node_modules
-    networks:
-      - fabrik
 
   redis:
     hostname: redis
     image: redis
     ports:
       - "6379:6379"
-    networks:
-      - fabrik
+
+  celery:
+    restart: always
+    hostname: celery
+    env_file:
+      - docker/dev/docker.env
+    build:
+      context: ./
+      dockerfile: docker/dev/celery/Dockerfile
+    command: celery -A ide worker --app=ide.celery_app --loglevel=info
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/code
 
   django:
     restart: always
     container_name: django
     hostname: django
     env_file:
-      - docker/dev.env
-    links:
-      - reactjs
+      - docker/dev/docker.env
     build:
       context: ./
       dockerfile: docker/dev/django/Dockerfile
@@ -49,10 +56,6 @@ services:
       - db
       - reactjs
       - redis
+      - celery
     volumes:
       - .:/code
-    networks:
-      - fabrik
-
-networks:
-  fabrik:
