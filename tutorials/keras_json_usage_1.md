@@ -73,3 +73,12 @@ You should be getting around 76-78% accuracy.
 
 This code trains and evaluates the loaded model on the dataset.
 
+### Code template
+[keras_sample_cifar10.py](../example/keras/code_samples/keras_sample_cifar10.py)
+The code sample loads the model specified by the user and trains and evaluates the model.
+It uses ```keras.datasets.cifar10``` as the dataset.
+To run the code, run
+    ```
+    python keras_sample_cifar10.py MODEL_NAME
+    ```
+Replace ```MODEL_NAME``` with the model that you want to use.
