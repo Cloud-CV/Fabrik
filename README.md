@@ -19,7 +19,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 
 1. Get the source code on to your machine via git.
 
-    ```shell
+    ```
     git clone https://github.com/Cloud-CV/Fabrik.git && cd Fabrik
     ```
 
@@ -29,7 +29,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     cp settings/dev.sample.py settings/dev.py
     ```
 
-3. Build and run the Docker containers. This might take a while. You should be able to access Fabrik at `0.0.0.0:8000`.
+3. Build and run the Docker containers. This might take a while. You should be able to access Fabrik at <http://0.0.0.0:8000>.
 
     ```
     docker-compose up --build
@@ -51,15 +51,16 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     ```
     docker-compose run django python manage.py createsuperuser
     ```
+
     Note: Before creating make sure that django service of docker image is running, it can be done by executing ``` docker-compose up ``` followed by ``` Ctrl + C ``` to save docker configuration.
 
 5. Open http://0.0.0.0:8000/admin and login with credentials from step 4.
 
 6. Setting up Social Accounts in django admin
 
-    * Under the ```Social Accounts``` tab open ``` Socialapplications ```, click on ``` Add Social Application ```.
+    * Under ``` Social Accounts ```, open ``` Social applications ``` and click on ``` Add Social Application ```.
 
-    * Choose  the ``` Provider ``` of social application as ``` Github ``` &  name it ``` Github ```.
+    * Choose  the ``` Provider ``` of social application as ``` Github ``` and  name it ``` Github ```.
 
     * Add the sites available to the right side, so github is allowed for the current site.
 
@@ -69,99 +70,152 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 
 
 ### Using Virtual Environment
-1. First set up a virtualenv
+1. First set up a virtualenv. Fabrik runs on Python2.7.
+
     ```
     sudo apt-get install python-pip python-dev python-virtualenv
-    virtualenv --system-site-packages ~/Fabrik
+    virtualenv --system-site-packages ~/Fabrik --python=python2.7
     source ~/Fabrik/bin/activate
     ```
 
-2. Clone the repository
+2. Clone the repository via git
+
     ```
-    git clone --recursive https://github.com/Cloud-CV/Fabrik.git
+    git clone --recursive https://github.com/Cloud-CV/Fabrik.git && cd Fabrik
     ```
 
 3. Rename settings/dev.sample.py as settings/dev.py and change credential in settings/dev.py
+
     ```
     cp settings/dev.sample.py settings/dev.py
     ```
-    Replace the hostname to ``` localhost ``` in settings/dev.py line 14.
 
-4. Install redis server and replace the hostname to ``` localhost ``` in settings/common.py line 99.
+    * Replace the hostname to ``` localhost ``` in settings/dev.py line 15. It should now look like this:  
+
+    ```
+    'HOST': os.environ.get("POSTGRES_HOST", 'localhost'), 
+    ```
+
+4. Install redis server  
+
     ```
     sudo apt-get install redis-server
     ```
-    Replace celery result backend in settings/common.py line 122 with
-    ```
-    CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-    ```
-    Replace celery broker url and result backend hostname to ``` localhost ``` in ide/celery_app.py line 8 with
-    ```
-    broker='redis://redis:6379/0'
-    backend='redis://redis:6379/0'
-    ```
+
+    * Replace the hostname to ``` localhost ``` in settings/common.py line 115.
+
+        ```
+        "CONFIG": {
+            # replace redis hostname to localhost if running on local system
+            "hosts": [("localhost", 6379)],
+            "prefix": u'fabrik:',
+            },
+        ```
+
+    * Replace celery result backend in settings/common.py line 122 with localhost.
+
+        ```
+        CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+        ```
+
+    * Replace celery broker url and result backend hostname to ``` localhost ``` in ide/celery_app.py, line 8.
+
+        ```
+        app = Celery('app', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0', include=['ide.tasks'])
+        ```
 
 5. If you have Caffe, Keras and Tensorflow already installed on your computer, skip this step
-    * For Linux users
+* For Linux users
+    * Install Caffe, Keras and Tensorflow
+
         ```
         cd Fabrik/requirements
         yes Y | sh caffe_tensorflow_keras_install.sh
         ```
-        Open your ~/.bashrc file and append this line at the end
-        ```        
+
+    * Open your ~/.bashrc file and append this line at the end
+
+        ```      
         export PYTHONPATH=~/caffe/caffe/python:$PYTHONPATH
         ```
-        Save, exit and then run
+
+    * Save, exit and then run
+
         ```
         source ~/.bash_profile
         cd ..
         ```
-    * For Mac users
-        * [Install Caffe](http://caffe.berkeleyvision.org/install_osx.html)
-        * [Install Tensorflow](https://www.tensorflow.org/install/install_mac)
-        * [Install Keras](https://keras.io/#installation)
+
+* For Mac users
+    * [Install Caffe](http://caffe.berkeleyvision.org/install_osx.html)
+    * [Install Tensorflow](https://www.tensorflow.org/install/install_mac)
+    * [Install Keras](https://keras.io/#installation)
+
 6. Install dependencies
 * For developers:
+
     ```
     pip install -r requirements/dev.txt
     ```
+
 * Others:
+
     ```
     pip install -r requirements/common.txt
     ```
+
 7. [Install postgres >= 9.5](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
 * Setup postgres database
     * Start postgresql by typing ```sudo service postgresql start```
     * Now login as user postgres by running ```sudo -u postgres psql``` and type the commands below
 
-    ```
-      CREATE DATABASE fabrik;
-      CREATE USER admin WITH PASSWORD 'fabrik';
-      ALTER ROLE admin SET client_encoding TO 'utf8';
-      ALTER ROLE admin SET default_transaction_isolation TO 'read committed';
-      ALTER ROLE admin SET timezone TO 'UTC';
-      ALTER USER admin CREATEDB;
-    ```
-    * Exit psql by typing in \q and hitting enter.
-* Migrate
-    ```
+        ```
+        CREATE DATABASE fabrik;
+        CREATE USER admin WITH PASSWORD 'fabrik';
+        ALTER ROLE admin SET client_encoding TO 'utf8';
+        ALTER ROLE admin SET default_transaction_isolation TO 'read committed';
+        ALTER ROLE admin SET timezone TO 'UTC';
+        ALTER USER admin CREATEDB;
+        ```
 
+    * Exit psql by typing in \q and hitting enter.
+
+* Migrate
+
+    ```
     python manage.py makemigrations caffe_app
     python manage.py migrate
     ```
+
 8. Install node modules
-```
-npm install
-npm install --save-dev json-loader
-sudo npm install -g webpack
-webpack --progress --watch --colors
-```
 
-9. To start celery worker
-```
-celery -A ide worker --app=ide.celery_app  --loglevel=info
-```
+    ```
+    npm install
+    npm install --save-dev json-loader
+    sudo npm install -g webpack@1.15.0
+    ```
 
+    * Run the command below in a separate terminal for hot-reloading, ie see the changes made to the UI in real time. 
+
+    ```
+    webpack --progress --watch --colors
+    ```
+
+9. Start celery worker
+
+    ```
+    celery -A ide worker --app=ide.celery_app  --loglevel=info
+    ```
+
+    The celery worker needs to be run parallel to the django server in a separate terminal.
+
+10. Start django application
+
+    ```
+    python manage.py runserver
+    ```
+
+    You should now be able to access Fabrik at <http://localhost:8000>.
 
 ### Setup Authenticaton for Virtual Environment
 1. Go to Github Developer Applications and create a new application. [here](https://github.com/settings/developers)
@@ -188,25 +242,26 @@ celery -A ide worker --app=ide.celery_app  --loglevel=info
 
 6. Open http://localhost:8000/admin
 
-7. Login with credentials from step
+7. Login with credentials from step 4.
 
 8. Setting up Social Accounts in django admin
 
-    * Under the ```Social Accounts``` tab open ``` Socialapplications ```, click on ``` Add Social Application ```.
+    * Under ```Social Accounts``` open ``` Social applications ```, click on ``` Add Social Application ```.
 
     * Choose  the ``` Provider ``` of social application as ``` Github ``` &  name it ``` Github ```.
 
-    * Add the sites available to the right side, so github is allowed for the current site.
+    * Add the sites available to the right side, so github is allowed for the current site. This should be `localhost:8000` for local deployment.
 
     * Copy and paste your ``` Client ID ``` and ``` Secret Key ``` into the apppropriate fields and Save.
 
-9. Go to ``` Sites ``` tab and update the ``` Domain name ``` to ``` localhost:8000 ```.
+9. From the django admin home page, go to `Sites` under the `Sites` category and update ``` Domain name ``` to ``` localhost:8000 ```.
 
 Note: For testing, you will only need one authentication backend. However, if you want to try out Google's authentication
 then, you will need to follow the same steps as above, but switch out the Github for google.
 
 
 ### Usage
+
 ```
 python manage.py runserver
 ```
