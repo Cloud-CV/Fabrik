@@ -1,0 +1,36 @@
+.insert-layer-title {
+	position: relative;
+	margin-top: 10px !important;
+	margin-bottom: 21px !important;
+}
+
+#layer-search-icon {
+	position: absolute;
+	left: -5px;
+	top: 31px;
+}
+
+#layer-search-icon:hover {
+	cursor: pointer;
+}
+
+#layer-search-input {
+	position: absolute;
+	top: 36px;
+	left: 20px;
+	font-size: 15px;
+	background: none;
+	border: none;
+	color: rgb(69, 80, 97);
+	outline: none;
+	opacity: 1;
+	transition: 0.3s;
+}
+
+.layer-search-input-selected {
+	opacity: 1 !important;
+}
+
+.matched-search-char {
+	color: rgb(69, 80, 97);
+}

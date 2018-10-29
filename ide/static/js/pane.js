@@ -26,7 +26,61 @@ class Pane extends React.Component {
         }
         this.setState(obj);
     }
-    render(){
+    componentDidMount() {
+      let filter = (pattern) => {
+        let layerCompability = (searchQuery, layerName) => {
+          let j = 0;
+          let seq = [];
+          let full_match = true;
+          for (let i = 0; i < searchQuery.length; i++) {
+            while (j < layerName.length && layerName[j].toLowerCase() != searchQuery[i].toLowerCase()) {
+              seq[j] = false;
+              j++;
+            }
+            if (j < layerName.length && layerName[j].toLowerCase() == searchQuery[i].toLowerCase()) {
+              seq[j] = true;
+              j++;
+            } else {
+              full_match = false;
+            }
+          }
+          return {
+            match: seq,
+            full_match: full_match 
+          };
+        }
+        for (let elem of $('.drowpdown-button')) {
+          let sub = elem.innerText;
+          if (!sub) continue;
+          let resp = layerCompability(pattern, sub);
+          if (resp.full_match) {
+            elem.style.display = 'block';
+            let final = '';
+            for (let i = 0; i < sub.length; i++) {
+              if (resp.match[i]) {
+                final += '<span class="matched-search-char">' + sub[i] + '</span>'
+              } else {
+                final += sub[i];
+              }
+            }
+            elem.innerHTML = final;
+          } else {
+            elem.style.display = 'none';
+          }
+        }
+        for (let elem of $('.panel-heading')) {
+          let _p = pattern ? 'false' : 'true';
+          if (elem.getAttribute('aria-expanded') == _p) {
+            elem.click();
+          }
+        }
+      }
+      $('#layer-search-input').keyup((e) => {
+        filter(e.target.value); 
+      });
+    }
+
+    render() {
       return (
         <div className="panel-group" id="menu" role="tablist" aria-multiselectable="true">
               <div className="panel panel-default">

@@ -1275,7 +1275,11 @@ class Content extends React.Component {
              />
              <h5 className="sidebar-heading">LOGIN</h5>
              <Login setUserId={this.setUserId} setUserName={this.setUserName}></Login>
-             <h5 className="sidebar-heading">INSERT LAYER</h5>
+             <h5 className="sidebar-heading insert-layer-title">
+              <input id="layer-search-input" placeholder="Search for layer"></input>
+              <div id="insert-layer-sign">INSERT LAYER</div>
+              <i className="material-icons" id="layer-search-icon">search</i>
+             </h5>
              <Pane
              handleClick = {this.handleClick}
              setDraggingLayer = {this.setDraggingLayer}

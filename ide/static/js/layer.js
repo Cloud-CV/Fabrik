@@ -46,6 +46,7 @@ class Layer extends React.Component {
     let highlightUser = null;
     let highlightClass = '';
     let highlightColor = '#000';
+ 
 
     if(this.props.layer.highlight && this.props.layer.highlight.length > 0) {
       highlightClass = 'highlighted';

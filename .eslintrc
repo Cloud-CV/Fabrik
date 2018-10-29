@@ -16,7 +16,8 @@
         "jsPlumbUtil": false,
     },
   "rules": {
-    "max-len": [1, 150, 2, {ignoreComments: true}]
+    "max-len": [1, 150, 2, {ignoreComments: true}],
+    "no-console": "off"
   },
   "extends": ["eslint:recommended", "plugin:react/recommended"]
 }
