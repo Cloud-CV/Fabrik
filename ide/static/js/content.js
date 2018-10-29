@@ -1103,19 +1103,32 @@ class Content extends React.Component {
   faqModal() {
     this.modalHeader = "Help/FAQ"
     this.modalContent = (<p><b>Q:</b> What is Fabrik?<br />
-      <b>A:</b> Fabrik is an online platform, created by CloudCV, allowing AI researchers and enthusiasts to build and visualize deep learning models.<br />
+      <b>A:</b> Fabrik is an online platform, created by CloudCV, allowing AI researchers and enthusiasts to
+      build and visualize deep learning models.<br />
       <b>Q:</b> What is the model zoo?<br />
-      <b>A:</b> It is a collection of pre-built models that you can use. To access it, simply click the folder icon in the left corner of the toolbox and pick a model. You can find the available models <a target="_blank" href="https://github.com/Cloud-CV/Fabrik/blob/master/docs/source/tested_models.md">here</a>.<br />
+      <b>A:</b> It is a collection of pre-built models that you can use.
+      To access it, simply click the folder icon in the left corner of the toolbox and pick a model.
+      You can find the available models
+      <a target="_blank" href="https://github.com/Cloud-CV/Fabrik/blob/master/docs/source/tested_models.md"> here</a>.
+      <br />
       <b>Q:</b> What do the Train/Test buttons mean?<br />
-      <b>A:</b> They are two different modes of your model: Train and Test - respectively for training your model with data and testing how and if it works.<br />
+      <b>A:</b> They are two different modes of your model: 
+      Train and Test - respectively for training your model with data and testing how and if it works.<br />
       <b>Q:</b> What does the import fuction do?<br />
-      <b>A:</b> It allows you to import your previously created models in Caffe (.protoxt files), Keras (.json files) and TensorFlow (.pbtxt files)<br />
+      <b>A:</b> It allows you to import your previously created models in Caffe (.protoxt files),
+      Keras (.json files) and TensorFlow (.pbtxt files)<br />
       <b>Q:</b> What does the export function do?<br />
-      <b>A:</b> You can use it to download models from Fabrik. You can train and test them directly on your computer, using <a target="_blank" href="https://github.com/Cloud-CV/Fabrik/blob/master/docs/source/caffe_prototxt_usage_1.md">Caffe</a>, <a target="_blank" href="https://github.com/Cloud-CV/Fabrik/blob/master/docs/source/keras_json_usage_1.md">Keras</a> and TensorFlow.<br />
+      <b>A:</b> You can use it to download models from Fabrik. You can train and test them directly on your computer,
+      using <a target="_blank" href="https://github.com/Cloud-CV/Fabrik/blob/master/docs/source/caffe_prototxt_usage_1.md">Caffe</a>,
+      <a target="_blank" href="https://github.com/Cloud-CV/Fabrik/blob/master/docs/source/keras_json_usage_1.md"> Keras </a>
+      and TensorFlow.<br />
       <b>Q:</b> How can I contribute to Fabrik?<br />
-      <b>A:</b> Please see the instructions listed <a target="_blank" href="https://github.com/Cloud-CV/Fabrik/blob/master/README.md">here</a><br /><br />
+      <b>A:</b> Please see the instructions listed
+      <a target="_blank" href="https://github.com/Cloud-CV/Fabrik/blob/master/README.md"> here</a>
+      <br /><br />
                          
-      <b>If you have anymore questions, please visit Fabrik's Github page available <a target="_blank" href="https://github.com/Cloud-CV/Fabrik">here</a> for more information.</b>
+      <b>If you have anymore questions, please visit Fabrik's Github page available
+       <a target="_blank" href="https://github.com/Cloud-CV/Fabrik"> here</a> for more information.</b>
       </p>);
     this.openModal();
   }
