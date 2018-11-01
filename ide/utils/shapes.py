@@ -1,5 +1,6 @@
 import numpy as np
 from collections import deque
+import six
 
 
 def data(layer):
@@ -13,7 +14,7 @@ def data(layer):
             # When a new layer is created with default parameters
             Output = []
     elif (layer['info']['type'] in ['Input', 'DummyData']):
-        Output = map(int, layer['params']['dim'].split(','))[1:]
+        Output = list(six.moves.map(int, layer['params']['dim'].split(',')))[1:]
     elif (layer['info']['type'] == 'MemoryData'):
         Output = [3, layer['params']['height'], layer['params']['width']]
     else:
@@ -128,7 +129,7 @@ def flatten(layer):
 
 def reshape(layer):
     temp = np.zeros(layer['shape']['input'])
-    shape = map(int, layer['params']['dim'].split(','))[1:]
+    shape = list(six.moves.map(int, layer['params']['dim'].split(',')))[1:]
     temp = np.reshape(temp, shape)
     return list(temp.shape[::-1])
 

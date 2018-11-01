@@ -1,6 +1,7 @@
 import caffe
 from caffe import layers as L
 import re
+import six
 
 
 def get_iterable(x):
@@ -35,8 +36,8 @@ def export_ImageData(layerId, layerParams, layerPhase, ns_train, ns_test, blobNa
     transform_param['force_color'] = layerParams['force_color']
     transform_param['force_gray'] = layerParams['force_gray']
     if (layerParams['mean_value'] != ''):
-        transform_param['mean_value'] = map(
-            int, layerParams['mean_value'].split(','))
+        transform_param['mean_value'] = list(six.moves.map(
+            int, layerParams['mean_value'].split(',')))
     elif (layerParams['mean_file'] != ''):
         transform_param['mean_file'] = layerParams['mean_file']
 
@@ -80,8 +81,8 @@ def export_Data(layerId, layerParams, layerPhase, ns_train, ns_test, blobNames):
     transform_param['force_color'] = layerParams['force_color']
     transform_param['force_gray'] = layerParams['force_gray']
     if (layerParams['mean_value'] != ''):
-        transform_param['mean_value'] = map(
-            int, layerParams['mean_value'].split(','))
+        transform_param['mean_value'] = list(six.moves.map(
+            int, layerParams['mean_value'].split(',')))
     elif (layerParams['mean_file'] != ''):
         transform_param['mean_file'] = layerParams['mean_file']
 
@@ -176,7 +177,7 @@ def export_HDF5Output(layerId, layerParams, layerPhase, ns_train, ns_test, blobN
 
 
 def export_Input(layerId, layerParams, layerPhase, ns_train, ns_test, blobNames):
-    input_param = {'shape': {'dim': map(int, layerParams['dim'].split(','))}}
+    input_param = {'shape': {'dim': list(six.moves.map(int, layerParams['dim'].split(',')))}}
     for ns in (ns_train, ns_test):
         caffeLayer = get_iterable(L.Input(
             input_param=input_param))
@@ -193,8 +194,8 @@ def export_WindowData(layerId, layerParams, layerPhase, ns_train, ns_test, blobN
     transform_param['force_color'] = layerParams['force_color']
     transform_param['force_gray'] = layerParams['force_gray']
     if (layerParams['mean_value'] != ''):
-        transform_param['mean_value'] = map(
-            int, layerParams['mean_value'].split(','))
+        transform_param['mean_value'] = list(six.moves.map(
+            int, layerParams['mean_value'].split(',')))
     elif (layerParams['mean_file'] != ''):
         transform_param['mean_file'] = layerParams['mean_file']
 
@@ -261,8 +262,8 @@ def export_MemoryData(layerId, layerParams, layerPhase, ns_train, ns_test, blobN
 def export_DummyData(layerId, layerParams, layerPhase, ns_train, ns_test, blobNames):
     # Adding a default size
     dummy_data_param = {}
-    dummy_data_param['shape'] = {'dim': map(
-        int, layerParams['dim'].split(','))}
+    dummy_data_param['shape'] = {'dim': list(six.moves.map(
+        int, layerParams['dim'].split(',')))}
     dummy_data_param['data_filler'] = {'type': layerParams['type']}
     if layerPhase is not None:
         caffeLayer = get_iterable(L.DummyData(
@@ -873,7 +874,7 @@ def export_Flatten(layerId, layerParams, layerPhase, ns_train, ns_test, blobName
 
 
 def export_Reshape(layerId, layerParams, layerPhase, ns_train, ns_test, blobNames):
-    reshape_param = {'shape': {'dim': map(int, layerParams['dim'].split(','))}}
+    reshape_param = {'shape': {'dim': list(six.moves.map(int, layerParams['dim'].split(',')))}}
     for ns in (ns_train, ns_test):
         caffeLayer = get_iterable(L.Reshape(
             *[ns[x] for x in blobNames[layerId]['bottom']],
@@ -913,8 +914,8 @@ def export_Concat(layerId, layerParams, layerPhase, ns_train, ns_test, blobNames
 
 def export_Slice(layerId, layerParams, layerPhase, ns_train, ns_test, blobNames):
     slice_param = {}
-    slice_param['slice_point'] = map(
-        int, layerParams['slice_point'].split(','))
+    slice_param['slice_point'] = list(six.moves.map(
+        int, layerParams['slice_point'].split(',')))
     slice_param['axis'] = layerParams['axis']
     slice_param['slice_dim'] = layerParams['slice_dim']
     for ns in (ns_train, ns_test):
@@ -1152,8 +1153,8 @@ def export_Python(layerId, layerParams, layerPhase, ns_train, ns_test, blobNames
                 python_param['param_str'] = {}
             if isinstance(layerParams[param], str):
                 try:
-                    python_param['param_str'][param] = map(int,
-                                                           layerParams[param].split(','))
+                    python_param['param_str'][param] = list(six.moves.map(int,
+                                                            layerParams[param].split(',')))
                 except:
                     python_param['param_str'][param] = layerParams[param]
             else:

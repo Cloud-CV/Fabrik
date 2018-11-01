@@ -6,8 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import math
 import re
-import urllib2
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
+import six.moves.urllib.request as urllib2
 
 # map from operation name(tensorflow) to layer name(caffe)
 op_layer_map = {'Placeholder': 'Input', 'Conv2D': 'Convolution', 'Conv3D': 'Convolution',

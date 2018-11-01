@@ -7,7 +7,7 @@ import random
 import string
 from datetime import datetime
 from channels import Channel
-from utils.jsonToPrototxt import json_to_prototxt
+from .utils.jsonToPrototxt import json_to_prototxt
 from celery.decorators import task
 from keras.models import Model
 from keras_app.views.layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
@@ -18,12 +18,14 @@ from keras_app.custom_layers import config as custom_layers_config
 from keras.models import model_from_json
 import tensorflow as tf
 from keras import backend as K
+import six
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def randomword(length):
-    return ''.join(random.choice(string.lowercase) for i in range(length))
+    choices = string.lowercase if sys.version_info < (3,) else string.ascii_lowercase
+    return ''.join(random.choice(choices) for i in range(length))
 
 
 @task(name="export_to_caffe", bind=True)
@@ -35,7 +37,7 @@ def export_caffe_prototxt(self, net, net_name, reply_channel):
         prototxt, input_dim = json_to_prototxt(net, net_name)
         randomId = datetime.now().strftime('%Y%m%d%H%M%S')+randomword(5)
 
-        with open(BASE_DIR + '/media/' + randomId + '.prototxt', 'w+') as f:
+        with open(os.path.join(BASE_DIR, 'media', randomId + '.prototxt'), 'w+') as f:
             f.write(prototxt)
 
         Channel(reply_channel).send({
@@ -46,7 +48,7 @@ def export_caffe_prototxt(self, net, net_name, reply_channel):
                 'url': '/media/' + randomId + '.prototxt'
             })
         })
-    except:
+    except Exception:
         Channel(reply_channel).send({
             'text': json.dumps({
                 'result': 'error',
@@ -140,7 +142,7 @@ def export_keras_json(net, net_name, is_tf, reply_channel):
     # Note : Error handling can be improved further
     error = []
     custom_layers = []
-    for key, value in custom_layers_map.iteritems():
+    for key, value in six.iteritems(custom_layers_map):
         layer_map[key] = value
     for layerId in net:
         layerType = net[layerId]['info']['type']
@@ -286,7 +288,7 @@ def export_keras_json(net, net_name, is_tf, reply_channel):
     json_string = Model.to_json(model)
 
     randomId = datetime.now().strftime('%Y%m%d%H%M%S') + randomword(5)
-    with open(BASE_DIR + '/media/' + randomId + '.json', 'w') as f:
+    with open(os.path.join(BASE_DIR, 'media', randomId + '.json'), 'w') as f:
         json.dump(json.loads(json_string), f, indent=4)
 
     custom_layers_response = []
@@ -302,9 +304,9 @@ def export_keras_json(net, net_name, is_tf, reply_channel):
 
         K.set_learning_phase(0)
 
-        output_fld = BASE_DIR + '/media/'
+        output_fld = os.path.join(BASE_DIR, 'media')
 
-        with open(output_fld + input_file, 'r') as f:
+        with open(os.path.join(output_fld, input_file), 'r') as f:
             json_str = f.read()
 
         json_str = json_str.strip("'<>() ").replace('\'', '\"')

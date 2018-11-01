@@ -6,9 +6,9 @@ from caffe.proto import caffe_pb2
 from google.protobuf import text_format
 import tempfile
 import subprocess
-import urllib2
-from urlparse import urlparse
-
+from six.moves.urllib.parse import urlparse
+import six.moves.urllib.request as urllib2
+import six
 # ******Data Layers******
 
 
@@ -55,7 +55,7 @@ def HDF5Output(layer):
 
 def Input(layer):
     params = {}
-    params['dim'] = str(map(int, layer.input_param.shape[0].dim))[1:-1]
+    params['dim'] = str(list(six.moves.map(int, layer.input_param.shape[0].dim)))[1:-1]
     return params
 
 
@@ -84,7 +84,7 @@ def MemoryData(layer):
 
 def DummyData(layer):
     params = {}
-    params['dim'] = str(map(int, layer.dummy_data_param.shape[0].dim))[1:-1]
+    params['dim'] = str(list(six.moves.map(int, layer.dummy_data_param.shape[0].dim)))[1:-1]
     params['type'] = str(layer.dummy_data_param.data_filler[0].type)
     return params
 
@@ -382,13 +382,13 @@ def Flatten(layer):
 
 def Reshape(layer):
     params = {}
-    params['dim'] = str(map(int, layer.reshape_param.shape.dim))[1:-1]
+    params['dim'] = str(list(six.moves.map(int, layer.reshape_param.shape.dim)))[1:-1]
     return params
 
 
 def Slice(layer):
     params = {}
-    params['slice_point'] = str(map(int, layer.slice_param.slice_point))[1:-1]
+    params['slice_point'] = str(list(six.moves.map(int, layer.slice_param.slice_point)))[1:-1]
     params['axis'] = layer.slice_param.axis
     params['slice_dim'] = layer.slice_param.slice_dim
     return params
@@ -597,10 +597,15 @@ def import_prototxt(request):
             else:
                 content = prototxt.read()
             tempFile = tempfile.NamedTemporaryFile()
-            tempFile.write(content)
+            tempFile.write(content.encode('utf-8'))
             tempFile.seek(0)
-            subprocess.call("~/caffe/caffe/build/tools/upgrade_net_proto_text "
-                            + tempFile.name + " " + tempFile.name, shell=True)
+            subprocess.call(
+                os.path.join(
+                    settings.CAFFE_TOOLS_DIR,
+                    'upgrade_net_proto_text',
+                ) + " " + tempFile.name + " " + tempFile.name,
+                shell=True
+            )
             tempFile.seek(0)
             content = tempFile.read()
             tempFile.close()
@@ -638,8 +643,8 @@ def import_prototxt(request):
                 if (layer.transform_param.mean_file != ''):
                     params['mean_file'] = layer.transform_param.mean_file
                 elif (layer.transform_param.mean_value):
-                    params['mean_value'] = str(
-                        map(int, layer.transform_param.mean_value))[1:-1]
+                    params['mean_value'] = str(list(
+                        six.moves.map(int, layer.transform_param.mean_value)))[1:-1]
                 params['force_color'] = layer.transform_param.force_color
                 params['force_gray'] = layer.transform_param.force_gray
 

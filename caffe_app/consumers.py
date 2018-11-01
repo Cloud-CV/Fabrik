@@ -1,6 +1,6 @@
 import json
 import yaml
-import urlparse
+import six.moves.urllib.parse as urlparse
 from channels import Group
 from channels.auth import channel_session_user, channel_session_user_from_http
 from caffe_app.models import Network, NetworkVersion, NetworkUpdates
@@ -49,7 +49,7 @@ def ws_connect(message):
     })
     # extracting id of network from url params
     params = urlparse.parse_qs(message.content['query_string'])
-    networkId = params.get('id', ('Not Supplied',))[0]
+    networkId = params.get('id', ('NotSupplied',))[0]
     message.channel_session['networkId'] = networkId
     # adding socket to a group based on networkId to send updates of network
     Group('model-{0}'.format(networkId)).add(message.reply_channel)

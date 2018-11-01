@@ -1,12 +1,14 @@
 import json
 import os
-import urllib2
-from urlparse import urlparse
+import sys
+
+from six.moves.urllib.parse import urlparse
+import six.moves.urllib.request as urllib2
 
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from layers_import import Input, Convolution, Deconvolution, Pooling, Dense, Dropout, Embed,\
+from .layers_import import Input, Convolution, Deconvolution, Pooling, Dense, Dropout, Embed,\
     Recurrent, BatchNorm, Activation, LeakyReLU, PReLU, ELU, Scale, Flatten, Reshape, Concat, \
     Eltwise, Padding, Upsample, LocallyConnected, ThresholdedReLU, Permute, RepeatVector,\
     ActivityRegularization, Masking, GaussianNoise, GaussianDropout, AlphaDropout, \
@@ -45,7 +47,10 @@ def import_json(request):
             if loadFromText is True:
                 model = json.loads(request.POST['config'])
             else:
-                model = json.load(f)
+                data = f.read()
+                if hasattr(data, 'decode'):
+                    data = data.decode(sys.getdefaultencoding())
+                model = json.loads(data)
         except Exception:
             return JsonResponse({'result': 'error', 'error': 'Invalid JSON'})
 
@@ -158,10 +163,10 @@ def import_json(request):
                 })
                 new_layer.wrapped = True
                 new_layer.wrapper = [layer.name]
-                if new_layer.activation.func_name != 'linear':
+                if new_layer.activation.__name__ != 'linear':
                     net[name + wrapped_layer['class_name']
                         ] = layer_map[wrapped_layer['class_name']](new_layer)
-                    net[name] = layer_map[new_layer.activation.func_name](
+                    net[name] = layer_map[new_layer.activation.__name__](
                         new_layer)
                     net[name + wrapped_layer['class_name']
                         ]['connection']['output'].append(name)
@@ -183,9 +188,9 @@ def import_json(request):
                     net[name]['connection']['output'] = []
                 wrapped = True
             # This extra logic is to handle connections if the layer has an Activation
-            elif (class_name in hasActivation and layer.activation.func_name != 'linear'):
+            elif (class_name in hasActivation and layer.activation.__name__ != 'linear'):
                 net[layer.name + class_name] = layer_map[class_name](layer)
-                net[layer.name] = layer_map[layer.activation.func_name](layer)
+                net[layer.name] = layer_map[layer.activation.__name__](layer)
                 net[layer.name +
                     class_name]['connection']['output'].append(layer.name)
                 name = layer.name + class_name

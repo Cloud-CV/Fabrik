@@ -120,3 +120,5 @@ CHANNEL_LAYERS = {
 }
 
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+CAFFE_TOOLS_DIR = r'~/caffe/caffe/build/tools'

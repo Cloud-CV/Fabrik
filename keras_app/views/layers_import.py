@@ -44,12 +44,12 @@ def Activation(layer):
         'hard_sigmoid': 'HardSigmoid'
     }
     if (layer.__class__.__name__ == 'Activation'):
-        return jsonLayer(activationMap[layer.activation.func_name], {}, layer)
+        return jsonLayer(activationMap[layer.activation.__name__], {}, layer)
     else:
         tempLayer = {}
         tempLayer['inbound_nodes'] = [
             [[layer.name + layer.__class__.__name__]]]
-        return jsonLayer(activationMap[layer.activation.func_name], {}, tempLayer)
+        return jsonLayer(activationMap[layer.activation.__name__], {}, tempLayer)
 
 
 def Dropout(layer):
@@ -352,9 +352,9 @@ def Recurrent(layer):
     params['dropout'] = layer.dropout
     params['recurrent_dropout'] = layer.recurrent_dropout
     if (layer.__class__.__name__ == 'GRU'):
-        params['recurrent_activation'] = layer.recurrent_activation.func_name
+        params['recurrent_activation'] = layer.recurrent_activation.__name__
     elif (layer.__class__.__name__ == 'LSTM'):
-        params['recurrent_activation'] = layer.recurrent_activation.func_name
+        params['recurrent_activation'] = layer.recurrent_activation.__name__
         params['unit_forget_bias'] = layer.unit_forget_bias
         params['return_sequences'] = layer.return_sequences
     return jsonLayer(recurrentMap[layer.__class__.__name__], params, layer)

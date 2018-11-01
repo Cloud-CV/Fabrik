@@ -1,4 +1,5 @@
 import numpy as np
+import six
 
 from keras.layers import Dense, Activation, Dropout, Flatten, Reshape, Permute, RepeatVector
 from keras.layers import ActivityRegularization, Masking
@@ -143,7 +144,7 @@ def flatten(layer, layer_in, layerId, tensor=True):
 
 
 def reshape(layer, layer_in, layerId, tensor=True):
-    shape = map(int, layer['params']['dim'].split(','))
+    shape = list(six.moves.map(int, layer['params']['dim'].split(',')))
     out = {layerId: Reshape(shape[2:] + shape[1:2])}
     if tensor:
         out[layerId] = out[layerId](*layer_in)
@@ -151,7 +152,7 @@ def reshape(layer, layer_in, layerId, tensor=True):
 
 
 def permute(layer, layer_in, layerId, tensor=True):
-    out = {layerId: Permute(map(int, layer['params']['dim'].split(',')))}
+    out = {layerId: Permute(list(six.moves.map(int, layer['params']['dim'].split(','))))}
     if tensor:
         out[layerId] = out[layerId](*layer_in)
     return out

@@ -7,7 +7,7 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from keras.models import Model
-from layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
+from .layers_export import data, convolution, deconvolution, pooling, dense, dropout, embed,\
     recurrent, batch_norm, activation, flatten, reshape, eltwise, concat, upsample, locally_connected,\
     permute, repeat_vector, regularization, masking, gaussian_noise, gaussian_dropout, alpha_dropout, \
     bidirectional, time_distributed, lrn, depthwiseConv
@@ -223,7 +223,7 @@ def export_json(request, is_tf=False):
         json_string = Model.to_json(model)
 
         randomId = datetime.now().strftime('%Y%m%d%H%M%S') + randomword(5)
-        with open(BASE_DIR + '/media/' + randomId + '.json', 'w') as f:
+        with open(os.path.join(BASE_DIR, 'media', randomId + '.json'), 'w') as f:
             json.dump(json.loads(json_string), f, indent=4)
 
         custom_layers_response = []

@@ -25,7 +25,7 @@ def export_to_caffe(request):
         try:
             prototxt, input_dim = json_to_prototxt(net, net_name)
             randomId = datetime.now().strftime('%Y%m%d%H%M%S')+randomword(5)
-            with open(BASE_DIR+'/media/'+randomId+'.prototxt', 'w') as f:
+            with open(os.path.join(BASE_DIR, 'media', randomId + '.prototxt'), 'w') as f:
                 f.write(prototxt)
             return JsonResponse({'result': 'success', 'id': randomId,
                                 'name': randomId+'.prototxt', 'url': '/media/'+randomId+'.prototxt'})
