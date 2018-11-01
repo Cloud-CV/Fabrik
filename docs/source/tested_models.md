@@ -46,7 +46,7 @@
 
 ## Segmentation
 * Image Segmentation CRF-RNN [\[Source\]](https://github.com/torrvision/crfasrnn/tree/master/python-scripts)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180111183110okaux)
-* UNET [\[Source\]](https://github.com/ZFTurbo/ZF_UNET_224_Pretrained_Model)[\[Visualise]](http://fabrik.cloudcv.org/caffe/load?id=20180116070834rggzh)
+* UNET [\[Source\]](https://github.com/ZFTurbo/ZF_UNET_224_Pretrained_Model)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180116070834rggzh)
 
 ### Miscellaneous
 
