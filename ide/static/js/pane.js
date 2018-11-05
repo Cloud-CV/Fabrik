@@ -250,6 +250,9 @@ class Pane extends React.Component {
                     <PaneElement setDraggingLayer={this.props.setDraggingLayer}
                       handleClick={this.props.handleClick}
                       id="Masking_Button">Masking</PaneElement>
+                    <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                      handleClick={this.props.handleClick}
+                      id="Slice_Button">Slice</PaneElement>
                   </div>
                 </div>
               </div>
