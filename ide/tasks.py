@@ -78,6 +78,7 @@ def export_keras_json(net, net_name, is_tf, reply_channel):
         'TanH': activation,
         'Sigmoid': activation,
         'HardSigmoid': activation,
+        'Linear': activation,
         'Dropout': dropout,
         'Flatten': flatten,
         'Reshape': reshape,

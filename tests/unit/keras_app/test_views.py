@@ -285,6 +285,11 @@ class ActivationImportTest(unittest.TestCase, HelperFunctions):
         model.add(ThresholdedReLU(theta=1, input_shape=(15,)))
         model.build()
         self.keras_type_test(model, 0, 'ThresholdedReLU')
+        # Linear
+        model = Sequential()
+        model.add(Activation('linear', input_shape=(15,)))
+        model.build()
+        self.keras_type_test(model, 0, 'Linear')
 
 
 class DropoutImportTest(unittest.TestCase, HelperFunctions):
@@ -936,6 +941,24 @@ class HardSigmoidExportTest(unittest.TestCase):
         tests.close()
         net = yaml.safe_load(json.dumps(response['net']))
         net = {'l0': net['Input'], 'l1': net['HardSigmoid']}
+        net['l0']['connection']['output'].append('l1')
+        inp = data(net['l0'], '', 'l0')['l0']
+        net = activation(net['l1'], [inp], 'l1')
+        model = Model(inp, net['l1'])
+        self.assertEqual(model.layers[1].__class__.__name__, 'Activation')
+
+
+class LinearActivationExportTest(unittest.TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_keras_export(self):
+        tests = open(os.path.join(settings.BASE_DIR, 'tests', 'unit', 'keras_app',
+                                  'keras_export_test.json'), 'r')
+        response = json.load(tests)
+        tests.close()
+        net = yaml.safe_load(json.dumps(response['net']))
+        net = {'l0': net['Input'], 'l1': net['Linear']}
         net['l0']['connection']['output'].append('l1')
         inp = data(net['l0'], '', 'l0')['l0']
         net = activation(net['l1'], [inp], 'l1')

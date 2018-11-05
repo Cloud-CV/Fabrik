@@ -777,6 +777,21 @@
             "inplace": true
         }
     },
+    "Linear": {
+        "connection": {
+            "input": [
+                "l0"
+            ],
+            "ouput": []
+        },
+        "info": {
+            "phase": null,
+            "type": "Linear"
+        },
+        "params": {
+            "inplace": true
+        }
+    },
     "Upsample": {
         "info": {
             "phase": null, 

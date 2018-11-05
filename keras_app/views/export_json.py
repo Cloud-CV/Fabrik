@@ -49,6 +49,7 @@ def export_json(request, is_tf=False):
             'TanH': activation,
             'Sigmoid': activation,
             'HardSigmoid': activation,
+            'Linear': activation,
             'Dropout': dropout,
             'Flatten': flatten,
             'Reshape': reshape,

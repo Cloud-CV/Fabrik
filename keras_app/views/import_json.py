@@ -62,6 +62,7 @@ def import_json(request):
         'tanh': Activation,
         'sigmoid': Activation,
         'hard_sigmoid': Activation,
+        'linear': Activation,
         'Dropout': Dropout,
         'Flatten': Flatten,
         'Reshape': Reshape,

@@ -123,6 +123,8 @@ def activation(layer, layer_in, layerId, tensor=True):
         out[layerId] = Activation('softsign')
     elif (layer['info']['type'] == 'HardSigmoid'):
         out[layerId] = Activation('hard_sigmoid')
+    elif (layer['info']['type'] == 'Linear'):
+        out[layerId] = Activation('linear')
     if tensor:
         out[layerId] = out[layerId](*layer_in)
     return out

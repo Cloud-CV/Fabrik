@@ -41,7 +41,8 @@ def Activation(layer):
         'selu': 'SELU',
         'softplus': 'Softplus',
         'softsign': 'Softsign',
-        'hard_sigmoid': 'HardSigmoid'
+        'hard_sigmoid': 'HardSigmoid',
+        'linear': 'Linear'
     }
     if (layer.__class__.__name__ == 'Activation'):
         return jsonLayer(activationMap[layer.activation.func_name], {}, layer)
