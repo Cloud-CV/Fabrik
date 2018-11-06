@@ -6,19 +6,41 @@ from django.contrib.auth.models import User
 
 def check_login(request):
     try:
-        user = User.objects.get(username=request.user.username)
-        user_id = user.id
-        username = 'Anonymous'
+        if request.GET.get('isOAuth') == 'false':
+            username = request.GET['username']
+            password = request.GET['password']
+            user = User.objects.get(username=username)
+            user_id = user.id
 
-        is_authenticated = user.is_authenticated()
-        if (is_authenticated):
-            username = user.username
+            if not user.check_password(password):
+                return JsonResponse({
+                    'result': False,
+                    'error': 'Please enter valid credentials'
+                })
 
-        return JsonResponse({
-            'result': is_authenticated,
-            'user_id': user_id,
-            'username': username
-        })
+            is_authenticated = user.is_authenticated()
+            if (is_authenticated):
+                username = user.username
+
+            return JsonResponse({
+                'result': is_authenticated,
+                'user_id': user_id,
+                'username': username,
+            })
+        else:
+            user = User.objects.get(username=request.user.username)
+            user_id = user.id
+            username = 'Anonymous'
+
+            is_authenticated = user.is_authenticated()
+            if (is_authenticated):
+                username = user.username
+
+            return JsonResponse({
+                'result': is_authenticated,
+                'user_id': user_id,
+                'username': username
+            })
     except Exception as e:
         return JsonResponse({
             'result': False,

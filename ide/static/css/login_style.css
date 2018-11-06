@@ -1,0 +1,267 @@
+#sidebar {
+	z-index: 1000;
+}
+
+#sidebar-login-button {
+    background: rgb(205, 207, 210);
+    color: rgb(69, 80, 97);
+    text-align: center;
+    border-radius: 5px;
+    transition: 0.2s;
+    position: relative;
+}
+
+#sidebar-login-button:hover {
+	cursor: pointer;
+}
+
+#sidebar-login-button span {
+	position: absolute;
+	left: 9px;
+	font-size: 20px;
+	top: 7px;
+}
+
+#login-prepanel {
+	background: rgba(51, 51, 51, 0.7);
+
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	vertical-align: center;
+	padding: 70px 0;
+	transition: 0.2s;
+	z-index: -100;
+	opacity: 0;
+}
+
+.login-prepanel-enabled {
+	z-index: 100 !important;
+	opacity: 1 !important;
+}
+
+#login-panel-close {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	font-size: 25px;
+	color: white;
+}
+
+#login-panel-close:hover {
+	cursor: pointer;
+}
+
+@keyframes frames-logo-appear {
+	from {
+		top: 10px;
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+		top: 0px;
+	}
+}
+
+.login-panel {
+	position: relative;
+	width: 350px;
+	background: rgba(243, 243, 243, 0.99);
+	box-shadow: 0px 0px 2px 1px rgb(100, 100, 100);
+	margin: auto;
+	text-align: left;
+	z-index: 1000;
+	border-radius: 3px;
+
+	animation-name: frames-logo-appear;
+	animation-duration: 0.5s;
+	padding-bottom: 35px;
+}
+
+.login-panel-main {
+	padding: 20px;
+}
+
+
+.login-logo {
+	text-align: center;
+	background: rgb(71, 80, 97);
+	padding: 20px;
+	box-shadow: 0px 1px 1px 1px rgba(100, 100, 100, 0.3);
+}
+
+#login-logo {
+	position: relative;
+	transition: 0.5s;
+	max-height: 50px;
+	margin: 0 auto;
+	padding: 7px 0px 7px 0px;
+
+	animation-name: frames-logo-appear;
+	animation-duration: 0.5s;
+}
+
+.login-prepanel-enabled #login-logo {
+	top: 0px;
+	opacity: 1;
+}
+
+.login-button {
+	margin-bottom: 20px;
+	margin-top: 10px;
+	z-index: 100;
+}
+
+.login-button:hover {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.login-button .btn-social {
+	box-shadow: none !important;
+	color: rgb(69, 80, 97);
+	background: rgb(205, 207, 210);
+}
+
+.login-button .btn-social:hover {
+	color: rgb(69, 80, 97);
+}
+
+.btn-social span {
+	border-right: none !important;
+}
+
+.extra-login {
+	margin-bottom: 10px !important;
+}
+
+#login-error-message {
+	position: relative;
+	background: rgba(221, 75, 57, 0.3);
+	border-radius: 4px;
+	border: 1px solid rgba(221, 75, 57, 0.8);
+	padding: 7px;
+	color: rgb(69, 80, 97);
+	display: none;
+	padding-left: 30px;
+}
+
+#login-error-message i {
+	color: rgba(221, 75, 57, 0.8);
+	position: absolute;
+	display: block;
+	left: 3px;
+	top: 5px;
+}
+
+#login-error-message-text {
+	display: inline;
+}
+
+#successful-login-notification {
+	position: fixed;
+	background: rgba(102, 187, 106, 0.3);
+	border-radius: 4px;
+	border: 1px solid rgba(102, 187, 106, 0.8);
+	padding: 9px;
+	color: rgb(69, 80, 97);
+	display: none;
+	right: 30px;
+	top: 30px;
+	padding-left: 30px;
+}
+
+#successful-login-notification i {
+	color: rgba(102, 187, 106, 0.8);
+	position: absolute;
+	left: 3px;
+	top: 6px;
+}
+
+.cut {
+	position: relative;
+	height: 2px;
+	background: black;
+	opacity: 0.1;
+	top: 75px;
+	margin-left: 40px;
+	margin-right: 40px;
+}
+
+.login-action-icon {
+	position: relative;
+	top: 5px;
+	font-size: 22px;
+	line-height: 10px;
+}
+
+#login-prepanel h5 {
+	position: relative;
+}
+
+.login-invalid {
+	position: absolute;
+	right: 20px;
+	top: 10px;
+	color: #ff7676;
+	opacity: 0;
+	transition: 0.3s;
+}
+
+.login-invalid-enabled {
+	right: 10px;
+	opacity: 1;
+}
+
+.login-panel input {
+	outline: none;
+	background: none;
+	border: none;
+	color: rgb(69, 80, 97);
+	font-size: 15px;
+}
+
+.login-prebtn {
+	display: inline;
+}
+
+.login-panel .col-md-6 {
+	padding-left: 0px;
+	padding-right: 5px;
+	margin-right: 3px;
+}
+
+.login-panel .col-md-5 {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.btn-social {
+	width: 153px !important;
+	opacity: 0.8;
+	box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.6);
+	transition: 0.2s;
+}
+
+.btn-social:hover  {
+	box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.6);
+}
+
+.img-fabrik-sample {
+	display: inline;
+}
+
+.sample-1 {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.sample-2 {
+	position: absolute;
+	top: 0px;
+	right: 10px;
+}

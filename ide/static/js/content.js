@@ -1306,7 +1306,6 @@ class Content extends React.Component {
               urlModal={this.urlModal}
               updateHistoryModal={this.updateHistoryModal}
              />
-             <h5 className="sidebar-heading">LOGIN</h5>
              <Login setUserId={this.setUserId} setUserName={this.setUserName}></Login>
              <h5 className="sidebar-heading insert-layer-title">
               <input id="layer-search-input" placeholder="Search for layer"></input>

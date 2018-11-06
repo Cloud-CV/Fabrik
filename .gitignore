@@ -8,6 +8,7 @@ env/
 .coverage
 .coverage.*
 .cache
+.DS_Store
 
 # Django stuff:
 *.log
