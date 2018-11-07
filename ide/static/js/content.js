@@ -21,7 +21,7 @@ import $ from 'jquery'
 const infoStyle = {
   content : {
     top                   : '50%',
-    left                  : '50%',
+    left                  : '55%',
     right                 : '60%',
     bottom                : 'auto',
     marginRight           : '-50%',
@@ -995,7 +995,7 @@ class Content extends React.Component {
       },
       success : function (response) {
         if (response.result == 'success') {
-          var url = 'http://' + window.location.host + ':80/load?id=' + response.id;
+          var url = 'http://' + window.location.host + '/load?id=' + response.id;
           this.modalHeader = 'Your model url is';
           this.modalContent = (<a href={url}>{url}</a>);
           this.openModal();

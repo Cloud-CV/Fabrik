@@ -36,6 +36,7 @@
 	transition: 0.2s;
 	z-index: -100;
 	opacity: 0;
+	display: block;
 }
 
 .login-prepanel-enabled {
