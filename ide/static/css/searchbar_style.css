@@ -1,13 +1,12 @@
 .insert-layer-title {
 	position: relative;
-	margin-top: 10px !important;
-	margin-bottom: 21px !important;
 }
 
 #layer-search-icon {
-	position: absolute;
+	position: relative;
 	left: -5px;
-	top: 31px;
+	top: 0px;
+	float: left;
 }
 
 #layer-search-icon:hover {
@@ -15,9 +14,11 @@
 }
 
 #layer-search-input {
-	position: absolute;
-	top: 36px;
-	left: 20px;
+	position: relative;
+	top: 0px;
+	left: 0px;
+	width: 60%;
+	height: 25px;
 	font-size: 15px;
 	background: none;
 	border: none;
@@ -27,6 +28,13 @@
 	transition: 0.3s;
 }
 
+.filter-button {
+	height: 24px !important;
+}
+
+.filter-glyphicon {
+	top: 0px;
+}
 .layer-search-input-selected {
 	opacity: 1 !important;
 }

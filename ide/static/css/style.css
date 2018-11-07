@@ -992,6 +992,13 @@ input[type="file"] {
     margin: 0px;
 }
 
+.dropdown-menu .filter{
+    width:88%;
+    font-weight: normal;
+    padding: 0px;
+    margin: 0px;
+}
+
 #sidebar-scroll::-webkit-scrollbar-track
 {
   background-color: #F5F5F5;

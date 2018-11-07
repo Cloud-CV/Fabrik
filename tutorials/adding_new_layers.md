@@ -52,6 +52,7 @@
 
 - Now, add a new line for the layer you just added in ```data.js``` in the section of Activation/Neuron Layer, because this layer belongs to this category.
 - ```<PaneElement handleClick={this.props.handleClick} id="your_layer_id">your_layer_name</PaneElement>``` this line will make your layer visible in Fabrik.
+- Open [filterbar.js](https://github.com/Cloud-CV/Fabrik/blob/master/ide/static/js/filterbar.js) in a text editor, add ```"your_layer_id"``` to 1(or more) of 3 framework filter array ```var KerasLayers = [...]```, ```var TensorFlowLayers = [...]``` or ```var CaffeLayers = [...]```. This should be like this ```var KerasLayers = ["RNN_Button", "GRU_Button", "your_layer_id"]```. This arrays are placed inside ```changeEvent() {}``` function.
 
 ### Adding layer handling to the backend
 
