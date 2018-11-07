@@ -16,12 +16,14 @@ class Canvas extends React.Component {
     this.clickCanvas = this.clickCanvas.bind(this);
     this.clickLayerEvent = this.clickLayerEvent.bind(this);
     this.hoverLayerEvent = this.hoverLayerEvent.bind(this);
+    this.mouseUpEvent = this.mouseUpEvent.bind(this);
     // whether a layer was clicked or dragged
     this.clickOrDraggedLayer = 0;
     this.hover = 0;
     this.mouseState = null;
     this.placeholder = true;
     this.disableZoom = true;
+    this.lastEvent = null;
   }
   /* this function returns the layers between a specified output y and input y
   it also sneaks in another functionallity of determining which direction is most crowded. this is specifically
@@ -272,13 +274,18 @@ class Canvas extends React.Component {
     if (!this.clickOrDraggedLayer) {
       this.clickOrDraggedLayer = 1;
     }
-    const layerId = event.el.id;
-    const layer = this.props.net[layerId];
-    layer.state.left = `${event.pos['0']}px`;
-    layer.state.top = `${event.pos['1']}px`;
-    this.props.modifyLayer(layer, layerId);
-    let net = this.props.net
-    this.checkCutting(net);
+    this.lastEvent = event;
+  }
+  mouseUpEvent(event, layerId){
+    if(this.lastEvent) {
+      const layer = this.props.net[layerId];
+      layer.state.left = `${this.lastEvent.pos['0']}px`;
+      layer.state.top = `${this.lastEvent.pos['1']}px`;
+      this.props.modifyLayer(layer, layerId);
+      let net = this.props.net
+      this.checkCutting(net);
+      this.lastEvent = null;
+    }
   }
   connectionEvent(connInfo, originalEvent) {
     if (originalEvent != null) { // user manually makes a connection
@@ -421,6 +428,7 @@ class Canvas extends React.Component {
             left={layer.state.left}
             click={this.clickLayerEvent}
             hover={this.hoverLayerEvent}
+            mouseUp={this.mouseUpEvent}
             layer={layer}
             net={this.props.net}
             addSharedComment={this.props.addSharedComment}
