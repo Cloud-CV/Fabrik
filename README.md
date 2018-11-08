@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/Cloud-CV/Fabrik.svg?branch=master)](https://travis-ci.org/Cloud-CV/Fabrik)
 [![Coverage Status](https://coveralls.io/repos/github/Cloud-CV/Fabrik/badge.svg?branch=master)](https://coveralls.io/github/Cloud-CV/Fabrik?branch=master)
 
-Fabrik is an online collaborative platform to build, visualize and train deep learning models via a simple drag-and-drop interface. It allows researchers to collaboratively develop and debug models using a web GUI that supports importing, editing and exporting networks written in widely popular frameworks like Caffe, Keras, and TensorFlow.
+Fabrik is an online collaborative platform to build, visualize and train deep learning models via a simple drag-and-drop interface. It allows researchers to collectively develop and debug models using a web GUI that supports importing, editing and exporting networks to popular frameworks like Caffe, Keras, and TensorFlow.
 
 <img src="/example/fabrik_demo.gif?raw=true">
 
@@ -13,10 +13,18 @@ This app is presently under active development and we welcome contributions. Ple
 
 ## Installation Instructions
 
-Setting up Fabrik on your local machine is really easy. You can setup Fabrik using two methods:
+Setting up Fabrik on your local machine is very easy. You can setup Fabrik using two methods:
 
 ### Using Docker
 
+#### Docker Installation
+If you haven't installed Docker already: </br>
+
+To install Docker for Windows [click here](https://docs.docker.com/docker-for-windows/install/).
+
+To install Docker for Mac [click here](https://docs.docker.com/docker-for-mac/install/).
+
+#### Fabrik Installation
 1. Get the source code on to your machine via git.
 
     ```
@@ -29,7 +37,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     cp settings/dev.sample.py settings/dev.py
     ```
 
-3. Build and run the Docker containers. This might take a while. You should be able to access Fabrik at <http://0.0.0.0:8000>.
+3. Build and run the Docker containers. This might take a while. You should now be able to access Fabrik at <http://0.0.0.0:8000>.
 
     ```
     docker-compose up --build
@@ -38,13 +46,13 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 ### Setup Authenticaton for Docker Environment
 1. Go to Github Developer Applications and create a new application. [here](https://github.com/settings/developers)
 
-2. For local deployments the following is what should be used in the options:
+2. For local deployments,the following should be used in the options:
     * Application name: Fabrik
     * Homepage URL: http://0.0.0.0:8000
     * Application description: Fabrik
     * Authorization callback URL: http://0.0.0.0:8000/accounts/github/login/callback/
 
-3. Github will provide you with a Client ID and Secret Key, save these.
+3. Github will provide you with a Client ID and a Secret Key. Save these.
 
 4. Create a superuser in django service of docker container
 
@@ -52,9 +60,9 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     docker-compose run django python manage.py createsuperuser
     ```
 
-    Note: Before creating make sure that django service of docker image is running, it can be done by executing ``` docker-compose up ``` followed by ``` Ctrl + C ``` to save docker configuration.
+    Note: Before creating the superuser, make sure that django service of docker image is running. This can be done by executing ``` docker-compose up ``` followed by ``` Ctrl + C ``` to save docker configuration.
 
-5. Open http://0.0.0.0:8000/admin and login with credentials from step 4.
+5. Open http://0.0.0.0:8000/admin and login with the credentials from step 4.
 
 6. Setting up Social Accounts in django admin
 
@@ -84,13 +92,13 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     git clone --recursive https://github.com/Cloud-CV/Fabrik.git && cd Fabrik
     ```
 
-3. Rename settings/dev.sample.py as settings/dev.py and change credential in settings/dev.py
+3. Rename settings/dev.sample.py as settings/dev.py and change credentials in settings/dev.py
 
     ```
     cp settings/dev.sample.py settings/dev.py
     ```
 
-    * Replace the hostname to ``` localhost ``` in settings/dev.py line 15. It should now look like this:  
+    * Change the hostname to ``` localhost ``` in settings/dev.py line 15. It should now look like this:  
 
     ```
     'HOST': os.environ.get("POSTGRES_HOST", 'localhost'), 
@@ -102,7 +110,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     sudo apt-get install redis-server
     ```
 
-    * Replace the hostname to ``` localhost ``` in settings/common.py line 115.
+    * Change the hostname to ``` localhost ``` in settings/common.py line 115.
 
         ```
         "CONFIG": {
@@ -118,13 +126,13 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
         CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
         ```
 
-    * Replace celery broker url and result backend hostname to ``` localhost ``` in ide/celery_app.py, line 8.
+    * Change celery broker url and result backend hostname to ``` localhost ``` in ide/celery_app.py, line 8.
 
         ```
         app = Celery('app', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0', include=['ide.tasks'])
         ```
 
-5. If you have Caffe, Keras and Tensorflow already installed on your computer, skip this step
+5. If you already have Caffe, Keras and Tensorflow installed on your computer, skip this step.
 * For Linux users
     * Install Caffe, Keras and Tensorflow
 
@@ -133,7 +141,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
         yes Y | sh caffe_tensorflow_keras_install.sh
         ```
 
-    * Open your ~/.bashrc file and append this line at the end
+    * Open your ~/.bashrc file and append this line to the end
 
         ```      
         export PYTHONPATH=~/caffe/caffe/python:$PYTHONPATH
@@ -167,7 +175,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 7. [Install postgres >= 9.5](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
 * Setup postgres database
     * Start postgresql by typing ```sudo service postgresql start```
-    * Now login as user postgres by running ```sudo -u postgres psql``` and type the commands below
+    * Now login as user postgres by running ```sudo -u postgres psql``` and type the commands below:
 
         ```
         CREATE DATABASE fabrik;
@@ -195,7 +203,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     sudo npm install -g webpack@1.15.0
     ```
 
-    * Run the command below in a separate terminal for hot-reloading, ie see the changes made to the UI in real time. 
+    * Run the command below in a separate terminal for hot-reloading, i.e. see the changes made to the UI in real time. 
 
     ```
     webpack --progress --watch --colors
@@ -207,7 +215,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
     celery -A ide worker --app=ide.celery_app  --loglevel=info
     ```
 
-    The celery worker needs to be run parallel to the django server in a separate terminal.
+    The celery worker needs to be run in parallel to the django server in a separate terminal.
 
 10. Start django application
 
@@ -220,13 +228,13 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 ### Setup Authenticaton for Virtual Environment
 1. Go to Github Developer Applications and create a new application. [here](https://github.com/settings/developers)
 
-2. For local deployments the following is what should be used in the options:
+2. For local deployments, the following should be used in the options:
     * Application name: Fabrik
     * Homepage URL: http://localhost:8000
     * Application description: Fabrik
     * Authorization callback URL: http://localhost:8000/accounts/github/login/callback/
 
-3. Github will provide you with a client ID and secret, save these.
+3. Github will provide you with a client ID and secret Key, save these.
 
 4. Create a superuser in django
 
@@ -242,9 +250,9 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 
 6. Open http://localhost:8000/admin
 
-7. Login with credentials from step 4.
+7. Login with the credentials from step 4.
 
-8. Setting up Social Accounts in django admin
+8. Setting up Social Accounts in django admin :
 
     * Under ```Social Accounts``` open ``` Social applications ```, click on ``` Add Social Application ```.
 
@@ -256,7 +264,7 @@ Setting up Fabrik on your local machine is really easy. You can setup Fabrik usi
 
 9. From the django admin home page, go to `Sites` under the `Sites` category and update ``` Domain name ``` to ``` localhost:8000 ```.
 
-Note: For testing, you will only need one authentication backend. However, if you want to try out Google's authentication
+Note: For testing, you will only need one authentication backend. However, if you want to try out Google's authentication,
 then, you will need to follow the same steps as above, but switch out the Github for google.
 
 
@@ -298,7 +306,7 @@ Note: For models that use a custom LRN layer (Alexnet), Keras expects the custom
 * [Using a Keras model exported from Fabrik](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/keras_json_usage_1.md)
 * [Loading a Keras model exported from Fabrik and printing its summary](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/keras_json_usage_2.md)
 * [Using an Exported Caffe Model](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/caffe_prototxt_usage_1.md)
-* [Loading a caffe model in python and printing its parameters and output size](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/caffe_prototxt_usage_2.md)
+* [Loading a Caffe model in python and printing its parameters and output size](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/caffe_prototxt_usage_2.md)
 * [List of models tested with Fabrik](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/tested_models.md)
 * [Adding model to the Fabrik model zoo](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/adding_new_model.md)
 * [Adding new layers](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/adding_new_layers.md)
