@@ -1,0 +1,101 @@
+body {
+    overflow-x: hidden;
+ }
+
+#wrapper {
+    padding-left: 250px;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 200px;
+    top: 0px;
+    width: 200px;
+    height: 110%;
+    margin-left: -200px;
+    overflow-y: auto;
+    background: #F5F5F5;
+}
+
+
+#page-content-wrapper {
+    width: 100%;
+    padding: 20px;
+    padding-left: 200px;
+    position: relative;
+}
+
+.sidebar-content {
+    min-height: 80vh;
+    height: 0px;
+    overflow-y: scroll;
+}
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav li {
+    text-indent: 20px;
+    line-height: 40px;
+    cursor: pointer;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: #000000;
+}
+
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    color: #000;
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #000000;
+}
+
+
+.sidebar-content img {
+    width: 60%;
+}
+
+.filterbar-container {
+    margin-top: 24px;
+    margin-left: 16px;
+}
+
+.wordwrap { 
+    white-space: pre-wrap;      /* CSS3 */   
+    white-space: -moz-pre-wrap; /* Firefox */    
+    white-space: -pre-wrap;     /* Opera <7 */   
+    white-space: -o-pre-wrap;   /* Opera 7 */    
+    word-wrap: break-word;      /* IE */
+}
+
+.caption {
+    height: 80px;
+}
+
+.bold {
+    background: #cdcfd2;
+    font-weight: bold;
+}
