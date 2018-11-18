@@ -35,3 +35,11 @@ In order to export a Caffe Model from Fabrik:
     -gpu 0 \
     -solver solver.prototxt
   ```
+
+### Code template
+The code sample in [caffe_sample.py](../example/caffe/code_samples/caffe_sample.py) loads the model specified by the user and trains the model.
+To run the code, run
+    ```
+    python caffe_sample.py PATH_TO_MODEL
+    ```
+Replace ```PATH_TO_MODEL``` with the path to the model that you want to use.
