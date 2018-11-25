@@ -17,6 +17,7 @@
 * DeepYeast [\[Source\]](http://kodu.ut.ee/~leopoldp/2016_DeepYeast/code/caffe_model/)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180102135425bzkzy)
 * SpeechNet [\[Source\]](https://github.com/pannous/caffe-speech-recognition)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180102135032ctsho)
 * SENet [\[Source\]](https://github.com/hujie-frank/SENet) [\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180106091323ectck)
+* ZFNet [\[Source\]](https://github.com/dandxy89/ImageModels/blob/master/ZFNet.ipynb)
 
 ### Detection
 

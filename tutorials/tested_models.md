@@ -21,6 +21,7 @@
 * SENet [\[Source\]](https://github.com/hujie-frank/SENet) [\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180106091323ectck)
 * SimpleNet [\[Source\]](https://github.com/Coderx7/SimpleNet) [\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180303031044putlf)
 * InceptionV4 [\[Source\]](https://github.com/kentsommer/keras-inceptionV4/blob/master/inception_v4.py)
+* ZFNet [\[Source\]](https://github.com/dandxy89/ImageModels/blob/master/ZFNet.ipynb)
 
 ### Detection
 * 48NET [\[Source\]](https://github.com/CongWeilin/mtcnn-caffe/tree/master/48net)[\[Visualise\]](http://fabrik.cloudcv.org/caffe/load?id=20180110093832phqza)
