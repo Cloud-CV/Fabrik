@@ -135,12 +135,13 @@ class ModelZoo extends React.Component {
       <div id="page-content-wrapper">
         <div className="row" ref="ContentPage">
           <div ref="recognition">
+            <ModelElement importNet={this.props.importNet} framework="keras" id="zfnet" displayName="ZFNet"> </ModelElement>
+            <ModelElement importNet={this.props.importNet} framework="caffe" id="resnext" displayName="ResNeXt"> </ModelElement>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="lenet" displayName="MNIST LeNet"> </ModelElement>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="cifar10_full" displayName="Cifar10 CNN"> </ModelElement>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="alexnet" displayName="AlexNet"> </ModelElement>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="All_CNN" displayName="All CNN"> </ModelElement>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="vgg16" displayName="VGG 16"> </ModelElement>
-            <ModelElement importNet={this.props.importNet} framework="keras" id="zfnet" displayName="ZFNet"> </ModelElement>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="densenet" displayName="DenseNet"> </ModelElement>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="GoogleNet" displayName="GoogLeNet"> </ModelElement>
             <ModelElement importNet={this.props.importNet} framework="caffe" id="resnet101" displayName="ResNet 101"> </ModelElement>
