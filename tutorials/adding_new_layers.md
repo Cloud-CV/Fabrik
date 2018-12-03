@@ -1,13 +1,24 @@
-## Adding New Layers
+# Adding New Layers
 
 - For setup instructions, check [README](https://github.com/Cloud-CV/Fabrik/blob/master/README.md).
 - Add your new layer(s) to the [data.js](https://github.com/Cloud-CV/Fabrik/blob/master/ide/static/js/data.js) file.
 
-### Basics for adding a new layer
+
+## Basics for adding a new layer
 
 - Open the ```data.js``` file in any text other.
 
-<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layercategory.png" />
+```
+export default {
+  /* ********** Data Layers ********** */
+  ImageData: { // Only Caffe
+    name: 'image data',
+    color: '#673ab7',
+    endpoint: {
+      src: ['Bottom'],
+      trg: []
+    },
+```
 
 - You should see the line ```/* ********** Data Layers ********** */```, it is the category of the layer. There are many categories in the file as mentioned below:
     - Data Layers
@@ -20,17 +31,70 @@
     - Loss Layers
     - Utility Layers
     - Python Layers
-- You should add the new layer below the category it belongs to.
-- Moving to the next line in the image, we create a new json element (layer). The line ```// Only Caffe``` tells that this layer is only for caffe and not for keras.
+
+- Create a new json element for your layer below the category it belongs to.
+
 - Add the suitable comment for the new layer or leave it if there is no such need.
 
-### Detailed overview of a layer
 
-<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerdetails.png" />
+## Adding a Dropout Layer - A Walkthrough
 
-- Here is a whole layer shown named ```ReLU```. It is a ```Activation/Neuron Layer```, that's why it is kept below the line ```/* ********** Activation/Neron Layers ********** */```.
-- Then add the suitable comment for you layer or leave it empty if it is not for any specific framework.
-- Keywords' explanation:
+```
+  Dropout: {
+    name: 'dropout',
+    color: '#ff9800',
+    endpoint: {
+      src: ['Bottom'],
+      trg: ['Top']
+    },
+    params: {
+      inplace: {
+        name: 'Inplace operation',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      caffe: {
+        name: 'Available Caffe',
+        value: true,
+        type: 'checkbox',
+        required: false
+      },
+      rate: {
+        name: 'Dropout Ratio',
+        value: 0.5,
+        type: 'float',
+        required: false
+      },
+      seed: {
+        name: 'Seed',
+        value: 42,
+        type: 'number',
+        required: false
+      },
+      trainable: {
+        name: 'Trainable',
+        value: false,
+        type: 'checkbox',
+        required: false
+      }
+    },
+    props: {
+      name: {
+        name: 'Name',
+        value: '',
+        type: 'text'
+      }
+    },
+    learn: false
+  },
+```
+
+- Suppose we wanted to add a Dropout layer into Fabrik. Keep it under ```/* ********** Common Layers ********** */``` in `data.js`.
+
+- Add suitable comment for your layer. For example, mention if the layer is specific to a single framework.
+
+- Keywords explanation:
     - name: Name of the layer.
     - color: Color of the layer to be shown in frontend.
     - endpoint: Endpoints of the layer.
@@ -38,53 +102,69 @@
         - trg: Target endpoint of the layer.
     - params: Parameters for the layer.
         - inplace: Checkbox input for the layer.
-        - negative_slope: Numerical input for the layer.
-        - caffe: Availibility of caffe (Checkbox input).
+        - caffe: Availibility of Caffe (Checkbox input).
+        - rate: The rate at which to randomly drop neurons out.
+        - seed: Number to seed the random selection of neurons to drop out.
+        - trainable: Whether the layer is trainable or not.
     - props: It defines the properties of the layer.
     - learn: This declares if the layer can be used for learning.
-- We can define different parameters for a layer and it is not limited to ```inplace``` & ```negative_slope```.
 
-### Making the layer visible in Fabrik
+- Define as many parameters as you need for the layer.
 
-- Open [pane.js](https://github.com/Cloud-CV/Fabrik/blob/master/ide/static/js/pane.js) in a text editor, and you should see something like this.
 
-<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerpanel.png" />
+## Making the layer visible in Fabrik
 
-- Now, add a new line for the layer you just added in ```data.js``` in the section of Activation/Neuron Layer, because this layer belongs to this category.
+- Open [ide/static/js/pane.js](https://github.com/Cloud-CV/Fabrik/blob/master/ide/static/js/pane.js).
+
+- Now, add a new line for the layer you just added in ```data.js``` in the  `Common` section, because this layer belongs to this category.
+
+```html
+<div className="panel panel-default">
+    <div className="panel-heading" role="tab" data-toggle="collapse"                
+        href="#common" aria-expanded="false"
+        aria-controls="common" onClick={() => this.toggleClass('common')}>
+        <a data-parent="#menu">
+            <span className="badge sidebar-badge" id="commonLayers"> </span>
+            Common <!-- Add your layer under the appropriate section -->
+            <span className={this.state.common ? 'glyphicon sidebar-dropdown glyphicon-menu-down':
+            'glyphicon sidebar-dropdown glyphicon-menu-right'} ></span>
+        </a>
+    </div>
+    <div id="common" className="panel-collapse collapse" role="tabpanel">
+        <div className="panel-body">
+            <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                handleClick={this.props.handleClick}
+                id="InnerProduct_Button">Inner Product</PaneElement>
+            <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                handleClick={this.props.handleClick}
+                id="Dropout_Button">Dropout</PaneElement> <!-- Add your layer -->
+            <PaneElement setDraggingLayer={this.props.setDraggingLayer}
+                handleClick={this.props.handleClick}
+                id="Embed_Button">Embed</PaneElement>
+        </div>
+    </div>
+</div>
+```
+
 - ```<PaneElement handleClick={this.props.handleClick} id="your_layer_id">your_layer_name</PaneElement>``` this line will make your layer visible in Fabrik.
-- Open [filterbar.js](https://github.com/Cloud-CV/Fabrik/blob/master/ide/static/js/filterbar.js) in a text editor, add ```"your_layer_id"``` to 1(or more) of 3 framework filter array ```var KerasLayers = [...]```, ```var TensorFlowLayers = [...]``` or ```var CaffeLayers = [...]```. This should be like this ```var KerasLayers = ["RNN_Button", "GRU_Button", "your_layer_id"]```. This arrays are placed inside ```changeEvent() {}``` function.
 
-### Adding layer handling to the backend
+- Open [ide/static/js/filterbar.js](https://github.com/Cloud-CV/Fabrik/blob/master/ide/static/js/filterbar.js) in a text editor, add ```"your_layer_id"``` to 1(or more) of 3 framework filter array ```var KerasLayers = [...]```, ```var TensorFlowLayers = [...]``` or ```var CaffeLayers = [...]```. This should be like this ```var KerasLayers = ["RNN_Button", "GRU_Button", "your_layer_id"]```. This arrays are placed inside ```changeEvent() {}``` function.
 
-- Open [import_prototxt.py](https://github.com/Cloud-CV/Fabrik/blob/master/caffe_app/views/import_prototxt.py) file in a text editor.
 
-<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerImportPrototxt1.png" />
+## Adding layer handling to the backend
 
-- Add a function for the new layer below the category of this layer.
-- Load the parameters, do the calculations for your layer in pyhton and return the value of ```params``` (parameters).
-- Move down in the file.
+See the guides below to see how to add layer handling to the backend:
 
-<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerImportPrototxt2.png" />
+- [Caffe](adding_new_layers_caffe.md)
+- [Keras](adding_new_layers_keras.md)
+- [Tensorflow](adding_new_layers_tensorflow.md)
 
-- Add your defined layer in the ```layer_dict``` array, as shown above.
 
-- Now, open [jsonToPrototxt.py](https://github.com/Cloud-CV/Fabrik/blob/master/ide/utils/jsonToPrototxt.py) in a text editor.
-
-<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerJSONtoPrototxt1.png" />
-
-- Add an export function for training and testing of the new layer.
-- There you need to load parameters, then train & test values and at last return the trained and tested data.
-- Move down in this file as well.
-
-<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layerJSONtoPrototxt2.png" />
-
-- Add the export function in the ```layer_map``` array.
-
-### Testing and pushing the new layer.
+## Testing and pushing the new layer.
 
 - Run the fabrik application on you local machine by following the instructions in [README](https://github.com/Cloud-CV/Fabrik/blob/master/README.md) file.
 
-<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layertesting.png" />
+<img src="https://raw.githubusercontent.com/Cloud-CV/Fabrik/master/tutorials/layer_testing_dropout.png" />
 
 - Check the new layer inside the category you added it. See if all the parameters are properly displayed and usable as you wanted.
 - If everything is working fine commit your changes and push it to your fork then make a Pull Request.
