@@ -3,6 +3,7 @@
 [![Join the chat at https://gitter.im/Cloud-CV/Fabrik](https://badges.gitter.im/Cloud-CV/Fabrik.svg)](https://gitter.im/Cloud-CV/Fabrik?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/Cloud-CV/Fabrik.svg?branch=master)](https://travis-ci.org/Cloud-CV/Fabrik)
 [![Coverage Status](https://coveralls.io/repos/github/Cloud-CV/Fabrik/badge.svg?branch=master)](https://coveralls.io/github/Cloud-CV/Fabrik?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/markdown-guide/badge/?version=latest)](http://fabrik.readthedocs.io/en/latest/)
 
 Fabrik is an online collaborative platform to build, visualize and train deep learning models via a simple drag-and-drop interface. It allows researchers to collectively develop and debug models using a web GUI that supports importing, editing and exporting networks to popular frameworks like Caffe, Keras, and TensorFlow.
 
