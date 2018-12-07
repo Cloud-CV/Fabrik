@@ -10,7 +10,9 @@
 
 ```
 4. After making these changes, test if loading the model and exporting it to both or at least one framework is working fine and document it accordingly in your pull request.
-5. Create a pull request for the same and get reviewed by the mentors.
+5. Add a thumbnail image for displaying a preview of the new model.
+6. Add the new model to [Tested Models](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/tested_models.md).
+7. Create a pull request for the same and get reviewed by the mentors.
 Cheers!
 
 ### Adding New Model - Keras
@@ -22,5 +24,7 @@ Cheers!
 <li><ModelElement importNet={this.props.importNet} framework="keras" id="Sample">sample</ModelElement></li> 
 ```
 4. After making these changes, test if loading the model and exporting it to both or at least one framework is working fine and document it accordingly in your pull request.
-5. Create a pull request for the same and get reviewed by the mentors.
+5. Add a thumbnail image for displaying a preview of the new model.
+6. Add the new model to [Tested Models](https://github.com/Cloud-CV/Fabrik/blob/master/tutorials/tested_models.md).
+7. Create a pull request for the same and get reviewed by the mentors.
 Cheers!
