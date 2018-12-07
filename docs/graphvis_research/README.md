@@ -1,5 +1,5 @@
 # Research about adding support for exporting model graphs from Fabrik
-Attached code requires [common dependencies](../requirements/common.txt), plus `networkx` and `pydot` Python packages.
+Attached code requires [common dependencies](../../requirements/common.txt), plus `networkx` and `pydot` Python packages.
 ## Problem
 Currently there's no tools for drawing Fabrik neural network diagram directly, without need to do it by hand. This research observes some ways to implement such function.
 ## Observations
@@ -14,14 +14,14 @@ Keras have its own utilities, described in its [documentation](https://keras.io/
 ![](KerasVis.png)
 To get similar with this or other model type:
 ```
-python print_keras_model.py ../example/keras/<desired_json_model> <desired_image_name>
+python print_keras_model.py ../../example/keras/<desired_json_model> <desired_image_name>
 ```
 #### Caffe
 Caffe has its own script for visualisation. It actually uses pydot, too. Type `python ~/caffe/caffe/python/draw_net.py --help` to see usage help. Below is vizualised AlexNet.
 
 ![](CaffeVis.png)
 ```
-python ~/caffe/caffe/python/draw_net.py ../example/caffe/<desired_prototxt_model> <desired_image_name>
+python ~/caffe/caffe/python/draw_net.py ../../example/caffe/<desired_prototxt_model> <desired_image_name>
 ```
 #### Tensorflow
 Tensorflow has Tensorboard for graph visualisations. Still cannot see the way how to use it for creating an image, not interactive page.
