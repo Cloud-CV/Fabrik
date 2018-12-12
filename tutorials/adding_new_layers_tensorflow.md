@@ -5,33 +5,47 @@ Follow the guide [here](adding_new_layers.md) to add your new layer to Fabrik's 
 
 #### Importing a layer
 
-- Open [import_graphdef.py](https://github.com/Cloud-CV/Fabrik/blob/master/tensorflow_app/views/import_graphdef.py)
+- Open [layers_import.py](https://github.com/Cloud-CV/Fabrik/blob/master/tensorflow_app/views/layers_import.py).
 
-    - Add your layer to one of these four dictionaries that map Tensorflow ops to Caffe layers:
-        - `op_layer_map` : if the op has can be mapped to a Caffe layer directly
-        - `activation_map` : if the op is a simple activation
-        - `name_map` : if the op type can be inferred from the name of the op
-        - `initializer_map` : if the op is an initializer
+    - Add a function to import your layer.
+        - Create a function name import_<layer_name> that takes one parameter, layer_ops, that is a list of all ops in the layer being imported.
+        - Get layer parameters from the operations in layer_ops and build a dictionary mapping parameter names to values.
+        - Get a list of input layers to the layer being processed using `get_input_layers(layer_ops)`.
+        - Create and return a json layer for new layer, calling `jsonLayer` with the new layer_type, parameters, input layers and output_layers(optional).
 
-        ```diff
-        name_map = {'flatten': 'Flatten',
-                    'lrn': 'LRN', 
-                    ...
-        +           'dropout': 'Dropout' 
-        }
+        ```
+        def import_dropout(layer_ops):
+            layer_params = {}
+            for node in layer_ops:
+            if ('rate' in node.node_def.attr):
+                layer_params['rate'] = node.get_attr('rate')
+            if ('seed' in node.node_def.attr):
+                layer_params['seed'] = node.get_attr('seed')
+            if ('training' in node.node_def.attr):
+                layer_params['trainable'] = node.get_attr('training')
+            return jsonLayer('Dropout', layer_params, get_input_layers(layer_ops), [])
         ```
 
-    - Inside the loop `for node in graph.get_operations()`, write code to get any layer parameters needed and build the layer.
+- Open [import_graphdef.py](https://github.com/Cloud-CV/Fabrik/blob/master/tensorflow_app/views/import_graphdef.py)
 
-    ```
-    elif layer['type'][0] == 'Dropout':
-        if ('rate' in node.node_def.attr):
-            layer['params']['rate'] = node.get_attr('rate')
-        if ('seed' in node.node_def.attr):
-            layer['params']['seed'] = node.get_attr('seed')
-        if ('training' in node.node_def.attr):
-            layer['params']['trainable'] = node.get_attr('training')
-    ```
+    - From `layers_import`, import the layer import function you just defined.
+
+        `from layers_import import_dropout`
+
+    - Add your layer import function to either `layer_map` or `name_map`:
+        - `layer_map` if the layer type can be determined directly by the type of nodes in the layer's ops.
+        ` 'name_map` if the laye type can only be determined from the name of the layer.
+        
+        ```diff
+        name_map = {
+            'flatten': import_flatten,
+            'lrn': import_lrn,
+            ...
+        +   'dropout': import_dropout,
+            ...
+            'concatenate': import_concat
+        }
+        ```
 
 #### Exporting a layer
 
